@@ -1,0 +1,46 @@
+{
+  "name": "@ryn-bsd/file-processing",
+  "version": "1.0.0",
+  "description": "",
+  "main": "./build/index.js",
+  "scripts": {
+    "test": "yarn compile && cross-env NODE_OPTIONS=\"$NODE_OPTIONS --experimental-vm-modules\" jest",
+    "compile": "clear || cls && tsc"
+  },
+  "type": "module",
+  "engines": {
+    "node": ">=14"
+  },
+  "exports": {
+    ".": "./build/index.js",
+    "./src": "./build/*"
+  },
+  "types": "./src/types/index.d.ts",
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@ffmpeg-installer/ffmpeg": "^1.1.0",
+    "@ffprobe-installer/ffprobe": "^2.1.2",
+    "@ryn-bsd/from-buffer-to": "^1.0.1",
+    "@ryn-bsd/is-file": "^1.2.0",
+    "async-mutex": "^0.5.0",
+    "csv": "^6.3.9",
+    "fluent-ffmpeg": "^2.1.3",
+    "node-fetch": "^3.3.2",
+    "pdf-lib": "^1.17.1",
+    "sharp": "0.32.6",
+    "tmp-promise": "^3.0.3"
+  },
+  "devDependencies": {
+    "@faker-js/faker": "^8.4.1",
+    "@types/fluent-ffmpeg": "^2.1.24",
+    "@types/jest": "^29.5.12",
+    "@types/node": "^20.14.2",
+    "@types/tmp": "^0.2.6",
+    "cross-env": "^7.0.3",
+    "jest": "^29.7.0",
+    "ts-jest": "^29.1.4",
+    "typescript": "^5.4.5"
+  }
+}
