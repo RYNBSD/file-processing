@@ -25,13 +25,13 @@ export default class CSV extends Core {
             this.csvs = filteredCsvs;
         });
     }
-    appendCsvs(...csvs) {
+    append(...csvs) {
         return __awaiter(this, void 0, void 0, function* () {
             const filteredCsvs = yield CSV.filter(...csvs);
             this.csvs.push(...filteredCsvs);
         });
     }
-    extendCsvs(...csvs) {
+    extend(...csvs) {
         csvs.forEach((csv) => {
             this.csvs.push(...csv.getCsvs());
         });
@@ -45,22 +45,15 @@ export default class CSV extends Core {
             return this.csvs.length;
         });
     }
-    check() {
-        return __awaiter(this, void 0, void 0, function* () {
-            const csvs = yield CSV.filter(...this.csvs);
-            if (csvs.length === 0)
-                throw new TypeError(`${CSV.name}: Files must be of type csv`);
-        });
-    }
     metadata() {
         return __awaiter(this, void 0, void 0, function* () {
             return Promise.all(this.csvs.map((csv) => __awaiter(this, void 0, void 0, function* () {
-                var _a, _b, _c;
                 const rows = csv.toString().split(/\r?\n/);
+                const columns = rows.reduce((prev, row) => prev + row.split(",").length, 0);
                 return {
                     size: csv.length,
                     rows: rows.length,
-                    columns: (_c = (_b = (_a = rows === null || rows === void 0 ? void 0 : rows[0]) === null || _a === void 0 ? void 0 : _a.split(",")) === null || _b === void 0 ? void 0 : _b.length) !== null && _c !== void 0 ? _c : 0,
+                    columns: Math.round(columns / rows.length),
                 };
             })));
         });
@@ -86,16 +79,16 @@ export default class CSV extends Core {
             return new FilterFile(...csvs).custom("csv");
         });
     }
-    static fromFile(path) {
+    static fromFile(...path) {
         return __awaiter(this, void 0, void 0, function* () {
             const buffer = yield Core.loadFile(path);
-            return new CSV(buffer);
+            return new CSV(...buffer);
         });
     }
-    static fromUrl(url) {
+    static fromUrl(...url) {
         return __awaiter(this, void 0, void 0, function* () {
             const buffer = yield Core.loadUrl(url);
-            return new CSV(buffer);
+            return new CSV(...buffer);
         });
     }
     static generate() {

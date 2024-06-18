@@ -8,11 +8,10 @@ export default class PDF extends Core {
     constructor(...pdfs: Buffer[]);
     getPdfs(): Buffer[];
     setPdfs<T>(callback: PDFSetCallback<T>): Promise<void>;
-    appendPdfs(...pdfs: Buffer[]): Promise<void>;
-    extendPdfs(...pdfs: PDF[]): void;
+    append(...pdfs: Buffer[]): Promise<void>;
+    extend(...pdfs: PDF[]): void;
     clone(): PDF;
     filter(): Promise<number>;
-    check(): Promise<void>;
     getDocuments(options?: LoadOptions): Promise<PDFDocument[]>;
     metadata(options?: LoadOptions): Promise<{
         title: string | undefined;
@@ -29,8 +28,8 @@ export default class PDF extends Core {
     getPages(options?: LoadOptions): Promise<import("pdf-lib").PDFPage[][]>;
     getForm(options?: LoadOptions): Promise<import("pdf-lib").PDFForm[]>;
     custom<T>(callback: PdfCustomDocumentCallback<T>, options?: LoadOptions): Promise<Awaited<T>[]>;
-    static fromFile(path: string): Promise<PDF>;
-    static fromUrl<T extends string | URL>(url: T): Promise<PDF>;
+    static fromFile(...path: string[]): Promise<PDF>;
+    static fromUrl<T extends string[] | URL[]>(...url: T): Promise<PDF>;
     /**
      * Convert url to pdf
      */
@@ -40,11 +39,6 @@ export default class PDF extends Core {
     static filter(...pdfs: Buffer[]): Promise<Buffer[]>;
     static save<T extends PDFDocument>(pdfs: T, options?: SaveOptions): Promise<Uint8Array>;
     static save<T extends PDFDocument[]>(pdfs: T, options?: SaveOptions): Promise<Uint8Array[]>;
-    /**
-     * Convert Uint8Array to Buffer
-     */
-    static toBuffer<T extends Uint8Array>(pdfs: T, options?: SaveOptions): Promise<Buffer>;
-    static toBuffer<T extends Uint8Array>(pdfs: T[], options?: SaveOptions): Promise<Buffer[]>;
     static load<T extends string | Uint8Array | ArrayBuffer>(pdf: T, options?: LoadOptions): Promise<PDFDocument>;
     static create(options?: CreateOptions): Promise<PDFDocument>;
     static document(): typeof PDFDocument;

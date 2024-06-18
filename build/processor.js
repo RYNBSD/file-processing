@@ -12,82 +12,34 @@ export default class Processor {
     constructor(...files) {
         this.files = files;
     }
-    /**
-     *
-     * @param check Check if provided files are images @default false
-     * @returns - Image instance
-     */
     image() {
-        return __awaiter(this, arguments, void 0, function* (check = false) {
-            const image = new Image(...this.files);
-            if (check)
-                yield image.check();
-            return image;
+        return __awaiter(this, void 0, void 0, function* () {
+            return new Image(...this.files);
         });
     }
-    /**
-     *
-     * @param check Check if provided files are pdfs @default false
-     * @returns - PDF instance
-     */
     pdf() {
-        return __awaiter(this, arguments, void 0, function* (check = false) {
-            const pdf = new PDF(...this.files);
-            if (check)
-                yield pdf.check();
-            return pdf;
+        return __awaiter(this, void 0, void 0, function* () {
+            return new PDF(...this.files);
         });
     }
-    /**
-     *
-     * @param check Check if provided files are csvs @default false
-     * @returns - CSV instance
-     */
     csv() {
-        return __awaiter(this, arguments, void 0, function* (check = false) {
-            const csv = new CSV(...this.files);
-            if (check)
-                yield csv.check();
-            return csv;
+        return __awaiter(this, void 0, void 0, function* () {
+            return new CSV(...this.files);
         });
     }
-    /**
-     *
-     * @param check Check if provided files are texts @default false
-     * @returns - Text instance
-     */
     text() {
-        return __awaiter(this, arguments, void 0, function* (check = false) {
-            const text = new Text(...this.files);
-            if (check)
-                yield text.check();
-            return text;
+        return __awaiter(this, void 0, void 0, function* () {
+            return new Text(...this.files);
         });
     }
-    /**
-     *
-     * @param check Check if provided files are videos @default false
-     * @returns - Text instance
-     */
     video() {
-        return __awaiter(this, arguments, void 0, function* (check = false) {
-            const video = new Video(...this.files);
-            if (check)
-                yield video.check();
-            return video;
+        return __awaiter(this, void 0, void 0, function* () {
+            return new Video(...this.files);
         });
     }
-    /**
-     *
-     * @param check Check if provided files are audios @default false
-     * @returns - Text instance
-     */
     audio() {
-        return __awaiter(this, arguments, void 0, function* (check = false) {
-            const audio = new Audio(...this.files);
-            if (check)
-                yield audio.check();
-            return audio;
+        return __awaiter(this, void 0, void 0, function* () {
+            return new Audio(...this.files);
         });
     }
 }

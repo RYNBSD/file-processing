@@ -1,11 +1,6 @@
-import type {
-  AVCustomCallback,
-  AVCallback,
-  AVSetCallback,
-} from "../types/index.js";
+import type { AVCustomCallback, AVSetCallback } from "../types/index.js";
 import type { Readable } from "node:stream";
 import ffmpeg, { type FfprobeData } from "fluent-ffmpeg";
-import { buffer2readable, readable2buffer } from "@ryn-bsd/from-buffer-to";
 import { path as ffmpegPath } from "@ffmpeg-installer/ffmpeg";
 import { path as ffprobePath } from "@ffprobe-installer/ffprobe";
 import path from "node:path";
@@ -29,7 +24,7 @@ abstract class AV extends Core {
           new Promise<FfprobeData>((resolve, reject) => {
             AV.newFfmpeg(av).ffprobe((err, metadata) => {
               if (err) return reject(err);
-              return resolve(metadata);
+              resolve(metadata);
             });
           })
       )
@@ -78,41 +73,10 @@ abstract class AV extends Core {
   /**
    * Raw version of stream
    */
-  static async stream<T>(readable: Readable, callback: AVCallback<T>) {
-    const command = AV.newFfmpeg(readable);
-    return callback(command);
-  }
-
-  /**
-   * Raw version of buffer
-   */
-  static async buffer<T>(buffer: Buffer, callback: AVCallback<T>) {
-    const tmpFile = await new TmpFile(buffer).init();
-    const command = AV.newFfmpeg(tmpFile.paths[0]!);
-    const result = await callback(command);
-    await tmpFile.clean();
-    return result;
-  }
-
-  /**
-   * Convert Readable to buffer
-   */
-  static async toBuffer<T extends Readable>(readable: T): Promise<Buffer>;
-  static async toBuffer<T extends Readable[]>(readable: T): Promise<Buffer[]>;
-  static async toBuffer<T extends Readable | Readable[]>(readable: T) {
-    if (!Array.isArray(readable)) return readable2buffer(readable);
-    return Promise.all(readable.map((rd) => AV.toBuffer(rd)));
-  }
-
-  /**
-   * Convert Buffer to Readable
-   */
-  static toReadable<T extends Buffer>(readers: T): Readable;
-  static toReadable<T extends Buffer[]>(readers: T): Readable[];
-  static toReadable<T extends Buffer | Buffer[]>(readers: T) {
-    if (!Array.isArray(readers)) return buffer2readable(readers);
-    return readers.map((reader) => AV.toReadable(reader));
-  }
+  // static async stream<T>(readable: Readable, callback: AVCallback<T>) {
+  //   const command = AV.newFfmpeg(readable);
+  //   return callback(command);
+  // }
 
   /**
    * new Instance of ffmpeg
@@ -151,12 +115,12 @@ export class Video extends AV {
     this.videos = filteredVideos;
   }
 
-  async appendVideos(...videos: Buffer[]) {
+  override async append(...videos: Buffer[]) {
     const filteredVideos = await Video.filter(...videos);
     this.videos.push(...filteredVideos);
   }
 
-  extendVideos(...videos: Video[]) {
+  override extend(...videos: Video[]) {
     videos.forEach((video) => {
       this.videos.push(...video.getVideos());
     });
@@ -171,24 +135,18 @@ export class Video extends AV {
     return this.videos.length;
   }
 
-  override async check() {
-    const videos = await Video.filter(...this.videos);
-    if (videos.length === 0)
-      throw new TypeError(`${Video.name}: Files must be of type video`);
-  }
-
   static async filter(...videos: Buffer[]) {
     return new FilterFile(...videos).video();
   }
 
-  static async fromFile(path: string) {
+  static async fromFile(...path: string[]) {
     const buffer = await Core.loadFile(path);
-    return new Video(buffer);
+    return new Video(...buffer);
   }
 
-  static async fromUrl<T extends string | URL>(url: T) {
+  static async fromUrl<T extends string[] | URL[]>(...url: T) {
     const buffer = await Core.loadUrl(url);
-    return new Video(buffer);
+    return new Video(...buffer);
   }
 }
 
@@ -214,9 +172,15 @@ export class Audio extends AV {
     this.audios = filteredVideos;
   }
 
-  async appendAudios() {
-    const filteredAudios = await Audio.filter(...this.audios);
+  override async append(...audios: Buffer[]) {
+    const filteredAudios = await Audio.filter(...audios);
     this.audios.push(...filteredAudios);
+  }
+
+  override extend(...audios: Audio[]) {
+    audios.forEach((audio) => {
+      this.audios.push(...audio.getAudios());
+    });
   }
 
   override clone() {
@@ -228,23 +192,17 @@ export class Audio extends AV {
     return this.audios.length;
   }
 
-  override async check() {
-    const audios = await Audio.filter(...this.audios);
-    if (audios.length === 0)
-      throw new TypeError(`${Audio.name}: Files must be of type audio`);
-  }
-
   static filter(...audios: Buffer[]) {
     return new FilterFile(...audios).audio();
   }
 
-  static async fromFile(path: string) {
+  static async fromFile(...path: string[]) {
     const buffer = await Core.loadFile(path);
-    return new Audio(buffer);
+    return new Audio(...buffer);
   }
 
-  static async fromUrl<T extends string | URL>(url: T) {
+  static async fromUrl<T extends string[] | URL[]>(...url: T) {
     const buffer = await Core.loadUrl(url);
-    return new Audio(buffer);
+    return new Audio(...buffer);
   }
 }

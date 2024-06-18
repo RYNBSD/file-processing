@@ -1,7 +1,6 @@
 import type { InputFiles } from "../types/index.js";
 import { readFile } from "node:fs/promises";
-import { Readable, Stream } from "node:stream";
-import { stream2buffer } from "@ryn-bsd/from-buffer-to";
+import { isReadable, isStream, stream2buffer } from "@ryn-bsd/from-buffer-to";
 import {
   isArrayBuffer,
   isSharedArrayBuffer,
@@ -32,20 +31,6 @@ export function isArrayOfString(array: unknown[]): array is string[] {
   if (!Array.isArray(array)) return false;
   for (const arr of array) if (typeof arr !== "string") return false;
   return true;
-}
-
-export function isStream(value: unknown): value is Stream {
-  return (
-    value instanceof Stream ||
-    (typeof value === "function" && value.name === Stream.name)
-  );
-}
-
-export function isReadable(value: unknown): value is Readable {
-  return (
-    value instanceof Readable ||
-    (typeof value === "function" && value.name === Readable.name)
-  );
 }
 
 export function isUrl(value: unknown): value is URL {

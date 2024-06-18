@@ -3,14 +3,27 @@ import PDF from "../../build/core/pdf.js";
 import fs from "node:fs";
 
 describe("PDF", () => {
-  it("check", async () => {
-    const pdf = await PDF.fromFile("asset/pdf.pdf");
-    await pdf.check();
-    expect(true).toBe(true);
+  it("set/get/append/extend/clone", async () => {
+    const pdf = new PDF(Buffer.alloc(0));
+    expect(pdf.getPdfs()).toHaveLength(1);
 
-    await expect(async () => {
-      await new PDF(Buffer.alloc(1)).check();
-    }).rejects.toThrow();
+    const buffer = await PDF.loadFile("asset/pdf.pdf");
+    await pdf.append(Buffer.alloc(0), buffer);
+    expect(pdf.getPdfs()).toHaveLength(2);
+
+    await pdf.setPdfs((pdf) => pdf.toString());
+    expect(pdf.getPdfs()).toHaveLength(0);
+
+    pdf.extend(new PDF(Buffer.alloc(0)));
+    expect(pdf.getPdfs()).toHaveLength(1);
+
+    expect(pdf.clone()).toBeInstanceOf(PDF);
+  });
+
+  it("filter", async () => {
+    const pdf = new PDF(Buffer.alloc(0));
+    const length = await pdf.filter();
+    expect(length).toBe(0);
   });
 
   it("metadata", async () => {
@@ -41,35 +54,37 @@ describe("PDF", () => {
     const file = await PDF.fromFile("asset/pdf.pdf");
     expect(file).toBeInstanceOf(PDF);
 
-    const url = await PDF.fromFile(
-      "https://cse.unl.edu/~cbourke/ComputerScienceOne.pdf"
-    );
-    expect(url).toBeInstanceOf(PDF);
-
     await expect(async () => {
-      await PDF.fromFile("");
+      await PDF.fromFile("https://cse.unl.edu/~cbourke/ComputerScienceOne.pdf");
     }).rejects.toThrow();
   });
 
-  // it("fromUrl", async () => {
-  //   const pdf = await PDF.fromUrl("https://www.w3schools.com/");
-  //   expect(pdf).toBeInstanceOf(PDF);
-  // });
+  it("(static) fromUrl", async () => {
+    const pdf = await PDF.fromUrl(
+      "https://cse.unl.edu/~cbourke/ComputerScienceOne.pdf"
+    );
+    expect(pdf).toBeInstanceOf(PDF);
 
-  // it("fromHtml", async () => {
-  //   const pdf = await PDF.fromHtml("<h1>Hello world</h1>", "A4");
-  //   expect(pdf).toBeInstanceOf(PDF);
-  // });
+    await expect(async () => {
+      await PDF.fromUrl("asset/pdf.pdf");
+    }).rejects.toThrow();
+  });
 
   it("(static) save/toBuffer/load", async () => {
-    const file = await fs.promises.readFile("asset/pdf.pdf");
-    const pdf = await PDF.load(file.buffer);
+    const pdf = await PDF.fromFile(
+      "asset/pdf.pdf",
+      "asset/pdf.pdf",
+      "asset/pdf.pdf"
+    );
+    const documents = await Promise.all(pdf.getPdfs().map((b) => PDF.load(b)));
 
-    const save = await PDF.save(pdf);
-    expect(save).toBeInstanceOf(Uint8Array);
+    const save = await PDF.save(documents);
+    expect(save).toHaveLength(3);
+    expect(save[0]).toBeInstanceOf(Uint8Array);
 
     const buffer = await PDF.toBuffer(save);
-    expect(buffer).toBeInstanceOf(Buffer);
+    expect(buffer).toHaveLength(3);
+    expect(buffer[0]).toBeInstanceOf(Buffer);
   });
 
   it("create", async () => {
@@ -78,9 +93,15 @@ describe("PDF", () => {
   });
 
   it("(static) document", async () => {
-    const pdf = PDF.document();
-    const read = await fs.promises.readFile("asset/pdf.pdf");
-    const document = await pdf.load(read.buffer);
-    expect(document).toBeInstanceOf(PDFDocument);
+    const pdf = await PDF.fromFile(
+      "asset/pdf.pdf",
+      "asset/pdf.pdf",
+      "asset/pdf.pdf"
+    );
+    const documents = await Promise.all(
+      pdf.getPdfs().map((b) => PDF.document().load(b))
+    );
+    expect(documents).toHaveLength(3);
+    expect(documents[0]).toBeInstanceOf(PDFDocument);
   });
 });

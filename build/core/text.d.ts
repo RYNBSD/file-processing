@@ -9,11 +9,10 @@ export default class Text extends Core {
     constructor(...texts: Buffer[]);
     getTexts(): Buffer[];
     setTexts<T>(callback: TextSetCallback<T>): Promise<void>;
-    appendTexts(...texts: Buffer[]): Promise<void>;
-    extendTexts(...texts: Text[]): void;
+    append(...texts: Buffer[]): Promise<void>;
+    extend(...texts: Text[]): void;
     clone(): Text;
     filter(): Promise<number>;
-    check(): Promise<void>;
     metadata(): Promise<{
         size: number;
     }[]>;
@@ -21,8 +20,8 @@ export default class Text extends Core {
     decompress<T extends TextDecompressionMethods>(method: T, options?: TextDecompressionOptions<T>): Promise<Buffer[]>;
     custom<T>(callback: TextCustomCallback<T>): Promise<Awaited<T>[]>;
     static filter(...texts: Buffer[]): Promise<Buffer[]>;
-    static fromFile(path: string): Promise<Text>;
-    static fromUrl<T extends string | URL>(url: T): Promise<Text>;
+    static fromFile(...path: string[]): Promise<Text>;
+    static fromUrl<T extends string[] | URL[]>(...url: T): Promise<Text>;
     static gzipAsync(text: Buffer, options?: GzipOptions): Promise<Buffer>;
     static deflateAsync(text: Buffer, options?: DeflateOptions): Promise<Buffer>;
     static deflateRawAsync(text: Buffer, options?: DeflateRawOptions): Promise<Buffer>;

@@ -8,7 +8,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 import ffmpeg from "fluent-ffmpeg";
-import { buffer2readable, readable2buffer } from "@ryn-bsd/from-buffer-to";
 import { path as ffmpegPath } from "@ffmpeg-installer/ffmpeg";
 import { path as ffprobePath } from "@ffprobe-installer/ffprobe";
 import path from "node:path";
@@ -27,7 +26,7 @@ class AV extends Core {
                 AV.newFfmpeg(av).ffprobe((err, metadata) => {
                     if (err)
                         return reject(err);
-                    return resolve(metadata);
+                    resolve(metadata);
                 });
             })));
             yield tmpFile.clean();
@@ -67,36 +66,10 @@ class AV extends Core {
     /**
      * Raw version of stream
      */
-    static stream(readable, callback) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const command = AV.newFfmpeg(readable);
-            return callback(command);
-        });
-    }
-    /**
-     * Raw version of buffer
-     */
-    static buffer(buffer, callback) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const tmpFile = yield new TmpFile(buffer).init();
-            const command = AV.newFfmpeg(tmpFile.paths[0]);
-            const result = yield callback(command);
-            yield tmpFile.clean();
-            return result;
-        });
-    }
-    static toBuffer(readable) {
-        return __awaiter(this, void 0, void 0, function* () {
-            if (!Array.isArray(readable))
-                return readable2buffer(readable);
-            return Promise.all(readable.map((rd) => AV.toBuffer(rd)));
-        });
-    }
-    static toReadable(readers) {
-        if (!Array.isArray(readers))
-            return buffer2readable(readers);
-        return readers.map((reader) => AV.toReadable(reader));
-    }
+    // static async stream<T>(readable: Readable, callback: AVCallback<T>) {
+    //   const command = AV.newFfmpeg(readable);
+    //   return callback(command);
+    // }
     /**
      * new Instance of ffmpeg
      */
@@ -123,13 +96,13 @@ export class Video extends AV {
             this.videos = filteredVideos;
         });
     }
-    appendVideos(...videos) {
+    append(...videos) {
         return __awaiter(this, void 0, void 0, function* () {
             const filteredVideos = yield Video.filter(...videos);
             this.videos.push(...filteredVideos);
         });
     }
-    extendVideos(...videos) {
+    extend(...videos) {
         videos.forEach((video) => {
             this.videos.push(...video.getVideos());
         });
@@ -143,28 +116,21 @@ export class Video extends AV {
             return this.videos.length;
         });
     }
-    check() {
-        return __awaiter(this, void 0, void 0, function* () {
-            const videos = yield Video.filter(...this.videos);
-            if (videos.length === 0)
-                throw new TypeError(`${Video.name}: Files must be of type video`);
-        });
-    }
     static filter(...videos) {
         return __awaiter(this, void 0, void 0, function* () {
             return new FilterFile(...videos).video();
         });
     }
-    static fromFile(path) {
+    static fromFile(...path) {
         return __awaiter(this, void 0, void 0, function* () {
             const buffer = yield Core.loadFile(path);
-            return new Video(buffer);
+            return new Video(...buffer);
         });
     }
-    static fromUrl(url) {
+    static fromUrl(...url) {
         return __awaiter(this, void 0, void 0, function* () {
             const buffer = yield Core.loadUrl(url);
-            return new Video(buffer);
+            return new Video(...buffer);
         });
     }
 }
@@ -183,10 +149,15 @@ export class Audio extends AV {
             this.audios = filteredVideos;
         });
     }
-    appendAudios() {
+    append(...audios) {
         return __awaiter(this, void 0, void 0, function* () {
-            const filteredAudios = yield Audio.filter(...this.audios);
+            const filteredAudios = yield Audio.filter(...audios);
             this.audios.push(...filteredAudios);
+        });
+    }
+    extend(...audios) {
+        audios.forEach((audio) => {
+            this.audios.push(...audio.getAudios());
         });
     }
     clone() {
@@ -198,26 +169,19 @@ export class Audio extends AV {
             return this.audios.length;
         });
     }
-    check() {
-        return __awaiter(this, void 0, void 0, function* () {
-            const audios = yield Audio.filter(...this.audios);
-            if (audios.length === 0)
-                throw new TypeError(`${Audio.name}: Files must be of type audio`);
-        });
-    }
     static filter(...audios) {
         return new FilterFile(...audios).audio();
     }
-    static fromFile(path) {
+    static fromFile(...path) {
         return __awaiter(this, void 0, void 0, function* () {
             const buffer = yield Core.loadFile(path);
-            return new Audio(buffer);
+            return new Audio(...buffer);
         });
     }
-    static fromUrl(url) {
+    static fromUrl(...url) {
         return __awaiter(this, void 0, void 0, function* () {
             const buffer = yield Core.loadUrl(url);
-            return new Audio(buffer);
+            return new Audio(...buffer);
         });
     }
 }

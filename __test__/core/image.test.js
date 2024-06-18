@@ -1,3 +1,4 @@
+import { faker } from "@faker-js/faker";
 import Image from "../../build/core/image.js";
 import { imageBuffer } from "../index.js";
 
@@ -7,27 +8,23 @@ describe("Image", () => {
     expect(image.getImages()).toHaveLength(1);
 
     const buffer = await imageBuffer();
-    await image.appendImages(Buffer.alloc(0), buffer);
+    await image.append(Buffer.alloc(0), buffer);
     expect(image.getImages()).toHaveLength(2);
 
     await image.setImages((image) => image.toString());
     expect(image.getImages()).toHaveLength(0);
 
-    image.extendImages(new Image(Buffer.alloc(0)));
+    image.extend(new Image(Buffer.alloc(0)));
     expect(image.getImages()).toHaveLength(1);
 
     expect(image.clone()).toBeInstanceOf(Image);
   });
 
-  it("check", async () => {
+  it("filter", async () => {
     const buffer = await imageBuffer();
-
-    await new Image(buffer).check();
-    expect(true).toBe(true);
-
-    await expect(async () => {
-      await new Image(Buffer.alloc(1)).check();
-    }).rejects.toThrow(TypeError);
+    const image = new Image(buffer, Buffer.alloc(0));
+    const length = await image.filter();
+    expect(length).toBe(1);
   });
 
   it("metadata", async () => {
@@ -63,5 +60,23 @@ describe("Image", () => {
         .toBuffer();
     });
     expect(custom).toHaveLength(1);
+  });
+
+  it("(static) fromFile", async () => {
+    const image = await Image.fromFile("asset/rynbsd.png");
+    expect(image).toBeInstanceOf(Image);
+
+    await expect(async () => {
+      await Image.fromFile(faker.image.avatar());
+    }).rejects.toThrow();
+  });
+
+  it("(static) fromUrl", async () => {
+    const image = await Image.fromUrl(faker.image.avatar());
+    expect(image).toBeInstanceOf(Image);
+
+    await expect(async () => {
+      await Image.fromUrl("asset/rynbsd.png");
+    }).rejects.toThrow();
   });
 });

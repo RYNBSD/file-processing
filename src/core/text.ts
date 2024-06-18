@@ -43,12 +43,12 @@ export default class Text extends Core {
     this.texts = filteredTexts;
   }
 
-  async appendTexts(...texts: Buffer[]) {
+  override async append(...texts: Buffer[]) {
     const filteredTexts = await Text.filter(...texts);
     this.texts.push(...filteredTexts);
   }
 
-  extendTexts(...texts: Text[]) {
+  override extend(...texts: Text[]) {
     texts.forEach((text) => {
       this.texts.push(...text.getTexts());
     });
@@ -61,12 +61,6 @@ export default class Text extends Core {
   override async filter() {
     this.texts = await Text.filter(...this.texts);
     return this.texts.length;
-  }
-
-  override async check() {
-    const texts = await Text.filter(...this.texts);
-    if (texts.length === 0)
-      throw new TypeError(`${Text.name}: Files must be of type text`);
   }
 
   override async metadata() {
@@ -129,14 +123,14 @@ export default class Text extends Core {
     return new FilterFile(...texts).text();
   }
 
-  static async fromFile(path: string) {
+  static async fromFile(...path: string[]) {
     const buffer = await Core.loadFile(path);
-    return new Text(buffer);
+    return new Text(...buffer);
   }
 
-  static async fromUrl<T extends string | URL>(url: T) {
+  static async fromUrl<T extends string[] | URL[]>(...url: T) {
     const buffer = await Core.loadUrl(url);
-    return new Text(buffer);
+    return new Text(...buffer);
   }
 
   static async gzipAsync(text: Buffer, options: GzipOptions = {}) {

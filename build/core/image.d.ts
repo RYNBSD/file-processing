@@ -7,11 +7,10 @@ export default class Image extends Core {
     constructor(...images: Buffer[]);
     getImages(): Buffer[];
     setImages<T>(callback: ImageSetCallback<T>): Promise<void>;
-    appendImages(...images: Buffer[]): Promise<void>;
-    extendImages(...images: Image[]): void;
+    append(...images: Buffer[]): Promise<void>;
+    extend(...images: Image[]): void;
     clone(): Image;
     filter(): Promise<number>;
-    check(): Promise<void>;
     metadata(): Promise<sharp.Metadata[]>;
     /**
      * Convert image to another format
@@ -25,8 +24,8 @@ export default class Image extends Core {
      */
     custom<T>(callback: ImageCustomCallback<T>): Promise<Awaited<T>[]>;
     static filter(...images: Buffer[]): Promise<Buffer[]>;
-    static fromFile(path: string): Promise<Image>;
-    static fromUrl<T extends string | URL>(url: T): Promise<Image>;
+    static fromFile(...path: string[]): Promise<Image>;
+    static fromUrl<T extends string[] | URL[]>(...url: T): Promise<Image>;
     /**
      * new Instance of sharp
      */

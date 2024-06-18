@@ -29,12 +29,12 @@ export default class Image extends Core {
     this.images = filteredImages;
   }
 
-  async appendImages(...images: Buffer[]) {
+  override async append(...images: Buffer[]) {
     const filteredImages = await Image.filter(...images);
     this.images.push(...filteredImages);
   }
 
-  extendImages(...images: Image[]) {
+  override extend(...images: Image[]) {
     images.forEach((image) => {
       this.images.push(...image.getImages());
     });
@@ -47,12 +47,6 @@ export default class Image extends Core {
   override async filter() {
     this.images = await Image.filter(...this.images);
     return this.images.length;
-  }
-
-  override async check() {
-    const images = await Image.filter(...this.images);
-    if (images.length === 0)
-      throw new TypeError(`${Image.name}: Files must be of type image`);
   }
 
   override async metadata() {
@@ -87,14 +81,14 @@ export default class Image extends Core {
     return new FilterFile(...images).image();
   }
 
-  static async fromFile(path: string) {
+  static async fromFile(...path: string[]) {
     const buffer = await Core.loadFile(path);
-    return new Image(buffer);
+    return new Image(...buffer);
   }
 
-  static async fromUrl<T extends string | URL>(url: T) {
+  static async fromUrl<T extends string[] | URL[]>(...url: T) {
     const buffer = await Core.loadUrl(url);
-    return new Image(buffer);
+    return new Image(...buffer);
   }
 
   /**

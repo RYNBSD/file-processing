@@ -1,6 +1,6 @@
 /// <reference types="node" resolution-mode="require"/>
 /// <reference types="node" resolution-mode="require"/>
-import type { AVCustomCallback, AVCallback, AVSetCallback } from "../types/index.js";
+import type { AVCustomCallback, AVSetCallback } from "../types/index.js";
 import type { Readable } from "node:stream";
 import ffmpeg from "fluent-ffmpeg";
 import Core from "./core.js";
@@ -16,21 +16,6 @@ declare abstract class AV extends Core {
     /**
      * Raw version of stream
      */
-    static stream<T>(readable: Readable, callback: AVCallback<T>): Promise<T>;
-    /**
-     * Raw version of buffer
-     */
-    static buffer<T>(buffer: Buffer, callback: AVCallback<T>): Promise<T>;
-    /**
-     * Convert Readable to buffer
-     */
-    static toBuffer<T extends Readable>(readable: T): Promise<Buffer>;
-    static toBuffer<T extends Readable[]>(readable: T): Promise<Buffer[]>;
-    /**
-     * Convert Buffer to Readable
-     */
-    static toReadable<T extends Buffer>(readers: T): Readable;
-    static toReadable<T extends Buffer[]>(readers: T): Readable[];
     /**
      * new Instance of ffmpeg
      */
@@ -41,27 +26,26 @@ export declare class Video extends AV {
     constructor(...videos: Buffer[]);
     getVideos(): Buffer[];
     setVideos<T>(callback: AVSetCallback<T>): Promise<void>;
-    appendVideos(...videos: Buffer[]): Promise<void>;
-    extendVideos(...videos: Video[]): void;
+    append(...videos: Buffer[]): Promise<void>;
+    extend(...videos: Video[]): void;
     clone(): Video;
     filter(): Promise<number>;
-    check(): Promise<void>;
     static filter(...videos: Buffer[]): Promise<Buffer[]>;
-    static fromFile(path: string): Promise<Video>;
-    static fromUrl<T extends string | URL>(url: T): Promise<Video>;
+    static fromFile(...path: string[]): Promise<Video>;
+    static fromUrl<T extends string[] | URL[]>(...url: T): Promise<Video>;
 }
 export declare class Audio extends AV {
     private audios;
     constructor(...audios: Buffer[]);
     getAudios(): Buffer[];
     setAudios<T>(callback: AVSetCallback<T>): Promise<void>;
-    appendAudios(): Promise<void>;
+    append(...audios: Buffer[]): Promise<void>;
+    extend(...audios: Audio[]): void;
     clone(): Audio;
     filter(): Promise<number>;
-    check(): Promise<void>;
     static filter(...audios: Buffer[]): Promise<Buffer[]>;
-    static fromFile(path: string): Promise<Audio>;
-    static fromUrl<T extends string | URL>(url: T): Promise<Audio>;
+    static fromFile(...path: string[]): Promise<Audio>;
+    static fromUrl<T extends string[] | URL[]>(...url: T): Promise<Audio>;
 }
 export {};
 //# sourceMappingURL=av.d.ts.map

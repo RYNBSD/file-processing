@@ -28,13 +28,13 @@ export default class Text extends Core {
             this.texts = filteredTexts;
         });
     }
-    appendTexts(...texts) {
+    append(...texts) {
         return __awaiter(this, void 0, void 0, function* () {
             const filteredTexts = yield Text.filter(...texts);
             this.texts.push(...filteredTexts);
         });
     }
-    extendTexts(...texts) {
+    extend(...texts) {
         texts.forEach((text) => {
             this.texts.push(...text.getTexts());
         });
@@ -46,13 +46,6 @@ export default class Text extends Core {
         return __awaiter(this, void 0, void 0, function* () {
             this.texts = yield Text.filter(...this.texts);
             return this.texts.length;
-        });
-    }
-    check() {
-        return __awaiter(this, void 0, void 0, function* () {
-            const texts = yield Text.filter(...this.texts);
-            if (texts.length === 0)
-                throw new TypeError(`${Text.name}: Files must be of type text`);
         });
     }
     metadata() {
@@ -110,16 +103,16 @@ export default class Text extends Core {
             return new FilterFile(...texts).text();
         });
     }
-    static fromFile(path) {
+    static fromFile(...path) {
         return __awaiter(this, void 0, void 0, function* () {
             const buffer = yield Core.loadFile(path);
-            return new Text(buffer);
+            return new Text(...buffer);
         });
     }
-    static fromUrl(url) {
+    static fromUrl(...url) {
         return __awaiter(this, void 0, void 0, function* () {
             const buffer = yield Core.loadUrl(url);
-            return new Text(buffer);
+            return new Text(...buffer);
         });
     }
     static gzipAsync(text_1) {

@@ -9,7 +9,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 import { PDFDocument } from "pdf-lib";
 // import puppeteer from "puppeteer";
-import { uint8array2buffer } from "@ryn-bsd/from-buffer-to";
 import { FilterFile } from "../helper/index.js";
 import Core from "./core.js";
 export default class PDF extends Core {
@@ -27,13 +26,13 @@ export default class PDF extends Core {
             this.pdfs = filteredPdfs;
         });
     }
-    appendPdfs(...pdfs) {
+    append(...pdfs) {
         return __awaiter(this, void 0, void 0, function* () {
             const filteredPdfs = yield PDF.filter(...pdfs);
             this.pdfs.push(...filteredPdfs);
         });
     }
-    extendPdfs(...pdfs) {
+    extend(...pdfs) {
         pdfs.forEach((pdf) => {
             this.pdfs.push(...pdf.getPdfs());
         });
@@ -45,13 +44,6 @@ export default class PDF extends Core {
         return __awaiter(this, void 0, void 0, function* () {
             this.pdfs = yield PDF.filter(...this.pdfs);
             return this.pdfs.length;
-        });
-    }
-    check() {
-        return __awaiter(this, void 0, void 0, function* () {
-            const pdfs = yield PDF.filter(...this.pdfs);
-            if (pdfs.length === 0)
-                throw new TypeError(`${PDF.name}: Files must be of type pdf`);
         });
     }
     getDocuments(options) {
@@ -94,16 +86,16 @@ export default class PDF extends Core {
             return Promise.all(documents.map((document, index) => callback(document, index)));
         });
     }
-    static fromFile(path) {
+    static fromFile(...path) {
         return __awaiter(this, void 0, void 0, function* () {
             const buffer = yield Core.loadFile(path);
-            return new PDF(buffer);
+            return new PDF(...buffer);
         });
     }
-    static fromUrl(url) {
+    static fromUrl(...url) {
         return __awaiter(this, void 0, void 0, function* () {
             const buffer = yield Core.loadUrl(url);
-            return new PDF(buffer);
+            return new PDF(...buffer);
         });
     }
     /**
@@ -148,13 +140,6 @@ export default class PDF extends Core {
             if (!Array.isArray(pdfs))
                 return pdfs.save(options);
             return Promise.all(pdfs.map((pdf) => PDF.save(pdf, options)));
-        });
-    }
-    static toBuffer(pdfs, options) {
-        return __awaiter(this, void 0, void 0, function* () {
-            if (!Array.isArray(pdfs))
-                return uint8array2buffer(pdfs);
-            return Promise.all(pdfs.map((pdf) => PDF.toBuffer(pdf, options)));
         });
     }
     static load(pdf, options) {

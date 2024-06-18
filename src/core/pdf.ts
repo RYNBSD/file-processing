@@ -5,7 +5,6 @@ import type {
 } from "../types/index.js";
 import { PDFDocument } from "pdf-lib";
 // import puppeteer from "puppeteer";
-import { uint8array2buffer } from "@ryn-bsd/from-buffer-to";
 import { FilterFile } from "../helper/index.js";
 import Core from "./core.js";
 
@@ -29,12 +28,12 @@ export default class PDF extends Core {
     this.pdfs = filteredPdfs;
   }
 
-  async appendPdfs(...pdfs: Buffer[]) {
+  override async append(...pdfs: Buffer[]) {
     const filteredPdfs = await PDF.filter(...pdfs);
     this.pdfs.push(...filteredPdfs);
   }
 
-  extendPdfs(...pdfs: PDF[]) {
+  override extend(...pdfs: PDF[]) {
     pdfs.forEach((pdf) => {
       this.pdfs.push(...pdf.getPdfs());
     });
@@ -47,12 +46,6 @@ export default class PDF extends Core {
   override async filter() {
     this.pdfs = await PDF.filter(...this.pdfs);
     return this.pdfs.length;
-  }
-
-  override async check() {
-    const pdfs = await PDF.filter(...this.pdfs);
-    if (pdfs.length === 0)
-      throw new TypeError(`${PDF.name}: Files must be of type pdf`);
   }
 
   async getDocuments(options?: LoadOptions) {
@@ -95,14 +88,14 @@ export default class PDF extends Core {
     );
   }
 
-  static async fromFile(path: string) {
+  static async fromFile(...path: string[]) {
     const buffer = await Core.loadFile(path);
-    return new PDF(buffer);
+    return new PDF(...buffer);
   }
 
-  static async fromUrl<T extends string | URL>(url: T) {
+  static async fromUrl<T extends string[] | URL[]>(...url: T) {
     const buffer = await Core.loadUrl(url);
-    return new PDF(buffer);
+    return new PDF(...buffer);
   }
 
   /**
@@ -163,25 +156,6 @@ export default class PDF extends Core {
   ) {
     if (!Array.isArray(pdfs)) return pdfs.save(options);
     return Promise.all(pdfs.map((pdf) => PDF.save(pdf, options)));
-  }
-
-  /**
-   * Convert Uint8Array to Buffer
-   */
-  static async toBuffer<T extends Uint8Array>(
-    pdfs: T,
-    options?: SaveOptions
-  ): Promise<Buffer>;
-  static async toBuffer<T extends Uint8Array>(
-    pdfs: T[],
-    options?: SaveOptions
-  ): Promise<Buffer[]>;
-  static async toBuffer<T extends Uint8Array | Uint8Array[]>(
-    pdfs: T,
-    options?: SaveOptions
-  ) {
-    if (!Array.isArray(pdfs)) return uint8array2buffer(pdfs);
-    return Promise.all(pdfs.map((pdf) => PDF.toBuffer(pdf, options)));
   }
 
   static async load<T extends string | Uint8Array | ArrayBuffer>(

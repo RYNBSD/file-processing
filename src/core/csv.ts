@@ -23,12 +23,12 @@ export default class CSV extends Core {
     this.csvs = filteredCsvs;
   }
 
-  async appendCsvs(...csvs: Buffer[]) {
+  override async append(...csvs: Buffer[]) {
     const filteredCsvs = await CSV.filter(...csvs);
     this.csvs.push(...filteredCsvs);
   }
 
-  extendCsvs(...csvs: CSV[]) {
+  override extend(...csvs: CSV[]) {
     csvs.forEach((csv) => {
       this.csvs.push(...csv.getCsvs());
     });
@@ -43,20 +43,16 @@ export default class CSV extends Core {
     return this.csvs.length;
   }
 
-  override async check() {
-    const csvs = await CSV.filter(...this.csvs);
-    if (csvs.length === 0)
-      throw new TypeError(`${CSV.name}: Files must be of type csv`);
-  }
-
   override async metadata() {
     return Promise.all(
       this.csvs.map(async (csv) => {
         const rows = csv.toString().split(/\r?\n/);
+        const columns = rows.reduce((prev, row) => prev + row.split(",").length, 0);
+
         return {
           size: csv.length,
           rows: rows.length,
-          columns: rows?.[0]?.split(",")?.length ?? 0,
+          columns: Math.round(columns / rows.length),
         };
       })
     );
@@ -84,14 +80,14 @@ export default class CSV extends Core {
     return new FilterFile(...csvs).custom("csv");
   }
 
-  static async fromFile(path: string) {
+  static async fromFile(...path: string[]) {
     const buffer = await Core.loadFile(path);
-    return new CSV(buffer);
+    return new CSV(...buffer);
   }
 
-  static async fromUrl<T extends string | URL>(url: T) {
+  static async fromUrl<T extends string[] | URL[]>(...url: T) {
     const buffer = await Core.loadUrl(url);
-    return new CSV(buffer);
+    return new CSV(...buffer);
   }
 
   static async generate<P = any>(options: generator.Options = {}) {

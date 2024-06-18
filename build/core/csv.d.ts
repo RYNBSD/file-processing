@@ -7,11 +7,10 @@ export default class CSV extends Core {
     constructor(...csvs: Buffer[]);
     getCsvs(): Buffer[];
     setCsvs<T>(callback: CSVSetCallback<T>): Promise<void>;
-    appendCsvs(...csvs: Buffer[]): Promise<void>;
-    extendCsvs(...csvs: CSV[]): void;
+    append(...csvs: Buffer[]): Promise<void>;
+    extend(...csvs: CSV[]): void;
     clone(): CSV;
     filter(): Promise<number>;
-    check(): Promise<void>;
     metadata(): Promise<{
         size: number;
         rows: number;
@@ -21,8 +20,8 @@ export default class CSV extends Core {
     transform<T, U>(handler: transformer.Handler<T, U>, options?: transformer.Options): Promise<any[]>;
     custom<T>(callback: CSVCustomCallback<T>): Promise<Awaited<T>[]>;
     static filter(...csvs: Buffer[]): Promise<Buffer[]>;
-    static fromFile(path: string): Promise<CSV>;
-    static fromUrl<T extends string | URL>(url: T): Promise<CSV>;
+    static fromFile(...path: string[]): Promise<CSV>;
+    static fromUrl<T extends string[] | URL[]>(...url: T): Promise<CSV>;
     static generate<P = any>(options?: generator.Options): Promise<P>;
     static parse<T extends Buffer | string, P = any>(input: T, options?: parser.Options): Promise<P>;
     static transform<T, U, P = any>(records: T[], handler: transformer.Handler<T, U>, options?: transformer.Options): Promise<P>;

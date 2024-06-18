@@ -25,13 +25,13 @@ export default class Image extends Core {
             this.images = filteredImages;
         });
     }
-    appendImages(...images) {
+    append(...images) {
         return __awaiter(this, void 0, void 0, function* () {
             const filteredImages = yield Image.filter(...images);
             this.images.push(...filteredImages);
         });
     }
-    extendImages(...images) {
+    extend(...images) {
         images.forEach((image) => {
             this.images.push(...image.getImages());
         });
@@ -43,13 +43,6 @@ export default class Image extends Core {
         return __awaiter(this, void 0, void 0, function* () {
             this.images = yield Image.filter(...this.images);
             return this.images.length;
-        });
-    }
-    check() {
-        return __awaiter(this, void 0, void 0, function* () {
-            const images = yield Image.filter(...this.images);
-            if (images.length === 0)
-                throw new TypeError(`${Image.name}: Files must be of type image`);
         });
     }
     metadata() {
@@ -80,16 +73,16 @@ export default class Image extends Core {
             return new FilterFile(...images).image();
         });
     }
-    static fromFile(path) {
+    static fromFile(...path) {
         return __awaiter(this, void 0, void 0, function* () {
             const buffer = yield Core.loadFile(path);
-            return new Image(buffer);
+            return new Image(...buffer);
         });
     }
-    static fromUrl(url) {
+    static fromUrl(...url) {
         return __awaiter(this, void 0, void 0, function* () {
             const buffer = yield Core.loadUrl(url);
-            return new Image(buffer);
+            return new Image(...buffer);
         });
     }
     /**
