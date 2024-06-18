@@ -1,7 +1,7 @@
 {
   "name": "@ryn-bsd/file-processing",
-  "version": "0.0.1",
-  "description": "",
+  "version": "0.5.0",
+  "description": "file processing made easy",
   "main": "./build/index.js",
   "scripts": {
     "test": "yarn compile && cross-env NODE_OPTIONS=\"$NODE_OPTIONS --experimental-vm-modules\" jest",
@@ -17,7 +17,7 @@
   },
   "types": "./src/types/index.d.ts",
   "keywords": [],
-  "author": "",
+  "author": "Rayen Boussayed <rynbsd04@gmail.com> (https://github.com/RYNBSD)",
   "license": "ISC",
   "dependencies": {
     "@ffmpeg-installer/ffmpeg": "^1.1.0",
@@ -44,5 +44,13 @@
     "jest": "^29.7.0",
     "ts-jest": "^29.1.4",
     "typescript": "^5.4.5"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/RYNBSD/file-processing.git"
+  },
+  "bugs": {
+    "url": "https://github.com/RYNBSD/file-processing/issues"
+  },
+  "homepage": "https://github.com/RYNBSD/file-processing#readme"
 }

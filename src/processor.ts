@@ -7,27 +7,27 @@ export default class Processor {
     this.files = files;
   }
 
-  async image() {
+  image() {
     return new Image(...this.files);
   }
 
-  async pdf() {
+  pdf() {
     return new PDF(...this.files);
   }
 
-  async csv() {
+  csv() {
     return new CSV(...this.files);
   }
 
-  async text() {
+  text() {
     return new Text(...this.files);
   }
 
-  async video() {
+  video() {
     return new Video(...this.files);
   }
 
-  async audio() {
+  audio() {
     return new Audio(...this.files);
   }
 }
