@@ -1,7 +1,7 @@
 import type { InputFiles } from "../types/index.js";
 import { Mutex } from "async-mutex";
 import isFile from "@ryn-bsd/is-file";
-import { input2buffer } from "./fn.js";
+import Core from "../core/core.js";
 
 /**
  * Easy and fast way to filter bunche of files
@@ -53,23 +53,15 @@ export default class FilterFile {
    * @param me - mime extension
    */
   async custom(me: string) {
-    const buffer = await Promise.all(
-      this.input.map((input) => input2buffer(input))
-    );
-    const filteredBuffer = buffer.filter((buf) =>
-      Buffer.isBuffer(buf)
-    ) as Buffer[];
-    const result = await isFile.isCustom(filteredBuffer, me);
+    const buffer = await Core.toBuffer(this.input)
+    const result = await isFile.isCustom(buffer, me);
     return result
       .filter((file) => file.valid)
       .map((file) => file.value) as Buffer[];
   }
 
   static async filter(...input: InputFiles[]) {
-    const buffer = await Promise.all(input.map((input) => input2buffer(input)));
-    const filteredBuffer = buffer.filter((buf) =>
-      Buffer.isBuffer(buf)
-    ) as Buffer[];
+    const buffer = await Core.toBuffer(input)
 
     const mutexes = {
       applications: new Mutex(),
@@ -92,7 +84,7 @@ export default class FilterFile {
     };
 
     await Promise.all(
-      filteredBuffer.map(async (buffer) => {
+      buffer.map(async (buffer) => {
         if (await isFile.isApplication(buffer)) {
           const release = await mutexes.applications.acquire();
           files.applications.push(buffer);

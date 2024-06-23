@@ -3,3 +3,4 @@ asset
 coverage
 node_modules
 example
+jest.config.js

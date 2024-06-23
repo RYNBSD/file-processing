@@ -1,3 +1,4 @@
+import type { ScreenshotOptions } from "puppeteer";
 import type {
   ImageCustomCallback,
   ImageFormats,
@@ -13,6 +14,10 @@ export default class Image extends Core {
   constructor(...images: Buffer[]) {
     super();
     this.images = images;
+  }
+
+  get length() {
+    return this.images.length;
   }
 
   getImages() {
@@ -46,7 +51,7 @@ export default class Image extends Core {
 
   override async filter() {
     this.images = await Image.filter(...this.images);
-    return this.images.length;
+    return this.length;
   }
 
   override async metadata() {
@@ -81,14 +86,54 @@ export default class Image extends Core {
     return new FilterFile(...images).image();
   }
 
+  /**
+   * Take screenshot from websites
+   */
+  static async screenshot<T extends string>(
+    urls: T,
+    options?: Omit<ScreenshotOptions, "encoding">
+  ): Promise<Buffer>;
+  static async screenshot<T extends string[]>(
+    urls: T,
+    options?: Omit<ScreenshotOptions, "encoding">
+  ): Promise<Buffer[]>;
+  // static async screenshot<T extends string>(
+  //   urls: T,
+  //   options?: ScreenshotOptions & { encoding: "base64" }
+  // ): Promise<string>;
+  // static async screenshot<T extends string[]>(
+  //   urls: T,
+  //   options?: ScreenshotOptions & { encoding: "base64" }
+  // ): Promise<string[]>;
+  static async screenshot<T extends string | string[]>(
+    urls: T,
+    options?: ScreenshotOptions
+  ) {
+    if (Array.isArray(urls))
+      return Promise.all(urls.map((url) => Image.screenshot(url, options)));
+
+    const browser = await Core.initBrowser();
+    const page = await browser.newPage();
+
+    const res = await page.goto(urls, { waitUntil: "networkidle2" });
+    if (res === null || !res.ok())
+      throw new Error(`${Image.name}: Can\'t fetch (${urls})`);
+
+    const buffer = await page.screenshot(options);
+    await browser.close();
+    return buffer;
+  }
+
   static async fromFile(...path: string[]) {
     const buffer = await Core.loadFile(path);
-    return new Image(...buffer);
+    const images = await Image.filter(...buffer);
+    return new Image(...images);
   }
 
   static async fromUrl<T extends string[] | URL[]>(...url: T) {
     const buffer = await Core.loadUrl(url);
-    return new Image(...buffer);
+    const images = await Image.filter(...buffer);
+    return new Image(...images);
   }
 
   /**

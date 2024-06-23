@@ -1,10 +1,12 @@
 /// <reference types="node" resolution-mode="require"/>
-import type { generator, parser, transformer, stringifier } from "csv/sync";
-import type { CSVCustomCallback, CSVSetCallback } from "../types/index.js";
+/// <reference types="node" resolution-mode="require"/>
+import type { CSVCustomCallback, CSVSetCallback, GenerateOptions, ParseOptions, StringifyInput, StringifyOptions, TransformHandler, TransformOptions, TransformSyncHandler } from "../types/index.js";
+import * as csv from "csv";
 import Core from "./core.js";
 export default class CSV extends Core {
     private csvs;
     constructor(...csvs: Buffer[]);
+    get length(): number;
     getCsvs(): Buffer[];
     setCsvs<T>(callback: CSVSetCallback<T>): Promise<void>;
     append(...csvs: Buffer[]): Promise<void>;
@@ -13,18 +15,33 @@ export default class CSV extends Core {
     filter(): Promise<number>;
     metadata(): Promise<{
         size: number;
-        rows: number;
-        columns: number;
+        rows: any;
+        columns: any;
     }[]>;
-    parse(options?: parser.Options): Promise<any[]>;
-    transform<T, U>(handler: transformer.Handler<T, U>, options?: transformer.Options): Promise<any[]>;
+    parseAsync(options?: ParseOptions): Promise<any[]>;
+    transformAsync<T, U>(parsed: any[], handler: TransformHandler<T, U>, options?: TransformOptions): Promise<any[]>;
+    stringifyAsync(csvs: StringifyInput, options?: StringifyOptions): Promise<string[]>;
+    parseStream(options?: ParseOptions): Promise<import("stream").Writable[]>;
+    transformStream<T, U>(parsed: any[], handler: TransformHandler<T, U>, options?: TransformOptions): Promise<import("stream").Writable[]>;
+    stringifyStream(csvs: StringifyInput, options?: StringifyOptions): Promise<import("stream").Writable[]>;
+    parseSync(options?: ParseOptions): any[];
+    transformSync<T, U>(parsed: any[], handler: TransformSyncHandler<T, U>, options?: TransformOptions): U[][];
+    stringifySync(csvs: StringifyInput, options?: StringifyOptions): string[];
     custom<T>(callback: CSVCustomCallback<T>): Promise<Awaited<T>[]>;
     static filter(...csvs: Buffer[]): Promise<Buffer[]>;
     static fromFile(...path: string[]): Promise<CSV>;
     static fromUrl<T extends string[] | URL[]>(...url: T): Promise<CSV>;
-    static generate<P = any>(options?: generator.Options): Promise<P>;
-    static parse<T extends Buffer | string, P = any>(input: T, options?: parser.Options): Promise<P>;
-    static transform<T, U, P = any>(records: T[], handler: transformer.Handler<T, U>, options?: transformer.Options): Promise<P>;
-    static stringify(input: stringifier.Input, options?: stringifier.Options): Promise<string>;
+    static generateAsync<P = any>(options?: GenerateOptions): Promise<P>;
+    static parseAsync<T extends Buffer | string, P = any>(input: T, options?: ParseOptions): Promise<P>;
+    static transformAsync<T, U, P = any>(records: T[], handler: TransformHandler<T, U>, options?: TransformOptions): Promise<P>;
+    static stringifyAsync(input: StringifyInput, options?: StringifyOptions): Promise<string>;
+    static generateStream(options?: GenerateOptions): csv.generator.Generator;
+    static parseStream(options?: ParseOptions): csv.parser.Parser;
+    static transformStream<T, U>(handler: TransformHandler<T, U>, options?: TransformOptions): csv.transformer.Transformer;
+    static stringifyStream(options?: StringifyOptions): csv.stringifier.Stringifier;
+    static generateSync(options?: GenerateOptions): string & any[];
+    static parseSync<T extends Buffer | string>(input: T, options?: ParseOptions): any;
+    static transformSync<T, U>(records: T[], handler: TransformSyncHandler<T, U>, options?: TransformOptions): U[];
+    static stringifySync(input: StringifyInput, options?: StringifyOptions): string;
 }
 //# sourceMappingURL=csv.d.ts.map

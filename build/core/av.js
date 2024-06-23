@@ -19,6 +19,9 @@ class AV extends Core {
         super();
         this.avs = avs;
     }
+    get length() {
+        return this.avs.length;
+    }
     metadata() {
         return __awaiter(this, void 0, void 0, function* () {
             const tmpFile = yield new TmpFile(...this.avs).init();
@@ -52,6 +55,10 @@ class AV extends Core {
             return result;
         });
     }
+    // async stream() {
+    //   const reads = await Core.toReadable(this.avs);
+    //   return reads.map((av) => AV.newFfmpeg(av).pipe());
+    // }
     /**
      * In case of invalid method, buffer will be default
      */
@@ -63,13 +70,6 @@ class AV extends Core {
             return result;
         });
     }
-    /**
-     * Raw version of stream
-     */
-    // static async stream<T>(readable: Readable, callback: AVCallback<T>) {
-    //   const command = AV.newFfmpeg(readable);
-    //   return callback(command);
-    // }
     /**
      * new Instance of ffmpeg
      */
@@ -84,36 +84,35 @@ class AV extends Core {
 export class Video extends AV {
     constructor(...videos) {
         super(...videos);
-        this.videos = videos;
     }
     getVideos() {
-        return [...this.videos];
+        return [...this.avs];
     }
     setVideos(callback) {
         return __awaiter(this, void 0, void 0, function* () {
-            const videos = yield Promise.all(this.videos.map((video, index) => callback(video, index)));
+            const videos = yield Promise.all(this.avs.map((video, index) => callback(video, index)));
             const filteredVideos = videos.filter((video) => Buffer.isBuffer(video));
-            this.videos = filteredVideos;
+            this.avs = filteredVideos;
         });
     }
     append(...videos) {
         return __awaiter(this, void 0, void 0, function* () {
             const filteredVideos = yield Video.filter(...videos);
-            this.videos.push(...filteredVideos);
+            this.avs.push(...filteredVideos);
         });
     }
     extend(...videos) {
         videos.forEach((video) => {
-            this.videos.push(...video.getVideos());
+            this.avs.push(...video.getVideos());
         });
     }
     clone() {
-        return new Video(...this.videos);
+        return new Video(...this.avs);
     }
     filter() {
         return __awaiter(this, void 0, void 0, function* () {
-            this.videos = yield Video.filter(...this.videos);
-            return this.videos.length;
+            this.avs = yield Video.filter(...this.avs);
+            return this.length;
         });
     }
     static filter(...videos) {
@@ -124,49 +123,50 @@ export class Video extends AV {
     static fromFile(...path) {
         return __awaiter(this, void 0, void 0, function* () {
             const buffer = yield Core.loadFile(path);
-            return new Video(...buffer);
+            const videos = yield Video.filter(...buffer);
+            return new Video(...videos);
         });
     }
     static fromUrl(...url) {
         return __awaiter(this, void 0, void 0, function* () {
             const buffer = yield Core.loadUrl(url);
-            return new Video(...buffer);
+            const videos = yield Video.filter(...buffer);
+            return new Video(...videos);
         });
     }
 }
 export class Audio extends AV {
     constructor(...audios) {
         super(...audios);
-        this.audios = audios;
     }
     getAudios() {
-        return [...this.audios];
+        return [...this.avs];
     }
     setAudios(callback) {
         return __awaiter(this, void 0, void 0, function* () {
-            const audios = yield Promise.all(this.audios.map((audio, index) => callback(audio, index)));
+            const audios = yield Promise.all(this.avs.map((audio, index) => callback(audio, index)));
             const filteredVideos = audios.filter((audio) => Buffer.isBuffer(audio));
-            this.audios = filteredVideos;
+            this.avs = filteredVideos;
         });
     }
     append(...audios) {
         return __awaiter(this, void 0, void 0, function* () {
             const filteredAudios = yield Audio.filter(...audios);
-            this.audios.push(...filteredAudios);
+            this.avs.push(...filteredAudios);
         });
     }
     extend(...audios) {
         audios.forEach((audio) => {
-            this.audios.push(...audio.getAudios());
+            this.avs.push(...audio.getAudios());
         });
     }
     clone() {
-        return new Audio(...this.audios);
+        return new Audio(...this.avs);
     }
     filter() {
         return __awaiter(this, void 0, void 0, function* () {
-            this.audios = yield Audio.filter(...this.audios);
-            return this.audios.length;
+            this.avs = yield Audio.filter(...this.avs);
+            return this.length;
         });
     }
     static filter(...audios) {
@@ -175,13 +175,15 @@ export class Audio extends AV {
     static fromFile(...path) {
         return __awaiter(this, void 0, void 0, function* () {
             const buffer = yield Core.loadFile(path);
-            return new Audio(...buffer);
+            const audios = yield Audio.filter(...buffer);
+            return new Audio(...audios);
         });
     }
     static fromUrl(...url) {
         return __awaiter(this, void 0, void 0, function* () {
             const buffer = yield Core.loadUrl(url);
-            return new Audio(...buffer);
+            const audios = yield Audio.filter(...buffer);
+            return new Audio(...audios);
         });
     }
 }

@@ -7,13 +7,17 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-import { generate, parse, transform, stringify } from "csv";
+import * as csv from "csv";
+import * as csvSync from "csv/sync";
 import { FilterFile } from "../helper/index.js";
 import Core from "./core.js";
 export default class CSV extends Core {
     constructor(...csvs) {
         super();
         this.csvs = csvs;
+    }
+    get length() {
+        return this.csvs.length;
     }
     getCsvs() {
         return [...this.csvs];
@@ -27,8 +31,8 @@ export default class CSV extends Core {
     }
     append(...csvs) {
         return __awaiter(this, void 0, void 0, function* () {
-            const filteredCsvs = yield CSV.filter(...csvs);
-            this.csvs.push(...filteredCsvs);
+            // const filteredCsvs = await CSV.filter(...csvs);
+            this.csvs.push(...csvs);
         });
     }
     extend(...csvs) {
@@ -42,33 +46,78 @@ export default class CSV extends Core {
     filter() {
         return __awaiter(this, void 0, void 0, function* () {
             this.csvs = yield CSV.filter(...this.csvs);
-            return this.csvs.length;
+            return this.length;
         });
     }
     metadata() {
         return __awaiter(this, void 0, void 0, function* () {
             return Promise.all(this.csvs.map((csv) => __awaiter(this, void 0, void 0, function* () {
-                const rows = csv.toString().split(/\r?\n/);
-                const columns = rows.reduce((prev, row) => prev + row.split(",").length, 0);
+                var _a, _b;
+                const parse = yield CSV.parseAsync(csv);
                 return {
                     size: csv.length,
-                    rows: rows.length,
-                    columns: Math.round(columns / rows.length),
+                    rows: parse.length,
+                    columns: (_b = (_a = parse === null || parse === void 0 ? void 0 : parse[0]) === null || _a === void 0 ? void 0 : _a.length) !== null && _b !== void 0 ? _b : 0,
                 };
             })));
         });
     }
-    parse(options) {
+    // Async //
+    parseAsync(options) {
         return __awaiter(this, void 0, void 0, function* () {
-            return Promise.all(this.csvs.map((csv) => CSV.parse(csv, options)));
+            return Promise.all(this.csvs.map((c) => CSV.parseAsync(c, options)));
         });
     }
-    transform(handler, options) {
+    transformAsync(parsed, handler, options) {
         return __awaiter(this, void 0, void 0, function* () {
-            const parses = yield this.parse();
-            return Promise.all(parses.map((parse) => CSV.transform(parse, handler, options)));
+            return Promise.all(parsed.map((p) => CSV.transformAsync(p, handler, options)));
         });
     }
+    stringifyAsync(csvs, options) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return Promise.all(csvs.map((c) => CSV.stringifyAsync(c, options)));
+        });
+    }
+    // Stream //
+    parseStream(options) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const reads = yield Core.toReadable(this.csvs);
+            return reads.map((csv) => Core.stream(csv, CSV.parseStream(options)));
+        });
+    }
+    transformStream(parsed, handler, options) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const reads = yield Core.toReadable(parsed);
+            return reads.map((csv) => Core.stream(csv, CSV.transformStream(handler, options)));
+        });
+    }
+    stringifyStream(csvs, options) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const reads = yield Core.toReadable(csvs);
+            return reads.map((csv) => Core.stream(csv, CSV.stringifyStream(options)));
+        });
+    }
+    // Sync //
+    parseSync(options) {
+        return this.csvs.map((c) => CSV.parseSync(c, options));
+    }
+    transformSync(parsed, handler, options) {
+        return parsed.map((p) => CSV.transformSync(p, handler, options));
+    }
+    stringifySync(csvs, options) {
+        return csvs.map((c) => CSV.stringifySync(c, options));
+    }
+    // parseStream(options?: ParseOptions): Stream[] {
+    //   return this.csvs.map((csv) => CSV.parseStream(csv, options));
+    // }
+    // transformStream<T, U>(
+    //   handler: TransformHandler<T, U>,
+    //   options?: TransformOptions
+    // ): Stream[] {
+    //   return this.csvs.map((c) => {
+    //     return csv.parse(c).pipe(csv.transform(options, handler));
+    //   });
+    // }
     custom(callback) {
         return __awaiter(this, void 0, void 0, function* () {
             return Promise.all(this.csvs.map((csv, index) => callback(csv, index)));
@@ -91,10 +140,11 @@ export default class CSV extends Core {
             return new CSV(...buffer);
         });
     }
-    static generate() {
+    // Async //
+    static generateAsync() {
         return __awaiter(this, arguments, void 0, function* (options = {}) {
             return new Promise((resolve, reject) => {
-                generate(options, (err, records) => {
+                csv.generate(options, (err, records) => {
                     if (err)
                         return reject(err);
                     resolve(records);
@@ -102,10 +152,10 @@ export default class CSV extends Core {
             });
         });
     }
-    static parse(input_1) {
+    static parseAsync(input_1) {
         return __awaiter(this, arguments, void 0, function* (input, options = {}) {
             return new Promise((resolve, reject) => {
-                parse(input, options, (err, records) => {
+                csv.parse(input, options, (err, records) => {
                     if (err)
                         return reject(err);
                     resolve(records);
@@ -113,10 +163,10 @@ export default class CSV extends Core {
             });
         });
     }
-    static transform(records_1, handler_1) {
+    static transformAsync(records_1, handler_1) {
         return __awaiter(this, arguments, void 0, function* (records, handler, options = {}) {
             return new Promise((resolve, reject) => {
-                transform(records, options, handler, (err, records) => {
+                csv.transform(records, options, handler, (err, records) => {
                     if (err)
                         return reject(err);
                     resolve(records);
@@ -124,16 +174,42 @@ export default class CSV extends Core {
             });
         });
     }
-    static stringify(input_1) {
+    static stringifyAsync(input_1) {
         return __awaiter(this, arguments, void 0, function* (input, options = {}) {
             return new Promise((resolve, reject) => {
-                stringify(input, options, (err, str) => {
+                csv.stringify(input, options, (err, str) => {
                     if (err)
                         return reject(err);
                     resolve(str);
                 });
             });
         });
+    }
+    // Stream //
+    static generateStream(options = {}) {
+        return csv.generate(options);
+    }
+    static parseStream(options = {}) {
+        return csv.parse(options);
+    }
+    static transformStream(handler, options = {}) {
+        return csv.transform(options, handler);
+    }
+    static stringifyStream(options = {}) {
+        return csv.stringify(options);
+    }
+    // Sync //
+    static generateSync(options = {}) {
+        return csvSync.generate(options);
+    }
+    static parseSync(input, options = {}) {
+        return csvSync.parse(input, options);
+    }
+    static transformSync(records, handler, options = {}) {
+        return csvSync.transform(records, options, handler);
+    }
+    static stringifySync(input, options = {}) {
+        return csvSync.stringify(input, options);
     }
 }
 //# sourceMappingURL=csv.js.map

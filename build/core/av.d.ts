@@ -5,8 +5,9 @@ import type { Readable } from "node:stream";
 import ffmpeg from "fluent-ffmpeg";
 import Core from "./core.js";
 declare abstract class AV extends Core {
-    private readonly avs;
+    protected avs: Buffer[];
     constructor(...avs: Buffer[]);
+    get length(): number;
     metadata(): Promise<ffmpeg.FfprobeData[]>;
     convert(format: string, options?: ffmpeg.FfmpegCommandOptions): Promise<Buffer[]>;
     /**
@@ -14,15 +15,11 @@ declare abstract class AV extends Core {
      */
     custom<T>(callback: AVCustomCallback<T>): Promise<Awaited<T>[]>;
     /**
-     * Raw version of stream
-     */
-    /**
      * new Instance of ffmpeg
      */
     static newFfmpeg<T extends Readable | string>(av: T, options?: ffmpeg.FfmpegCommandOptions): ffmpeg.FfmpegCommand;
 }
 export declare class Video extends AV {
-    private videos;
     constructor(...videos: Buffer[]);
     getVideos(): Buffer[];
     setVideos<T>(callback: AVSetCallback<T>): Promise<void>;
@@ -35,7 +32,6 @@ export declare class Video extends AV {
     static fromUrl<T extends string[] | URL[]>(...url: T): Promise<Video>;
 }
 export declare class Audio extends AV {
-    private audios;
     constructor(...audios: Buffer[]);
     getAudios(): Buffer[];
     setAudios<T>(callback: AVSetCallback<T>): Promise<void>;

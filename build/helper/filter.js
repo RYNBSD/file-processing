@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 import { Mutex } from "async-mutex";
 import isFile from "@ryn-bsd/is-file";
-import { input2buffer } from "./fn.js";
+import Core from "../core/core.js";
 /**
  * Easy and fast way to filter bunche of files
  */
@@ -65,9 +65,8 @@ export default class FilterFile {
      */
     custom(me) {
         return __awaiter(this, void 0, void 0, function* () {
-            const buffer = yield Promise.all(this.input.map((input) => input2buffer(input)));
-            const filteredBuffer = buffer.filter((buf) => Buffer.isBuffer(buf));
-            const result = yield isFile.isCustom(filteredBuffer, me);
+            const buffer = yield Core.toBuffer(this.input);
+            const result = yield isFile.isCustom(buffer, me);
             return result
                 .filter((file) => file.valid)
                 .map((file) => file.value);
@@ -75,8 +74,7 @@ export default class FilterFile {
     }
     static filter(...input) {
         return __awaiter(this, void 0, void 0, function* () {
-            const buffer = yield Promise.all(input.map((input) => input2buffer(input)));
-            const filteredBuffer = buffer.filter((buf) => Buffer.isBuffer(buf));
+            const buffer = yield Core.toBuffer(input);
             const mutexes = {
                 applications: new Mutex(),
                 audios: new Mutex(),
@@ -95,7 +93,7 @@ export default class FilterFile {
                 texts: [],
                 videos: [],
             };
-            yield Promise.all(filteredBuffer.map((buffer) => __awaiter(this, void 0, void 0, function* () {
+            yield Promise.all(buffer.map((buffer) => __awaiter(this, void 0, void 0, function* () {
                 if (yield isFile.isApplication(buffer)) {
                     const release = yield mutexes.applications.acquire();
                     files.applications.push(buffer);

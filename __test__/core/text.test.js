@@ -1,3 +1,4 @@
+import { Writable } from "stream";
 import Text from "../../build/core/text.js";
 
 describe("Text", () => {
@@ -30,31 +31,87 @@ describe("Text", () => {
     expect(metadata[0].size).toBe(0);
   });
 
-  it("(de)compress", async () => {
+  it("(de)compress async", async () => {
     const textCompress = new Text(Buffer.alloc(5));
 
-    const gzip = await textCompress.compress("gzip");
+    const gzip = await textCompress.compressAsync("gzip");
     let textDecompress = new Text(...gzip);
-    await textDecompress.decompress("gunzip");
+    await textDecompress.decompressAsync("gunzip");
 
-    const deflate = await textCompress.compress("deflate");
+    const deflate = await textCompress.compressAsync("deflate");
     textDecompress = new Text(...deflate);
-    await textDecompress.decompress("inflate");
+    await textDecompress.decompressAsync("inflate");
 
-    const deflateRaw = await textCompress.compress("deflate-raw");
+    const deflateRaw = await textCompress.compressAsync("deflate-raw");
     textDecompress = new Text(...deflateRaw);
-    await textDecompress.decompress("inflate-raw");
+    await textDecompress.decompressAsync("inflate-raw");
 
-    const brotli = await textCompress.compress("brotli-compress");
+    const brotli = await textCompress.compressAsync("brotli-compress");
     textDecompress = new Text(...brotli);
-    await textDecompress.decompress("brotli-decompress");
+    await textDecompress.decompressAsync("brotli-decompress");
 
-    expect(true).toBe(true);
     await expect(async () => {
-      await textCompress.compress("");
+      await textCompress.compressAsync("");
     }).rejects.toThrow(TypeError);
+
     await expect(async () => {
-      await textDecompress.decompress("");
+      await textDecompress.decompressAsync("");
+    }).rejects.toThrow(TypeError);
+  });
+
+  // it("(de)compress stream", async () => {
+  //   const textCompress = new Text(Buffer.alloc(5));
+
+  //   const gzip = await textCompress.compressStream("gzip");
+  //   let textDecompress = new Text(...gzip);
+  //   await textDecompress.decompressStream("gunzip");
+
+  //   const deflate = await textCompress.compressStream("deflate");
+  //   textDecompress = new Text(...deflate);
+  //   await textDecompress.decompressStream("inflate");
+
+  //   const deflateRaw = await textCompress.compressStream("deflate-raw");
+  //   textDecompress = new Text(...deflateRaw);
+  //   await textDecompress.decompressStream("inflate-raw");
+
+  //   const brotli = await textCompress.compressStream("brotli-compress");
+  //   textDecompress = new Text(...brotli);
+  //   await textDecompress.decompressStream("brotli-decompress");
+
+  //   await expect(async () => {
+  //     await textCompress.compressStream("");
+  //   }).rejects.toThrow(TypeError);
+
+  //   await expect(async () => {
+  //     await textDecompress.decompressStream("");
+  //   }).rejects.toThrow(TypeError);
+  // });
+
+  it("(de)compress sync", async () => {
+    const textCompress = new Text(Buffer.alloc(5));
+
+    const gzip = textCompress.compressSync("gzip");
+    let textDecompress = new Text(...gzip);
+    textDecompress.decompressSync("gunzip");
+
+    const deflate = textCompress.compressSync("deflate");
+    textDecompress = new Text(...deflate);
+    textDecompress.decompressSync("inflate");
+
+    const deflateRaw = textCompress.compressSync("deflate-raw");
+    textDecompress = new Text(...deflateRaw);
+    textDecompress.decompressSync("inflate-raw");
+
+    const brotli = textCompress.compressSync("brotli-compress");
+    textDecompress = new Text(...brotli);
+    textDecompress.decompressSync("brotli-decompress");
+
+    await expect(async () => {
+      textCompress.compressSync("");
+    }).rejects.toThrow(TypeError);
+
+    await expect(async () => {
+      textDecompress.decompressSync("");
     }).rejects.toThrow(TypeError);
   });
 

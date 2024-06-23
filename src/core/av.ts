@@ -9,11 +9,15 @@ import { FilterFile, TmpFile } from "../helper/index.js";
 import Core from "./core.js";
 
 abstract class AV extends Core {
-  private readonly avs: Buffer[];
+  protected avs: Buffer[];
 
   constructor(...avs: Buffer[]) {
     super();
     this.avs = avs;
+  }
+
+  get length() {
+    return this.avs.length;
   }
 
   override async metadata() {
@@ -58,6 +62,11 @@ abstract class AV extends Core {
     return result;
   }
 
+  // async stream() {
+  //   const reads = await Core.toReadable(this.avs);
+  //   return reads.map((av) => AV.newFfmpeg(av).pipe());
+  // }
+
   /**
    * In case of invalid method, buffer will be default
    */
@@ -69,14 +78,6 @@ abstract class AV extends Core {
     await tmpFile.clean();
     return result;
   }
-
-  /**
-   * Raw version of stream
-   */
-  // static async stream<T>(readable: Readable, callback: AVCallback<T>) {
-  //   const command = AV.newFfmpeg(readable);
-  //   return callback(command);
-  // }
 
   /**
    * new Instance of ffmpeg
@@ -94,45 +95,42 @@ abstract class AV extends Core {
 }
 
 export class Video extends AV {
-  private videos: Buffer[];
-
   constructor(...videos: Buffer[]) {
     super(...videos);
-    this.videos = videos;
   }
 
   getVideos() {
-    return [...this.videos];
+    return [...this.avs];
   }
 
   async setVideos<T>(callback: AVSetCallback<T>) {
     const videos = await Promise.all(
-      this.videos.map((video, index) => callback(video, index))
+      this.avs.map((video, index) => callback(video, index))
     );
     const filteredVideos = videos.filter((video) =>
       Buffer.isBuffer(video)
     ) as Buffer[];
-    this.videos = filteredVideos;
+    this.avs = filteredVideos;
   }
 
   override async append(...videos: Buffer[]) {
     const filteredVideos = await Video.filter(...videos);
-    this.videos.push(...filteredVideos);
+    this.avs.push(...filteredVideos);
   }
 
   override extend(...videos: Video[]) {
     videos.forEach((video) => {
-      this.videos.push(...video.getVideos());
+      this.avs.push(...video.getVideos());
     });
   }
 
   override clone() {
-    return new Video(...this.videos);
+    return new Video(...this.avs);
   }
 
   override async filter() {
-    this.videos = await Video.filter(...this.videos);
-    return this.videos.length;
+    this.avs = await Video.filter(...this.avs);
+    return this.length;
   }
 
   static async filter(...videos: Buffer[]) {
@@ -141,55 +139,54 @@ export class Video extends AV {
 
   static async fromFile(...path: string[]) {
     const buffer = await Core.loadFile(path);
-    return new Video(...buffer);
+    const videos = await Video.filter(...buffer);
+    return new Video(...videos);
   }
 
   static async fromUrl<T extends string[] | URL[]>(...url: T) {
     const buffer = await Core.loadUrl(url);
-    return new Video(...buffer);
+    const videos = await Video.filter(...buffer);
+    return new Video(...videos);
   }
 }
 
 export class Audio extends AV {
-  private audios: Buffer[];
-
   constructor(...audios: Buffer[]) {
     super(...audios);
-    this.audios = audios;
   }
 
   getAudios() {
-    return [...this.audios];
+    return [...this.avs];
   }
 
   async setAudios<T>(callback: AVSetCallback<T>) {
     const audios = await Promise.all(
-      this.audios.map((audio, index) => callback(audio, index))
+      this.avs.map((audio, index) => callback(audio, index))
     );
     const filteredVideos = audios.filter((audio) =>
       Buffer.isBuffer(audio)
     ) as Buffer[];
-    this.audios = filteredVideos;
+    this.avs = filteredVideos;
   }
 
   override async append(...audios: Buffer[]) {
     const filteredAudios = await Audio.filter(...audios);
-    this.audios.push(...filteredAudios);
+    this.avs.push(...filteredAudios);
   }
 
   override extend(...audios: Audio[]) {
     audios.forEach((audio) => {
-      this.audios.push(...audio.getAudios());
+      this.avs.push(...audio.getAudios());
     });
   }
 
   override clone() {
-    return new Audio(...this.audios);
+    return new Audio(...this.avs);
   }
 
   override async filter() {
-    this.audios = await Audio.filter(...this.audios);
-    return this.audios.length;
+    this.avs = await Audio.filter(...this.avs);
+    return this.length;
   }
 
   static filter(...audios: Buffer[]) {
@@ -198,11 +195,13 @@ export class Audio extends AV {
 
   static async fromFile(...path: string[]) {
     const buffer = await Core.loadFile(path);
-    return new Audio(...buffer);
+    const audios = await Audio.filter(...buffer);
+    return new Audio(...audios);
   }
 
   static async fromUrl<T extends string[] | URL[]>(...url: T) {
     const buffer = await Core.loadUrl(url);
-    return new Audio(...buffer);
+    const audios = await Audio.filter(...buffer);
+    return new Audio(...audios);
   }
 }

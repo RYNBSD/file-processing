@@ -1,3 +1,4 @@
+import type { Readable } from "node:stream";
 import type zlib from "node:zlib";
 
 export type TextCompressionMethods =
@@ -22,9 +23,15 @@ export type TextCompressionOptions<T> = T extends "gzip"
   ? DeflateOptions
   : T extends "deflate-raw"
   ? DeflateRawOptions
-  : T extends "brotli"
+  : T extends "brotli-compress"
   ? BrotliCompressOptions
   : never;
+
+export type TextCompressFn<
+  R,
+  T extends Buffer | Readable,
+  M extends TextCompressionMethods
+> = (text: T, options?: TextCompressionOptions<M>) => R;
 
 export type TextDecompressionMethods =
   | "gunzip"
@@ -52,6 +59,12 @@ export type TextDecompressionOptions<T extends TextDecompressionMethods> =
     : T extends "brotli-decompress"
     ? BrotliDecompressOptions
     : never;
+
+export type TextDecompressFn<
+  R,
+  T extends Buffer | Readable,
+  M extends TextDecompressionMethods
+> = (text: T, options?: TextDecompressionOptions<M>) => R;
 
 export type TextSetCallback<T> = (
   text: Buffer,

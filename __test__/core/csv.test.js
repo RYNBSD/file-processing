@@ -37,27 +37,55 @@ describe("CSV", () => {
     expect(length).toBe(0);
   });
 
-  it("parse", async () => {
+  it("parseAsync", async () => {
     const csv = await fs.promises.readFile("asset/csv.csv");
-    const parse = await new CSV(csv).parse();
+    const parse = await new CSV(csv).parseAsync();
     expect(parse).toHaveLength(1);
   });
 
-  it("transform", async () => {
+  it("transformAsync", async () => {
     const csv = await fs.promises.readFile("asset/csv.csv");
-    const transform = await new CSV(csv).transform((record) => record);
+    const parse = await new CSV(csv).parseAsync();
+    const transform = await new CSV(csv).transformAsync(parse, (record) => record);
     expect(transform).toHaveLength(1);
+  });
+
+  it("stringifyAsync", async () => {
+    const csv = await fs.promises.readFile("asset/csv.csv");
+    const parse = await new CSV(csv).parseAsync();
+    const stringify = await new CSV(csv).stringifyAsync(parse);
+    expect(stringify).toHaveLength(1);
+  });
+
+  it("parseSync", async () => {
+    const csv = await fs.promises.readFile("asset/csv.csv");
+    const parse = new CSV(csv).parseSync();
+    expect(parse).toHaveLength(1);
+  });
+
+  it("transformSync", async () => {
+    const csv = await fs.promises.readFile("asset/csv.csv");
+    const parse = new CSV(csv).parseSync();
+    const transform = new CSV(csv).transformSync(parse, (record) => record);
+    expect(transform).toHaveLength(1);
+  });
+
+  it("stringifySync", async () => {
+    const csv = await fs.promises.readFile("asset/csv.csv");
+    const parse = new CSV(csv).parseSync();
+    const stringify = new CSV(csv).stringifySync(parse);
+    expect(stringify).toHaveLength(1);
   });
 
   it("custom", async () => {
     const csv = Buffer.from('#Welcome\n"1","2","3","4"\n"a","b","c","d"');
     const custom = await new CSV(csv).custom(async (csv) => {
-      const parse = await CSV.parse(csv, { comment: "#" });
-      const transform = await CSV.transform(parse, function (record) {
+      const parse = await CSV.parseAsync(csv, { comment: "#" });
+      const transform = await CSV.transformAsync(parse, function (record) {
         record.push(record.shift());
         return record;
       });
-      const stringify = await CSV.stringify(transform);
+      const stringify = await CSV.stringifyAsync(transform);
       return stringify;
     });
     expect(custom).toHaveLength(1);
@@ -86,8 +114,8 @@ describe("CSV", () => {
     }).rejects.toThrow();
   });
 
-  it("(static) generate", async () => {
-    const generate = await CSV.generate({
+  it("(static) generateAsync", async () => {
+    const generate = await CSV.generateAsync({
       seed: 1,
       objectMode: true,
       columns: 2,
@@ -99,21 +127,21 @@ describe("CSV", () => {
     ]);
   });
 
-  it("(static) parse", async () => {
+  it("(static) parseAsync", async () => {
     const input = '#Welcome\n"1","2","3","4"\n"a","b","c","d"';
-    const parse = await CSV.parse(input, { comment: "#" });
+    const parse = await CSV.parseAsync(input, { comment: "#" });
     expect(parse).toEqual([
       ["1", "2", "3", "4"],
       ["a", "b", "c", "d"],
     ]);
 
     await expect(async () => {
-      await CSV.parse(input);
+      await CSV.parseAsync(input);
     }).rejects.toThrow();
   });
 
-  it("(static) transform", async () => {
-    const transform = await CSV.transform(
+  it("(static) transformAsync", async () => {
+    const transform = await CSV.transformAsync(
       [
         ["1", "2", "3", "4"],
         ["a", "b", "c", "d"],
@@ -129,19 +157,78 @@ describe("CSV", () => {
     ]);
 
     await expect(async () => {
-      await CSV.transform("");
+      await CSV.transformAsync("");
     }).rejects.toThrow();
   });
 
-  it("(static) stringify", async () => {
-    const stringify = await CSV.stringify([
+  it("(static) stringifyAsync", async () => {
+    const stringify = await CSV.stringifyAsync([
       ["1", "2", "3", "4"],
       ["a", "b", "c", "d"],
     ]);
     expect(stringify).toEqual("1,2,3,4\na,b,c,d\n");
     
     await expect(async () => {
-      await CSV.stringify("");
+      await CSV.stringifyAsync(null);
+    }).rejects.toThrow();
+  });
+
+  it("(static) generateSync", () => {
+    const generate = CSV.generateSync({
+      seed: 1,
+      objectMode: true,
+      columns: 2,
+      length: 2,
+    });
+    expect(generate).toEqual([
+      ["OMH", "ONKCHhJmjadoA"],
+      ["D", "GeACHiN"],
+    ]);
+  });
+
+  it("(static) parseSync", async () => {
+    const input = '#Welcome\n"1","2","3","4"\n"a","b","c","d"';
+    const parse = await CSV.parseSync(input, { comment: "#" });
+    expect(parse).toEqual([
+      ["1", "2", "3", "4"],
+      ["a", "b", "c", "d"],
+    ]);
+
+    await expect(async () => {
+      CSV.parseSync(input);
+    }).rejects.toThrow();
+  });
+
+  it("(static) transformSync", async () => {
+    const transform = CSV.transformSync(
+      [
+        ["1", "2", "3", "4"],
+        ["a", "b", "c", "d"],
+      ],
+      function (record) {
+        record.push(record.shift());
+        return record;
+      }
+    );
+    expect(transform).toEqual([
+      ["2", "3", "4", "1"],
+      ["b", "c", "d", "a"],
+    ]);
+
+    await expect(async () => {
+      CSV.transformSync("");
+    }).rejects.toThrow();
+  });
+
+  it("(static) stringifySync", async () => {
+    const stringify = CSV.stringifySync([
+      ["1", "2", "3", "4"],
+      ["a", "b", "c", "d"],
+    ]);
+    expect(stringify).toEqual("1,2,3,4\na,b,c,d\n");
+    
+    await expect(async () => {
+      CSV.stringifySync(null);
     }).rejects.toThrow();
   });
 });

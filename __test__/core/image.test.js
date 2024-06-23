@@ -62,6 +62,21 @@ describe("Image", () => {
     expect(custom).toHaveLength(1);
   });
 
+  it("(static) screenshot", async () => {
+    const buffers = await Image.screenshot([
+      "https://www.google.com/",
+      "https://www.google.com/",
+      "https://www.google.com/",
+    ]);
+    expect(buffers.length).toBe(3);
+    expect(buffers[0]).toBeInstanceOf(Buffer);
+    expect(buffers[0].length).toBeGreaterThan(0);
+
+    await expect(async () => {
+      await Image.screenshot("123");
+    }).rejects.toThrow();
+  });
+
   it("(static) fromFile", async () => {
     const image = await Image.fromFile("asset/rynbsd.png");
     expect(image).toBeInstanceOf(Image);

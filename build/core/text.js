@@ -18,6 +18,9 @@ export default class Text extends Core {
         super();
         this.texts = texts;
     }
+    get length() {
+        return this.texts.length;
+    }
     getTexts() {
         return [...this.texts];
     }
@@ -30,8 +33,8 @@ export default class Text extends Core {
     }
     append(...texts) {
         return __awaiter(this, void 0, void 0, function* () {
-            const filteredTexts = yield Text.filter(...texts);
-            this.texts.push(...filteredTexts);
+            // const filteredTexts = await Text.filter(...texts);
+            this.texts.push(...texts);
         });
     }
     extend(...texts) {
@@ -48,54 +51,91 @@ export default class Text extends Core {
             return this.texts.length;
         });
     }
+    /**
+     * @returns - key is the character code and value is the count
+     */
+    charactersMap(text) {
+        const map = new Map();
+        const string = text.toString();
+        for (const str of string) {
+            const code = str.charCodeAt(0);
+            map.has(code) ? map.set(code, map.get(code) + 1) : map.set(code, 1);
+        }
+        return map;
+    }
     metadata() {
         return __awaiter(this, void 0, void 0, function* () {
             return Promise.all(this.texts.map((text) => __awaiter(this, void 0, void 0, function* () {
                 return ({
                     size: text.length,
+                    charactersMap: this.charactersMap(text),
                 });
             })));
         });
     }
-    compress(method, options) {
+    compressAsync(method, options) {
         return __awaiter(this, void 0, void 0, function* () {
-            return Promise.all(this.texts.map((text) => {
-                switch (method) {
-                    case "gzip":
-                        return Text.gzipAsync(text, options);
-                    case "deflate":
-                        return Text.deflateAsync(text, options);
-                    case "deflate-raw":
-                        return Text.deflateRawAsync(text, options);
-                    case "brotli-compress":
-                        return Text.brotliCompressAsync(text, options);
-                    default:
-                        throw new TypeError(`${Text.name}: Invalid compression method`);
-                }
-            }));
+            return Promise.all(Text.compress(this.texts, method, Text.gzipAsync, Text.deflateAsync, Text.deflateRawAsync, Text.brotliCompressAsync, options));
         });
     }
-    decompress(method, options) {
+    decompressAsync(method, options) {
         return __awaiter(this, void 0, void 0, function* () {
-            return Promise.all(this.texts.map((text) => {
-                switch (method) {
-                    case "gunzip":
-                        return Text.gunzipAsync(text, options);
-                    case "inflate":
-                        return Text.inflateAsync(text, options);
-                    case "inflate-raw":
-                        return Text.inflateRawAsync(text, options);
-                    case "brotli-decompress":
-                        return Text.brotliDecompressAsync(text, options);
-                    default:
-                        throw new TypeError(`${Text.name}: Invalid decompression method`);
-                }
-            }));
+            return Promise.all(Text.decompress(this.texts, method, Text.gunzipAsync, Text.inflateAsync, Text.inflateRawAsync, Text.brotliDecompressAsync, options));
         });
+    }
+    compressStream(method, options) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const reads = yield Core.toReadable(this.texts);
+            return Text.compress(reads, method, Text.gzipStream, Text.deflateStream, Text.deflateRawStream, Text.brotliCompressStream, options);
+        });
+    }
+    decompressStream(method, options) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const reads = yield Core.toReadable(this.texts);
+            return Text.decompress(reads, method, Text.gunzipStream, Text.inflateStream, Text.inflateRawStream, Text.brotliDecompressStream, options);
+        });
+    }
+    compressSync(method, options) {
+        return Text.compress(this.texts, method, Text.gzipSync, Text.deflateSync, Text.deflateRawSync, Text.brotliCompressSync, options);
+    }
+    decompressSync(method, options) {
+        return Text.decompress(this.texts, method, Text.gunzipSync, Text.inflateSync, Text.inflateRawSync, Text.brotliDecompressSync, options);
     }
     custom(callback) {
         return __awaiter(this, void 0, void 0, function* () {
             return Promise.all(this.texts.map(callback));
+        });
+    }
+    static compress(array, method, gzipFn, deflateFn, deflateRawFn, brotliCompressFn, options) {
+        return array.map((text) => {
+            switch (method) {
+                case "gzip":
+                    return gzipFn(text, options);
+                case "deflate":
+                    return deflateFn(text, options);
+                case "deflate-raw":
+                    return deflateRawFn(text, options);
+                case "brotli-compress":
+                    return brotliCompressFn(text, options);
+                default:
+                    throw new TypeError(`${Text.name}: Invalid compression method (${method})`);
+            }
+        });
+    }
+    static decompress(array, method, gunzipFn, inflateFn, inflateRawFn, brotliDecompressFn, options) {
+        return array.map((text) => {
+            switch (method) {
+                case "gunzip":
+                    return gunzipFn(text, options);
+                case "inflate":
+                    return inflateFn(text, options);
+                case "inflate-raw":
+                    return inflateRawFn(text, options);
+                case "brotli-decompress":
+                    return brotliDecompressFn(text, options);
+                default:
+                    throw new TypeError(`${Text.name}: Invalid decompression method (${method})`);
+            }
         });
     }
     static filter(...texts) {
@@ -115,6 +155,7 @@ export default class Text extends Core {
             return new Text(...buffer);
         });
     }
+    // Async Compression //
     static gzipAsync(text_1) {
         return __awaiter(this, arguments, void 0, function* (text, options = {}) {
             return new Promise((resolve, reject) => {
@@ -159,6 +200,7 @@ export default class Text extends Core {
             });
         });
     }
+    // Async decompression //
     static gunzipAsync(text_1) {
         return __awaiter(this, arguments, void 0, function* (text, options = {}) {
             return new Promise((resolve, reject) => {
@@ -202,6 +244,66 @@ export default class Text extends Core {
                 });
             });
         });
+    }
+    // Stream compression //
+    static gzipStream(readable, options = {}) {
+        const gzip = zlib.createGzip(options);
+        return Core.stream(readable, gzip);
+    }
+    static deflateStream(readable, options = {}) {
+        const deflate = zlib.createDeflate(options);
+        return Core.stream(readable, deflate);
+    }
+    static deflateRawStream(readable, options = {}) {
+        const deflateRaw = zlib.createDeflateRaw(options);
+        return Core.stream(readable, deflateRaw);
+    }
+    static brotliCompressStream(readable, options = {}) {
+        const brotliCompress = zlib.createBrotliCompress(options);
+        return Core.stream(readable, brotliCompress);
+    }
+    // Stream decompression //
+    static gunzipStream(readable, options = {}) {
+        const gunzip = zlib.createGunzip(options);
+        return Core.stream(readable, gunzip);
+    }
+    static inflateStream(readable, options = {}) {
+        const inflate = zlib.createInflate(options);
+        return Core.stream(readable, inflate);
+    }
+    static inflateRawStream(readable, options = {}) {
+        const inflateRaw = zlib.createInflateRaw(options);
+        return Core.stream(readable, inflateRaw);
+    }
+    static brotliDecompressStream(readable, options = {}) {
+        const brotliDecompress = zlib.createBrotliDecompress(options);
+        return Core.stream(readable, brotliDecompress);
+    }
+    // Sync compression //
+    static gzipSync(buffer, options = {}) {
+        return zlib.gzipSync(buffer, options);
+    }
+    static deflateSync(buffer, options = {}) {
+        return zlib.deflateSync(buffer, options);
+    }
+    static deflateRawSync(buffer, options = {}) {
+        return zlib.deflateRawSync(buffer, options);
+    }
+    static brotliCompressSync(buffer, options = {}) {
+        return zlib.brotliCompressSync(buffer, options);
+    }
+    // Sync decompression //
+    static gunzipSync(buffer, options = {}) {
+        return zlib.gunzipSync(buffer, options);
+    }
+    static inflateSync(buffer, options = {}) {
+        return zlib.inflateSync(buffer, options);
+    }
+    static inflateRawSync(buffer, options = {}) {
+        return zlib.inflateRawSync(buffer, options);
+    }
+    static brotliDecompressSync(buffer, options = {}) {
+        return zlib.brotliDecompressSync(buffer, options);
     }
 }
 //# sourceMappingURL=text.js.map

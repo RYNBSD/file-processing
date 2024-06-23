@@ -7,6 +7,13 @@ import {
   isUint8Array,
 } from "node:util/types";
 
+/**
+ * @deprecated
+ * Call:
+ * ```js
+ *  Core.toBuffer();
+ * ```
+ */
 export async function input2buffer(input: InputFiles) {
   if (Buffer.isBuffer(input)) return input;
   else if (typeof input === "string") return readFile(input);

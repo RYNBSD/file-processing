@@ -10,6 +10,13 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 import { readFile } from "node:fs/promises";
 import { isReadable, isStream, stream2buffer } from "@ryn-bsd/from-buffer-to";
 import { isArrayBuffer, isSharedArrayBuffer, isUint8Array, } from "node:util/types";
+/**
+ * @deprecated
+ * Call:
+ * ```js
+ *  Core.toBuffer();
+ * ```
+ */
 export function input2buffer(input) {
     return __awaiter(this, void 0, void 0, function* () {
         if (Buffer.isBuffer(input))

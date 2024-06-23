@@ -7,15 +7,24 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+import { Readable } from "node:stream";
+import { isAnyArrayBuffer, isUint8Array } from "node:util/types";
 import { readFile } from "node:fs/promises";
 import path from "node:path";
-import { any2buffer, array2buffer, isReadable, isReadableStream, isStream, readable2buffer, readablestream2buffer, stream2buffer, string2buffer, uint8array2buffer, } from "@ryn-bsd/from-buffer-to";
+import { any2buffer, array2buffer, buffer2readable, isReadable, isReadableStream, isStream, readable2buffer, readablestream2buffer, stream2buffer, string2buffer, uint8array2buffer, } from "@ryn-bsd/from-buffer-to";
 import fetch from "node-fetch";
 import isBase64 from "is-base64";
+import puppeteer from "puppeteer";
 import { isUrl } from "../helper/index.js";
-import { isAnyArrayBuffer, isUint8Array } from "node:util/types";
 export default class Core {
     constructor() { }
+    // abstract stream(): Promise<void>;
+    static stream(readable, writable) {
+        return readable.pipe(writable);
+    }
+    static initBrowser() {
+        return puppeteer.launch();
+    }
     static loadFile(path) {
         return __awaiter(this, void 0, void 0, function* () {
             if (Array.isArray(path))
@@ -29,7 +38,7 @@ export default class Core {
                 return Promise.all(url.map((u) => Core.loadUrl(u)));
             const res = yield fetch(url);
             if (!res.ok)
-                throw new Error(`${Core.name}: Can't fetch the text (${url})`);
+                throw new Error(`${Core.name}: Can't fetch (${url})`);
             const arrayBuffer = yield res.arrayBuffer();
             return array2buffer(arrayBuffer);
         });
@@ -37,7 +46,7 @@ export default class Core {
     static toBuffer(input) {
         return __awaiter(this, void 0, void 0, function* () {
             if (Array.isArray(input))
-                return Promise.all(input.map((input) => Core.toBuffer(input)));
+                return Promise.all(input.map((i) => Core.toBuffer(i)));
             if (Buffer.isBuffer(input))
                 return input;
             else if (isUrl(input))
@@ -50,7 +59,7 @@ export default class Core {
                 return stream2buffer(input);
             else if (isReadableStream(input))
                 return readablestream2buffer(input);
-            else if (isReadable(input))
+            else if (isReadable(input) && Readable.isReadable(input))
                 return readable2buffer(input);
             else if (typeof input === "string") {
                 if (isUrl(input))
@@ -62,6 +71,26 @@ export default class Core {
                 return string2buffer(input, false);
             }
             return any2buffer(input);
+        });
+    }
+    static toReadable(input) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (Array.isArray(input))
+                return Promise.all(input.map((i) => Core.toReadable(i)));
+            if (isReadable(input) && Readable.isReadable(input))
+                return input;
+            const buffer = yield Core.toBuffer(input);
+            return buffer2readable(buffer);
+        });
+    }
+    static toBase64(input_1) {
+        return __awaiter(this, arguments, void 0, function* (input, encoding = "base64") {
+            if (Array.isArray(input))
+                return Promise.all(input.map((i) => Core.toBase64(i)));
+            if (typeof input === "string" && isBase64(input))
+                return input;
+            const buffer = yield Core.toBuffer(input);
+            return buffer.toString(encoding);
         });
     }
 }

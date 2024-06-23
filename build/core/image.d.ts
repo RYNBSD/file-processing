@@ -1,10 +1,12 @@
 /// <reference types="node" resolution-mode="require"/>
+import type { ScreenshotOptions } from "puppeteer";
 import type { ImageCustomCallback, ImageFormats, ImageOptions, ImageSetCallback } from "../types/index.js";
 import sharp from "sharp";
 import Core from "./core.js";
 export default class Image extends Core {
     private images;
     constructor(...images: Buffer[]);
+    get length(): number;
     getImages(): Buffer[];
     setImages<T>(callback: ImageSetCallback<T>): Promise<void>;
     append(...images: Buffer[]): Promise<void>;
@@ -24,6 +26,11 @@ export default class Image extends Core {
      */
     custom<T>(callback: ImageCustomCallback<T>): Promise<Awaited<T>[]>;
     static filter(...images: Buffer[]): Promise<Buffer[]>;
+    /**
+     * Take screenshot from websites
+     */
+    static screenshot<T extends string>(urls: T, options?: Omit<ScreenshotOptions, "encoding">): Promise<Buffer>;
+    static screenshot<T extends string[]>(urls: T, options?: Omit<ScreenshotOptions, "encoding">): Promise<Buffer[]>;
     static fromFile(...path: string[]): Promise<Image>;
     static fromUrl<T extends string[] | URL[]>(...url: T): Promise<Image>;
     /**

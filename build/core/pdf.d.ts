@@ -1,4 +1,5 @@
 /// <reference types="node" resolution-mode="require"/>
+import type { PDFOptions } from "puppeteer";
 import type { CreateOptions, LoadOptions, SaveOptions } from "pdf-lib";
 import type { PdfCustomDocumentCallback, PDFSetCallback } from "../types/index.js";
 import { PDFDocument } from "pdf-lib";
@@ -6,6 +7,7 @@ import Core from "./core.js";
 export default class PDF extends Core {
     private pdfs;
     constructor(...pdfs: Buffer[]);
+    get length(): number;
     getPdfs(): Buffer[];
     setPdfs<T>(callback: PDFSetCallback<T>): Promise<void>;
     append(...pdfs: Buffer[]): Promise<void>;
@@ -31,11 +33,10 @@ export default class PDF extends Core {
     static fromFile(...path: string[]): Promise<PDF>;
     static fromUrl<T extends string[] | URL[]>(...url: T): Promise<PDF>;
     /**
-     * Convert url to pdf
+     * Generate pdf from websites
      */
-    /**
-     * Convert html string to pdf
-     */
+    static generate<T extends string>(htmls: T, options?: PDFOptions): Promise<Buffer>;
+    static generate<T extends string[]>(htmls: T, options?: PDFOptions): Promise<Buffer[]>;
     static filter(...pdfs: Buffer[]): Promise<Buffer[]>;
     static save<T extends PDFDocument>(pdfs: T, options?: SaveOptions): Promise<Uint8Array>;
     static save<T extends PDFDocument[]>(pdfs: T, options?: SaveOptions): Promise<Uint8Array[]>;

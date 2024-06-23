@@ -8,13 +8,15 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 import { PDFDocument } from "pdf-lib";
-// import puppeteer from "puppeteer";
 import { FilterFile } from "../helper/index.js";
 import Core from "./core.js";
 export default class PDF extends Core {
     constructor(...pdfs) {
         super();
         this.pdfs = pdfs;
+    }
+    get length() {
+        return this.pdfs.length;
     }
     getPdfs() {
         return [...this.pdfs];
@@ -43,7 +45,7 @@ export default class PDF extends Core {
     filter() {
         return __awaiter(this, void 0, void 0, function* () {
             this.pdfs = yield PDF.filter(...this.pdfs);
-            return this.pdfs.length;
+            return this.length;
         });
     }
     getDocuments(options) {
@@ -89,49 +91,31 @@ export default class PDF extends Core {
     static fromFile(...path) {
         return __awaiter(this, void 0, void 0, function* () {
             const buffer = yield Core.loadFile(path);
-            return new PDF(...buffer);
+            const pdfs = yield PDF.filter(...buffer);
+            return new PDF(...pdfs);
         });
     }
     static fromUrl(...url) {
         return __awaiter(this, void 0, void 0, function* () {
             const buffer = yield Core.loadUrl(url);
-            return new PDF(...buffer);
+            const pdfs = yield PDF.filter(...buffer);
+            return new PDF(...pdfs);
         });
     }
-    /**
-     * Convert url to pdf
-     */
-    // static async fromUrl(
-    //   html: string,
-    //   format: puppeteer.PaperFormat,
-    //   waitUntil: puppeteer.PuppeteerLifeCycleEvent = "networkidle0"
-    // ) {
-    //   const browser = await puppeteer.launch({ headless: false });
-    //   const page = await browser.newPage();
-    //   const res = await page.goto(html, { waitUntil });
-    //   if (res === null || !res.ok())
-    //     throw new Error(`${PDF.name}: Can't fetch html page`);
-    //   const buffer = await page.pdf({ format });
-    //   await browser.close();
-    //   return new PDF(buffer);
-    // }
-    /**
-     * Convert html string to pdf
-     */
-    // static async fromHtml(
-    //   html: string,
-    //   format: puppeteer.PaperFormat,
-    //   waitUntil: puppeteer.PuppeteerLifeCycleEvent = "networkidle0"
-    // ) {
-    //   const browser = await puppeteer.launch({ headless: true });
-    //   const page = await browser.newPage();
-    //   await page.setContent(html, { waitUntil });
-    //   const buffer = await page.pdf({
-    //     format,
-    //   });
-    //   await browser.close();
-    //   return new PDF(buffer);
-    // }
+    static generate(htmls, options) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (Array.isArray(htmls))
+                return Promise.all(htmls.map((html) => PDF.generate(html, options)));
+            const browser = yield Core.initBrowser();
+            const page = yield browser.newPage();
+            const res = yield page.goto(htmls, { waitUntil: "networkidle2" });
+            if (res === null || !res.ok())
+                throw new Error(`${PDF.name}: Can\'t fetch (${htmls})`);
+            const buffer = yield page.pdf(options);
+            yield browser.close();
+            return buffer;
+        });
+    }
     static filter(...pdfs) {
         return new FilterFile(...pdfs).custom("pdf");
     }

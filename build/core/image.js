@@ -15,6 +15,9 @@ export default class Image extends Core {
         super();
         this.images = images;
     }
+    get length() {
+        return this.images.length;
+    }
     getImages() {
         return [...this.images];
     }
@@ -42,7 +45,7 @@ export default class Image extends Core {
     filter() {
         return __awaiter(this, void 0, void 0, function* () {
             this.images = yield Image.filter(...this.images);
-            return this.images.length;
+            return this.length;
         });
     }
     metadata() {
@@ -73,16 +76,40 @@ export default class Image extends Core {
             return new FilterFile(...images).image();
         });
     }
+    // static async screenshot<T extends string>(
+    //   urls: T,
+    //   options?: ScreenshotOptions & { encoding: "base64" }
+    // ): Promise<string>;
+    // static async screenshot<T extends string[]>(
+    //   urls: T,
+    //   options?: ScreenshotOptions & { encoding: "base64" }
+    // ): Promise<string[]>;
+    static screenshot(urls, options) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (Array.isArray(urls))
+                return Promise.all(urls.map((url) => Image.screenshot(url, options)));
+            const browser = yield Core.initBrowser();
+            const page = yield browser.newPage();
+            const res = yield page.goto(urls, { waitUntil: "networkidle2" });
+            if (res === null || !res.ok())
+                throw new Error(`${Image.name}: Can\'t fetch (${urls})`);
+            const buffer = yield page.screenshot(options);
+            yield browser.close();
+            return buffer;
+        });
+    }
     static fromFile(...path) {
         return __awaiter(this, void 0, void 0, function* () {
             const buffer = yield Core.loadFile(path);
-            return new Image(...buffer);
+            const images = yield Image.filter(...buffer);
+            return new Image(...images);
         });
     }
     static fromUrl(...url) {
         return __awaiter(this, void 0, void 0, function* () {
             const buffer = yield Core.loadUrl(url);
-            return new Image(...buffer);
+            const images = yield Image.filter(...buffer);
+            return new Image(...images);
         });
     }
     /**

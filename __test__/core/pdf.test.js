@@ -50,6 +50,21 @@ describe("PDF", () => {
     expect(result).toHaveLength(1);
   });
 
+  it("(static) generate", async () => {
+    const buffers = await PDF.generate([
+      "https://www.google.com/",
+      "https://www.google.com/",
+      "https://www.google.com/",
+    ]);
+    expect(buffers.length).toBe(3);
+    expect(buffers[0]).toBeInstanceOf(Buffer);
+    expect(buffers[0].length).toBeGreaterThan(0);
+
+    await expect(async () => {
+      await PDF.generate("123");
+    }).rejects.toThrow();
+  })
+
   it("(static) fromFile", async () => {
     const file = await PDF.fromFile("asset/pdf.pdf");
     expect(file).toBeInstanceOf(PDF);

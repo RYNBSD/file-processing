@@ -36,7 +36,7 @@ Did you enjoy the process ? (no) 🫠 <br />
 
 # Intro
 
-You have read those questions or not, this is an async file processor, that handle convert, compression, generate, decompression, metadata, parse, filter, customize... and more!
+You have read those questions or not, this is an async/sync file processor, that handle convert, compression, generate, decompression, metadata, parse, filter, customize... and more!
 
 # How it work ?
 
@@ -64,6 +64,9 @@ import Image from "../../build/core/image.js";
 
 const _image = new core.Image(Buffer.alloc(1));
 const image = new Image(Buffer.alloc(1));
+
+image.length // current images length
+// => number
 
 image.getImages(); // return stored images
 // => Buffer[]
@@ -113,7 +116,7 @@ image.custom(
     return index;
   }
 );
-// => number[]
+// => Promise<number[]>
 
 // return metadata for all images
 image.metadata();
@@ -143,101 +146,6 @@ const audio = new Audio();
 
 const _video = new core.Video();
 const video = new Video();
-
-/* shared */
-
-video.metadata();
-// => Promise<Ffmpeg.FfprobeData[]>
-
-video.convert("mp4");
-// => Promise<Buffer[]>
-
-video.custom(
-  /* async */ (command, index) => {
-    return command.fps(index).pipe();
-  }
-);
-// => (Writable | PassThrough)[]
-
-video.custom(
-  /* async */ (command, index) => {
-    command.fps(index).pipe();
-    return index;
-  }
-);
-// => number[]
-
-Video.newFfmpeg("");
-
-/* Independent */
-
-video.getVideos(); // return stored videos
-// => Buffer[]
-
-// This method filter non buffer values
-video.setVideos(
-  /* async */ (video, index) => {
-    return Buffer.concat([video, Buffer.alloc(index)]);
-  }
-);
-// => Promise<void>
-
-// This method filter non videos
-video.append(Buffer.alloc(1));
-// => Promise<void>
-
-video.extend(new Video(Buffer.alloc(1)));
-// => void
-
-video.clone();
-// => Video
-
-// this method filter non videos and return the new length of videos
-video.filter();
-// => Promise<number>
-
-Video.fromFile("video1.mp4", "video2.mp4");
-// => Promise<Video>
-
-Video.fromFile(
-  "https://example.com/video1.mp4",
-  "https://example.com/video2.mp4"
-);
-// Promise<Video>
-
-audio.getAudios(); // return stored videos
-// => Buffer[]
-
-// This method filter non buffer values
-audio.setAudios(
-  /* async */ (audio, index) => {
-    return Buffer.concat([audio, Buffer.alloc(index)]);
-  }
-);
-// => Promise<void>
-
-// This method filter non videos
-audio.append(Buffer.alloc(1));
-// => Promise<void>
-
-audio.extend(new Audio(Buffer.alloc(1)));
-// => void
-
-audio.clone();
-// => Audio
-
-// this method filter non videos and return the new length of videos
-audio.filter();
-// => Promise<number>
-
-Audio.fromFile("audio1.mp3", "audio2.mp3");
-// => Promise<Audio>
-
-Audio.fromFile(
-  "https://example.com/audio1.mp3",
-  "https://example.com/audio2.mp3"
-);
-// Promise<Audio>
 ```
 
 ### Text
@@ -248,67 +156,6 @@ import Text from "../../build/core/text.js";
 
 const _text = new core.Text();
 const text = new Text();
-
-text.getTexts(); // return stored texts
-// => Buffer[]
-
-// This method filter non buffer values
-text.setTexts(
-  /* async */ (text, index) => {
-    return Buffer.concat([text, Buffer.alloc(index)]);
-  }
-);
-// => Promise<void>
-
-// This method filter non texts
-text.append(Buffer.alloc(1));
-// => Promise<void>
-
-text.extend(new Text(Buffer.alloc(1)));
-// => void
-
-text.clone();
-// => Text
-
-// this method filter non texts and return the new length of texts
-text.filter();
-// => Promise<number>
-
-text.metadata();
-// => Promise<{ size: number; }[]>
-
-// Compress all your texts
-text.compress("gzip", { level: 9 });
-// => Promise<Buffer[]>
-
-// Decompress all your texts
-text.decompress("gunzip");
-// => Promise<Buffer[]>
-
-text.custom(async (text, index) => {
-  const gzip = await Text.gzipAsync(text, { level: index });
-  const gunzip = await Text.gunzipAsync(gzip);
-  return gunzip;
-});
-// => Promise<Buffer[]>
-
-text.custom(async (text, index) => {
-  const gzip = await Text.gzipAsync(text, { level: index });
-  const gunzip = await Text.gunzipAsync(gzip);
-  return gunzip.toString();
-});
-// => Promise<string[]>
-
-//! at the end everything is text, so you can pass any type of file
-
-Text.fromFile("image1.png", "video.mp4");
-// => Promise<Text>
-
-Text.fromFile(
-  "https://example.com/image1.png",
-  "https://example.com/audio.mp3"
-);
-// Promise<Text>
 ```
 
 ### CSV
@@ -319,59 +166,6 @@ import CSV from "../../build/core/csv.js";
 
 const _csv = new core.CSV(Buffer.alloc(1));
 const csv = new CSV(Buffer.alloc(1));
-
-csv.getCsvs(); // return stored csv
-// => Buffer[]
-
-// This method filter non buffer values
-csv.setCsvs(
-  /* async */ (csv, index) => {
-    return Buffer.concat([csv, Buffer.alloc(index)]);
-  }
-);
-// => Promise<void>
-
-// This method filter non csv
-csv.append(Buffer.alloc(1));
-// => Promise<void>
-
-csv.extend(new CSV(Buffer.alloc(1)));
-// => void
-
-csv.clone();
-// => CSV
-
-// this method filter non csv and return the new length of csv
-csv.filter();
-// => Promise<number>
-
-csv.metadata();
-// => Promise<{ size: number; rows: number; columns: number; }[]>
-
-// parse csvs
-csv.parse();
-// => Promise<any[]>
-
-// transform csvs
-csv.transform();
-// => Promise<any[]>
-
-csv.custom(async (csv, index) => {
-  const parse = await CSV.parse(csv, { comment: "#" });
-  const transform = await CSV.transform(parse, function (record) {
-    record.push(record.shift());
-    return record;
-  });
-  const stringify = await CSV.stringify(transform);
-  return stringify;
-});
-// => Promise<string[]>
-
-CSV.fromFile("csv1.csv", "csv2.csv");
-// => Promise<CSV>
-
-CSV.fromFile("https://example.com/csv1.csv", "https://example.com/csv2.csv");
-// Promise<CSV>
 ```
 
 ### PDF
@@ -382,54 +176,45 @@ import PDF from "../../build/core/pdf.js";
 
 const _pdf = new core.PDF(Buffer.alloc(1));
 const pdf = new PDF(Buffer.alloc(1));
-
-pdf.getPdfs(); // return stored pdf
-// => Buffer[]
-
-// This method filter non buffer values
-pdf.setPdfs(
-  /* async */ (pdf, index) => {
-    return Buffer.concat([pdf, Buffer.alloc(index)]);
-  }
-);
-// => Promise<void>
-
-// This method filter non pdf
-pdf.append(Buffer.alloc(1));
-// => Promise<void>
-
-pdf.extend(new PDF(Buffer.alloc(1)));
-// => void
-
-pdf.clone();
-// => PDF
-
-// this method filter non pdf and return the new length of pdf
-pdf.filter();
-// => Promise<number>
-
-pdf.metadata();
-// => Promise<{ title: string | undefined; author: string | undefined; subject: string | undefined; creator: string | undefined; keywords: string | undefined; producer: string | undefined; pageCount: number; pageIndices: number[]; creationDate: Date | undefined; modificationDate: Date | undefined; }[]>
-
-pdf.custom(async (pdf, index) => {
-  return pdf.addPage([index, index]);
-});
-// => Promise<PDFPage[]>
-
-PDF.fromFile("csv1.pdf", "csv2.pdf");
-// => Promise<PDF>
-
-PDF.fromFile("https://example.com/csv1.pdf", "https://example.com/csv2.pdf");
-// Promise<PDF>
 ```
 
 **Note:** There are more apis 😉
+
+# Versions
+
+## 0.6.0
+
+- Sync support.
+- Images screenshots (take screenshots from websites).
+- PDF generator (generate pdf from websites).
+- Stream implementation (not well tested) for CSV/Text.
+- Readable support (Core.toReadable).
+- Base64 support (Core.toBase64).
+- Text more metadata (charactersMap).
+- Text more customizable (compress/decompress).
+- Some APIs changed.
+- Performance optimizations.
+- Filter path/URL loaders.
+- deprecate input2buffer use Core.toBuffer.
+- Disable filter for CSV/Text append.
+- Improve code quality.
+- Update doc.
+
+## 0.5.0
+
+- Support for images, avs, pdfs, csvs, texts.
+- Async support.
+- Buffer support (Core.toBuffer).
+- File base loader.
+- URL loader.
 
 # Todo
 
 - fix bugs (<https://github.com/RYNBSD/file-processing/issues>)
 - add new features.
-- add streaming support
+- add streaming.
+- Text unzip.
+- Image watermark.
 
 # Support
 
