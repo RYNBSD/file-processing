@@ -1,7 +1,7 @@
 import type { InputFiles } from "../types/index.js";
 import { Readable, type Writable } from "node:stream";
 import { isAnyArrayBuffer, isUint8Array } from "node:util/types";
-import { readFile } from "node:fs/promises";
+import { readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import {
   any2buffer,
@@ -60,8 +60,7 @@ export default abstract class Core {
   static async loadUrl<T extends string | URL>(url: T): Promise<Buffer>;
   static async loadUrl<T extends string[] | URL[]>(url: T): Promise<Buffer[]>;
   static async loadUrl<T extends string | URL | string[] | URL[]>(url: T) {
-    if (Array.isArray(url))
-      return Promise.all(url.map((u) => Core.loadUrl(u)));
+    if (Array.isArray(url)) return Promise.all(url.map((u) => Core.loadUrl(u)));
 
     const res = await fetch(url);
     if (!res.ok) throw new Error(`${Core.name}: Can't fetch (${url})`);
@@ -135,5 +134,17 @@ export default abstract class Core {
 
     const buffer = await Core.toBuffer(input);
     return buffer.toString(encoding);
+  }
+
+  /**
+   * Save any type of inputs into file
+   */
+  static async toFile(...files: { path: string; input: InputFiles }[]) {
+    Promise.all(
+      files.map(async (file) => {
+        const buffer = await Core.toBuffer(file.input);
+        writeFile(file.path, buffer);
+      })
+    );
   }
 }

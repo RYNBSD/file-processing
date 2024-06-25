@@ -215,6 +215,7 @@ const pdf = new PDF(Buffer.alloc(1));
 - add streaming.
 - Text unzip.
 - Image watermark.
+- PDF merge.
 
 # Support
 

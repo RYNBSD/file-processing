@@ -4,6 +4,8 @@ import type {
   ImageFormats,
   ImageOptions,
   ImageSetCallback,
+  ImageWatermarkOptions,
+  InputFiles,
 } from "../types/index.js";
 import { FilterFile } from "../helper/index.js";
 import sharp from "sharp";
@@ -61,6 +63,34 @@ export default class Image extends Core {
   }
 
   /**
+   * Add watermark to image
+   */
+  async watermark(logo: InputFiles, options: ImageWatermarkOptions) {
+    const {
+      resize,
+      gravity = "center",
+      alpha = 0.5,
+      tile,
+      blend,
+      premultiplied,
+    } = options;
+
+    const buffer = await Core.toBuffer(logo);
+    const input = await Image.newSharp(buffer)
+      .resize(resize)
+      .ensureAlpha(alpha)
+      .toBuffer();
+
+    return Promise.all(
+      this.images.map((image) =>
+        Image.newSharp(image)
+          .composite([{ input, gravity, blend, tile, premultiplied }])
+          .toBuffer({ resolveWithObject: true })
+      )
+    );
+  }
+
+  /**
    * Convert image to another format
    */
   async convert<F extends ImageFormats>(format: F, options?: ImageOptions<F>) {
@@ -84,6 +114,31 @@ export default class Image extends Core {
 
   static async filter(...images: Buffer[]) {
     return new FilterFile(...images).image();
+  }
+
+  /**
+   * Extract buffer from return methods
+   */
+  static justBuffer(rtn: { data: Buffer; info: sharp.OutputInfo }): Buffer;
+  static justBuffer(
+    rtn: {
+      data: Buffer;
+      info: sharp.OutputInfo;
+    }[]
+  ): Buffer[];
+  static justBuffer(
+    rtn:
+      | {
+          data: Buffer;
+          info: sharp.OutputInfo;
+        }[]
+      | {
+          data: Buffer;
+          info: sharp.OutputInfo;
+        }
+  ) {
+    if (Array.isArray(rtn)) return rtn.map((r) => Image.justBuffer(r));
+    return rtn.data;
   }
 
   /**

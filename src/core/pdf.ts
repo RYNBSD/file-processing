@@ -82,6 +82,20 @@ export default class PDF extends Core {
     return documents.map((document) => document.getForm());
   }
 
+  async merge() {
+    const merge = await PDF.create();
+
+    const copies = await Promise.all(
+      this.pdfs.map(async (pdf) => {
+        const p = await PDF.load(pdf.buffer);
+        return merge.copyPages(p, p.getPageIndices());
+      })
+    );
+
+    copies.forEach((copied) => copied.forEach((page) => merge.addPage(page)));
+    return merge;
+  }
+
   async custom<T>(
     callback: PdfCustomDocumentCallback<T>,
     options?: LoadOptions
