@@ -7,6 +7,8 @@ import type {
 } from "pdf-lib";
 import type {
   PdfCustomDocumentCallback,
+  PDFFromImageOptions,
+  PDFMergeOptions,
   PDFSetCallback,
 } from "../types/index.js";
 import { PageSizes, PDFDocument } from "pdf-lib";
@@ -63,36 +65,38 @@ export default class PDF extends Core {
 
   override async metadata(options?: LoadOptions) {
     const documents = await this.getDocuments(options);
-    return documents.map((document) => ({
-      title: document.getTitle(),
-      author: document.getAuthor(),
-      subject: document.getSubject(),
-      creator: document.getCreator(),
-      keywords: document.getKeywords(),
-      producer: document.getProducer(),
-      pageCount: document.getPageCount(),
-      pageIndices: document.getPageIndices(),
-      creationDate: document.getCreationDate(),
-      modificationDate: document.getModificationDate(),
-    }));
+    return Promise.all(
+      documents.map(async (document) => ({
+        title: document.getTitle(),
+        author: document.getAuthor(),
+        subject: document.getSubject(),
+        creator: document.getCreator(),
+        keywords: document.getKeywords(),
+        producer: document.getProducer(),
+        pageCount: document.getPageCount(),
+        pageIndices: document.getPageIndices(),
+        creationDate: document.getCreationDate(),
+        modificationDate: document.getModificationDate(),
+      }))
+    );
   }
 
   async getPages(options?: LoadOptions) {
     const documents = await this.getDocuments(options);
-    return documents.map((document) => document.getPages());
+    return Promise.all(documents.map(async (document) => document.getPages()));
   }
 
   async getForm(options?: LoadOptions) {
     const documents = await this.getDocuments(options);
-    return documents.map((document) => document.getForm());
+    return Promise.all(documents.map(async (document) => document.getForm()));
   }
 
-  async merge() {
-    const merge = await PDF.create();
+  async merge(options?: PDFMergeOptions) {
+    const merge = await PDF.create(options?.create);
 
     const copies = await Promise.all(
       this.pdfs.map(async (pdf) => {
-        const p = await PDF.load(pdf.buffer);
+        const p = await PDF.load(pdf.buffer, options?.load);
         return merge.copyPages(p, p.getPageIndices());
       })
     );
@@ -124,12 +128,21 @@ export default class PDF extends Core {
   }
 
   /**
-   *
+   * Convert image to pdf
    * @param images - must be of format png or jpg
    */
-  static async fromImage<T extends Buffer>(images: T): Promise<PDFDocument>;
-  static async fromImage<T extends Buffer[]>(images: T): Promise<PDFDocument[]>;
-  static async fromImage<T extends Buffer | Buffer[]>(images: T) {
+  static async fromImage<T extends Buffer>(
+    images: T,
+    options?: PDFFromImageOptions
+  ): Promise<PDFDocument>;
+  static async fromImage<T extends Buffer[]>(
+    images: T,
+    options?: PDFFromImageOptions
+  ): Promise<PDFDocument[]>;
+  static async fromImage<T extends Buffer | Buffer[]>(
+    images: T,
+    options: PDFFromImageOptions = {}
+  ) {
     if (Array.isArray(images))
       return Promise.all(images.map((image) => PDF.fromImage(image)));
 
@@ -140,9 +153,11 @@ export default class PDF extends Core {
     if (isJPG.length === 0 && isPNG.length === 0)
       throw new Error(`${PDF.name}: Invalid images to convert to pdf`);
 
-    const pdf = await PDFDocument.create();
-    const page = pdf.addPage(PageSizes.A4);
-    const { width: pageWidth, height: pageHeight } = page.getSize();
+    const { pageSize = PageSizes.A4, scaleImage, position } = options;
+
+    const pdf = await PDFDocument.create(options.create);
+    const page = pdf.addPage(pageSize);
+    const pageDimensions = page.getSize();
 
     let pdfImage: PDFImage;
     if (isPNG.length > 0) {
@@ -151,14 +166,23 @@ export default class PDF extends Core {
       pdfImage = await pdf.embedJpg(images.buffer);
     }
 
-    const { width: imageWidth, height: imageHeight } = pdfImage.size();
-    // TODO: add scaling
+    let imageDimensions = pdfImage.size();
+    if (typeof scaleImage === "number") {
+      imageDimensions = pdfImage.scale(scaleImage);
+    } else if (Array.isArray(scaleImage)) {
+      imageDimensions = pdfImage.scaleToFit(scaleImage[0], scaleImage[1]);
+    } else {
+      imageDimensions = pdfImage.scaleToFit(
+        pageDimensions.width,
+        pageDimensions.height
+      );
+    }
 
     page.drawImage(pdfImage, {
-      x: 0,
-      y: 0,
-      width: pageWidth,
-      height: pageHeight,
+      x: position?.[0] ?? 0,
+      y: position?.[1] ?? 0,
+      width: imageDimensions.width,
+      height: imageDimensions.height,
     });
 
     return pdf;

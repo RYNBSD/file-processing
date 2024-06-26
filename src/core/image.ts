@@ -152,14 +152,6 @@ export default class Image extends Core {
     urls: T,
     options?: Omit<ScreenshotOptions, "encoding">
   ): Promise<Buffer[]>;
-  // static async screenshot<T extends string>(
-  //   urls: T,
-  //   options?: ScreenshotOptions & { encoding: "base64" }
-  // ): Promise<string>;
-  // static async screenshot<T extends string[]>(
-  //   urls: T,
-  //   options?: ScreenshotOptions & { encoding: "base64" }
-  // ): Promise<string[]>;
   static async screenshot<T extends string | string[]>(
     urls: T,
     options?: ScreenshotOptions

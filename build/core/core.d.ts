@@ -38,5 +38,12 @@ export default abstract class Core {
      */
     static toBase64<T extends InputFiles>(input: T, encoding?: "base64" | "base64url"): Promise<string>;
     static toBase64<T extends InputFiles[]>(input: T, encoding?: "base64" | "base64url"): Promise<string[]>;
+    /**
+     * Save any type of inputs into file
+     */
+    static toFile(...file: {
+        path: string;
+        input: InputFiles;
+    }[]): Promise<void[]>;
 }
 //# sourceMappingURL=core.d.ts.map

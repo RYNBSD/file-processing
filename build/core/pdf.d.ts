@@ -1,7 +1,7 @@
 /// <reference types="node" resolution-mode="require"/>
 import type { PDFOptions } from "puppeteer";
 import type { CreateOptions, LoadOptions, SaveOptions } from "pdf-lib";
-import type { PdfCustomDocumentCallback, PDFSetCallback } from "../types/index.js";
+import type { PdfCustomDocumentCallback, PDFFromImageOptions, PDFMergeOptions, PDFSetCallback } from "../types/index.js";
 import { PDFDocument } from "pdf-lib";
 import Core from "./core.js";
 export default class PDF extends Core {
@@ -29,9 +29,16 @@ export default class PDF extends Core {
     }[]>;
     getPages(options?: LoadOptions): Promise<import("pdf-lib").PDFPage[][]>;
     getForm(options?: LoadOptions): Promise<import("pdf-lib").PDFForm[]>;
+    merge(options?: PDFMergeOptions): Promise<PDFDocument>;
     custom<T>(callback: PdfCustomDocumentCallback<T>, options?: LoadOptions): Promise<Awaited<T>[]>;
     static fromFile(...path: string[]): Promise<PDF>;
     static fromUrl<T extends string[] | URL[]>(...url: T): Promise<PDF>;
+    /**
+     * Convert image to pdf
+     * @param images - must be of format png or jpg
+     */
+    static fromImage<T extends Buffer>(images: T, options?: PDFFromImageOptions): Promise<PDFDocument>;
+    static fromImage<T extends Buffer[]>(images: T, options?: PDFFromImageOptions): Promise<PDFDocument[]>;
     /**
      * Generate pdf from websites
      */

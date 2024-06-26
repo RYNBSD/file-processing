@@ -216,11 +216,11 @@ const pdf = new PDF(Buffer.alloc(1));
 
 - fix bugs (<https://github.com/RYNBSD/file-processing/issues>)
 - add new features.
-- add streaming.
+- add streaming. 🟠
 - Text unzip. 🟠
 - Image watermark. 🟠
 - PDF merge. 🟠
-- image to pdf
+- image to pdf 🟠
 
 # Support
 

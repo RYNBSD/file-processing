@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 import { Readable } from "node:stream";
 import { isAnyArrayBuffer, isUint8Array } from "node:util/types";
-import { readFile } from "node:fs/promises";
+import { readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { any2buffer, array2buffer, buffer2readable, isReadable, isReadableStream, isStream, readable2buffer, readablestream2buffer, stream2buffer, string2buffer, uint8array2buffer, } from "@ryn-bsd/from-buffer-to";
 import fetch from "node-fetch";
@@ -91,6 +91,17 @@ export default class Core {
                 return input;
             const buffer = yield Core.toBuffer(input);
             return buffer.toString(encoding);
+        });
+    }
+    /**
+     * Save any type of inputs into file
+     */
+    static toFile(...file) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return Promise.all(file.map((f) => __awaiter(this, void 0, void 0, function* () {
+                const buffer = yield Core.toBuffer(f.input);
+                return writeFile(f.path, buffer);
+            })));
         });
     }
 }

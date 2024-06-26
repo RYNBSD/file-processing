@@ -140,11 +140,11 @@ export default abstract class Core {
   /**
    * Save any type of inputs into file
    */
-  static async toFile(...files: { path: string; input: InputFiles }[]) {
+  static async toFile(...file: { path: string; input: InputFiles }[]) {
     return Promise.all(
-      files.map(async (file) => {
-        const buffer = await Core.toBuffer(file.input);
-        return writeFile(file.path, buffer);
+      file.map(async (f) => {
+        const buffer = await Core.toBuffer(f.input);
+        return writeFile(f.path, buffer);
       })
     );
   }

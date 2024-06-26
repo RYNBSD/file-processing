@@ -80,7 +80,7 @@ export default class Text extends Core {
     }
     decompressAsync(method, options) {
         return __awaiter(this, void 0, void 0, function* () {
-            return Promise.all(Text.decompress(this.texts, method, Text.gunzipAsync, Text.inflateAsync, Text.inflateRawAsync, Text.brotliDecompressAsync, options));
+            return Promise.all(Text.decompress(this.texts, method, Text.gunzipAsync, Text.inflateAsync, Text.inflateRawAsync, Text.brotliDecompressAsync, Text.unzipAsync, options));
         });
     }
     compressStream(method, options) {
@@ -92,14 +92,14 @@ export default class Text extends Core {
     decompressStream(method, options) {
         return __awaiter(this, void 0, void 0, function* () {
             const reads = yield Core.toReadable(this.texts);
-            return Text.decompress(reads, method, Text.gunzipStream, Text.inflateStream, Text.inflateRawStream, Text.brotliDecompressStream, options);
+            return Text.decompress(reads, method, Text.gunzipStream, Text.inflateStream, Text.inflateRawStream, Text.brotliDecompressStream, Text.unzipStream, options);
         });
     }
     compressSync(method, options) {
         return Text.compress(this.texts, method, Text.gzipSync, Text.deflateSync, Text.deflateRawSync, Text.brotliCompressSync, options);
     }
     decompressSync(method, options) {
-        return Text.decompress(this.texts, method, Text.gunzipSync, Text.inflateSync, Text.inflateRawSync, Text.brotliDecompressSync, options);
+        return Text.decompress(this.texts, method, Text.gunzipSync, Text.inflateSync, Text.inflateRawSync, Text.brotliDecompressSync, Text.unzipSync, options);
     }
     custom(callback) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -122,7 +122,7 @@ export default class Text extends Core {
             }
         });
     }
-    static decompress(array, method, gunzipFn, inflateFn, inflateRawFn, brotliDecompressFn, options) {
+    static decompress(array, method, gunzipFn, inflateFn, inflateRawFn, brotliDecompressFn, unzipFn, options) {
         return array.map((text) => {
             switch (method) {
                 case "gunzip":
@@ -133,6 +133,8 @@ export default class Text extends Core {
                     return inflateRawFn(text, options);
                 case "brotli-decompress":
                     return brotliDecompressFn(text, options);
+                case "unzip":
+                    return unzipFn(text, options);
                 default:
                     throw new TypeError(`${Text.name}: Invalid decompression method (${method})`);
             }
@@ -245,6 +247,17 @@ export default class Text extends Core {
             });
         });
     }
+    static unzipAsync(text_1) {
+        return __awaiter(this, arguments, void 0, function* (text, options = {}) {
+            return new Promise((resolve, reject) => {
+                zlib.unzip(text, options, (err, buf) => {
+                    if (err)
+                        return reject(err);
+                    resolve(buf);
+                });
+            });
+        });
+    }
     // Stream compression //
     static gzipStream(readable, options = {}) {
         const gzip = zlib.createGzip(options);
@@ -279,6 +292,10 @@ export default class Text extends Core {
         const brotliDecompress = zlib.createBrotliDecompress(options);
         return Core.stream(readable, brotliDecompress);
     }
+    static unzipStream(readable, options = {}) {
+        const unzip = zlib.createUnzip(options);
+        return Core.stream(readable, unzip);
+    }
     // Sync compression //
     static gzipSync(buffer, options = {}) {
         return zlib.gzipSync(buffer, options);
@@ -304,6 +321,9 @@ export default class Text extends Core {
     }
     static brotliDecompressSync(buffer, options = {}) {
         return zlib.brotliDecompressSync(buffer, options);
+    }
+    static unzipSync(buffer, options = {}) {
+        return zlib.unzipSync(buffer, options);
     }
 }
 //# sourceMappingURL=text.js.map

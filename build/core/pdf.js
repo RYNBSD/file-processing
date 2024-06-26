@@ -7,7 +7,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-import { PDFDocument } from "pdf-lib";
+import { PageSizes, PDFDocument } from "pdf-lib";
 import { FilterFile } from "../helper/index.js";
 import Core from "./core.js";
 export default class PDF extends Core {
@@ -56,30 +56,43 @@ export default class PDF extends Core {
     metadata(options) {
         return __awaiter(this, void 0, void 0, function* () {
             const documents = yield this.getDocuments(options);
-            return documents.map((document) => ({
-                title: document.getTitle(),
-                author: document.getAuthor(),
-                subject: document.getSubject(),
-                creator: document.getCreator(),
-                keywords: document.getKeywords(),
-                producer: document.getProducer(),
-                pageCount: document.getPageCount(),
-                pageIndices: document.getPageIndices(),
-                creationDate: document.getCreationDate(),
-                modificationDate: document.getModificationDate(),
-            }));
+            return Promise.all(documents.map((document) => __awaiter(this, void 0, void 0, function* () {
+                return ({
+                    title: document.getTitle(),
+                    author: document.getAuthor(),
+                    subject: document.getSubject(),
+                    creator: document.getCreator(),
+                    keywords: document.getKeywords(),
+                    producer: document.getProducer(),
+                    pageCount: document.getPageCount(),
+                    pageIndices: document.getPageIndices(),
+                    creationDate: document.getCreationDate(),
+                    modificationDate: document.getModificationDate(),
+                });
+            })));
         });
     }
     getPages(options) {
         return __awaiter(this, void 0, void 0, function* () {
             const documents = yield this.getDocuments(options);
-            return documents.map((document) => document.getPages());
+            return Promise.all(documents.map((document) => __awaiter(this, void 0, void 0, function* () { return document.getPages(); })));
         });
     }
     getForm(options) {
         return __awaiter(this, void 0, void 0, function* () {
             const documents = yield this.getDocuments(options);
-            return documents.map((document) => document.getForm());
+            return Promise.all(documents.map((document) => __awaiter(this, void 0, void 0, function* () { return document.getForm(); })));
+        });
+    }
+    merge(options) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const merge = yield PDF.create(options === null || options === void 0 ? void 0 : options.create);
+            const copies = yield Promise.all(this.pdfs.map((pdf) => __awaiter(this, void 0, void 0, function* () {
+                const p = yield PDF.load(pdf.buffer, options === null || options === void 0 ? void 0 : options.load);
+                return merge.copyPages(p, p.getPageIndices());
+            })));
+            copies.forEach((copied) => copied.forEach((page) => merge.addPage(page)));
+            return merge;
         });
     }
     custom(callback, options) {
@@ -100,6 +113,47 @@ export default class PDF extends Core {
             const buffer = yield Core.loadUrl(url);
             const pdfs = yield PDF.filter(...buffer);
             return new PDF(...pdfs);
+        });
+    }
+    static fromImage(images_1) {
+        return __awaiter(this, arguments, void 0, function* (images, options = {}) {
+            var _a, _b;
+            if (Array.isArray(images))
+                return Promise.all(images.map((image) => PDF.fromImage(image)));
+            const [isPNG, isJPG] = yield Promise.all([
+                new FilterFile(images).custom("png"),
+                new FilterFile(images).custom("jpg"),
+            ]);
+            if (isJPG.length === 0 && isPNG.length === 0)
+                throw new Error(`${PDF.name}: Invalid images to convert to pdf`);
+            const { pageSize = PageSizes.A4, scaleImage, position } = options;
+            const pdf = yield PDFDocument.create(options.create);
+            const page = pdf.addPage(pageSize);
+            const pageDimensions = page.getSize();
+            let pdfImage;
+            if (isPNG.length > 0) {
+                pdfImage = yield pdf.embedPng(images.buffer);
+            }
+            else {
+                pdfImage = yield pdf.embedJpg(images.buffer);
+            }
+            let imageDimensions = pdfImage.size();
+            if (typeof scaleImage === "number") {
+                imageDimensions = pdfImage.scale(scaleImage);
+            }
+            else if (Array.isArray(scaleImage)) {
+                imageDimensions = pdfImage.scaleToFit(scaleImage[0], scaleImage[1]);
+            }
+            else {
+                imageDimensions = pdfImage.scaleToFit(pageDimensions.width, pageDimensions.height);
+            }
+            page.drawImage(pdfImage, {
+                x: (_a = position === null || position === void 0 ? void 0 : position[0]) !== null && _a !== void 0 ? _a : 0,
+                y: (_b = position === null || position === void 0 ? void 0 : position[1]) !== null && _b !== void 0 ? _b : 0,
+                width: imageDimensions.width,
+                height: imageDimensions.height,
+            });
+            return pdf;
         });
     }
     static generate(htmls, options) {

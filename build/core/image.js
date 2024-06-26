@@ -54,6 +54,22 @@ export default class Image extends Core {
         });
     }
     /**
+     * Add watermark to image
+     */
+    watermark(logo, options) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const { resize, gravity = "center", alpha = 0.5, tile = false, blend = "over", premultiplied, } = options;
+            const buffer = yield Core.toBuffer(logo);
+            const input = yield Image.newSharp(buffer)
+                .resize(resize)
+                .ensureAlpha(alpha)
+                .toBuffer();
+            return Promise.all(this.images.map((image) => Image.newSharp(image)
+                .composite([{ input, gravity, blend, tile, premultiplied }])
+                .toBuffer({ resolveWithObject: true })));
+        });
+    }
+    /**
      * Convert image to another format
      */
     convert(format, options) {
@@ -76,14 +92,11 @@ export default class Image extends Core {
             return new FilterFile(...images).image();
         });
     }
-    // static async screenshot<T extends string>(
-    //   urls: T,
-    //   options?: ScreenshotOptions & { encoding: "base64" }
-    // ): Promise<string>;
-    // static async screenshot<T extends string[]>(
-    //   urls: T,
-    //   options?: ScreenshotOptions & { encoding: "base64" }
-    // ): Promise<string[]>;
+    static justBuffer(rtn) {
+        if (Array.isArray(rtn))
+            return rtn.map((r) => Image.justBuffer(r));
+        return rtn.data;
+    }
     static screenshot(urls, options) {
         return __awaiter(this, void 0, void 0, function* () {
             if (Array.isArray(urls))

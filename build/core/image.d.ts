@@ -1,6 +1,6 @@
 /// <reference types="node" resolution-mode="require"/>
 import type { ScreenshotOptions } from "puppeteer";
-import type { ImageCustomCallback, ImageFormats, ImageOptions, ImageSetCallback } from "../types/index.js";
+import type { ImageCustomCallback, ImageFormats, ImageOptions, ImageSetCallback, ImageWatermarkOptions, InputFiles } from "../types/index.js";
 import sharp from "sharp";
 import Core from "./core.js";
 export default class Image extends Core {
@@ -15,6 +15,13 @@ export default class Image extends Core {
     filter(): Promise<number>;
     metadata(): Promise<sharp.Metadata[]>;
     /**
+     * Add watermark to image
+     */
+    watermark(logo: InputFiles, options: ImageWatermarkOptions): Promise<{
+        data: Buffer;
+        info: sharp.OutputInfo;
+    }[]>;
+    /**
      * Convert image to another format
      */
     convert<F extends ImageFormats>(format: F, options?: ImageOptions<F>): Promise<{
@@ -26,6 +33,17 @@ export default class Image extends Core {
      */
     custom<T>(callback: ImageCustomCallback<T>): Promise<Awaited<T>[]>;
     static filter(...images: Buffer[]): Promise<Buffer[]>;
+    /**
+     * Extract buffer from return methods
+     */
+    static justBuffer(rtn: {
+        data: Buffer;
+        info: sharp.OutputInfo;
+    }): Buffer;
+    static justBuffer(rtn: {
+        data: Buffer;
+        info: sharp.OutputInfo;
+    }[]): Buffer[];
     /**
      * Take screenshot from websites
      */
