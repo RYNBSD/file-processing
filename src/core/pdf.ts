@@ -1,10 +1,15 @@
 import type { PDFOptions } from "puppeteer";
-import type { CreateOptions, LoadOptions, SaveOptions } from "pdf-lib";
+import type {
+  CreateOptions,
+  LoadOptions,
+  PDFImage,
+  SaveOptions,
+} from "pdf-lib";
 import type {
   PdfCustomDocumentCallback,
   PDFSetCallback,
 } from "../types/index.js";
-import { PDFDocument } from "pdf-lib";
+import { PageSizes, PDFDocument } from "pdf-lib";
 import { FilterFile } from "../helper/index.js";
 import Core from "./core.js";
 
@@ -116,6 +121,47 @@ export default class PDF extends Core {
     const buffer = await Core.loadUrl(url);
     const pdfs = await PDF.filter(...buffer);
     return new PDF(...pdfs);
+  }
+
+  /**
+   *
+   * @param images - must be of format png or jpg
+   */
+  static async fromImage<T extends Buffer>(images: T): Promise<PDFDocument>;
+  static async fromImage<T extends Buffer[]>(images: T): Promise<PDFDocument[]>;
+  static async fromImage<T extends Buffer | Buffer[]>(images: T) {
+    if (Array.isArray(images))
+      return Promise.all(images.map((image) => PDF.fromImage(image)));
+
+    const [isPNG, isJPG] = await Promise.all([
+      new FilterFile(images).custom("png"),
+      new FilterFile(images).custom("jpg"),
+    ]);
+    if (isJPG.length === 0 && isPNG.length === 0)
+      throw new Error(`${PDF.name}: Invalid images to convert to pdf`);
+
+    const pdf = await PDFDocument.create();
+    const page = pdf.addPage(PageSizes.A4);
+    const { width: pageWidth, height: pageHeight } = page.getSize();
+
+    let pdfImage: PDFImage;
+    if (isPNG.length > 0) {
+      pdfImage = await pdf.embedPng(images.buffer);
+    } else {
+      pdfImage = await pdf.embedJpg(images.buffer);
+    }
+
+    const { width: imageWidth, height: imageHeight } = pdfImage.size();
+    // TODO: add scaling
+
+    page.drawImage(pdfImage, {
+      x: 0,
+      y: 0,
+      width: pageWidth,
+      height: pageHeight,
+    });
+
+    return pdf;
   }
 
   /**

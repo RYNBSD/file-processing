@@ -57,6 +57,7 @@ export type ImageWatermarkOptions = {
     | "west"
     | "northwest"
     | "center"
+    | (string & {})
     | number;
   /**
    * Between 0 - 1
@@ -65,6 +66,7 @@ export type ImageWatermarkOptions = {
   alpha?: number;
   /**
    * repeat image
+   * @default false
    */
   tile?: boolean;
   /**

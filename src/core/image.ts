@@ -70,8 +70,8 @@ export default class Image extends Core {
       resize,
       gravity = "center",
       alpha = 0.5,
-      tile,
-      blend,
+      tile = false,
+      blend = "over",
       premultiplied,
     } = options;
 

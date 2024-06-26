@@ -37,7 +37,8 @@ export type TextDecompressionMethods =
   | "gunzip"
   | "inflate"
   | "inflate-raw"
-  | "brotli-decompress";
+  | "brotli-decompress"
+  | "unzip";
 
 export type GunzipOptions = Parameters<typeof zlib.gunzipSync>[1];
 
@@ -49,6 +50,8 @@ export type BrotliDecompressOptions = Parameters<
   typeof zlib.brotliDecompressSync
 >[1];
 
+export type UnzipOptions = Parameters<typeof zlib.unzipSync>[1];
+
 export type TextDecompressionOptions<T extends TextDecompressionMethods> =
   T extends "gunzip"
     ? GunzipOptions
@@ -58,6 +61,8 @@ export type TextDecompressionOptions<T extends TextDecompressionMethods> =
     ? InflateRawOptions
     : T extends "brotli-decompress"
     ? BrotliDecompressOptions
+    : T extends "unzip"
+    ? UnzipOptions
     : never;
 
 export type TextDecompressFn<

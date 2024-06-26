@@ -60,7 +60,8 @@ export default abstract class Core {
   static async loadUrl<T extends string | URL>(url: T): Promise<Buffer>;
   static async loadUrl<T extends string[] | URL[]>(url: T): Promise<Buffer[]>;
   static async loadUrl<T extends string | URL | string[] | URL[]>(url: T) {
-    if (Array.isArray(url)) return Promise.all(url.map((u) => Core.loadUrl(u)));
+    if (Array.isArray(url))
+      return Promise.all(url.map((u) => Core.loadUrl(u)));
 
     const res = await fetch(url);
     if (!res.ok) throw new Error(`${Core.name}: Can't fetch (${url})`);
@@ -143,7 +144,7 @@ export default abstract class Core {
     Promise.all(
       files.map(async (file) => {
         const buffer = await Core.toBuffer(file.input);
-        writeFile(file.path, buffer);
+        return writeFile(file.path, buffer);
       })
     );
   }

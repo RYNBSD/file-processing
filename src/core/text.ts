@@ -16,6 +16,7 @@ import type {
   TextDecompressionMethods,
   TextDecompressionOptions,
   TextSetCallback,
+  UnzipOptions,
 } from "../types/index.js";
 import zlib from "node:zlib";
 import { FilterFile } from "../helper/index.js";
@@ -123,6 +124,7 @@ export default class Text extends Core {
         Text.inflateAsync,
         Text.inflateRawAsync,
         Text.brotliDecompressAsync,
+        Text.unzipAsync,
         options
       )
     );
@@ -156,6 +158,7 @@ export default class Text extends Core {
       Text.inflateStream,
       Text.inflateRawStream,
       Text.brotliDecompressStream,
+      Text.unzipStream,
       options
     );
   }
@@ -186,6 +189,7 @@ export default class Text extends Core {
       Text.inflateSync,
       Text.inflateRawSync,
       Text.brotliDecompressSync,
+      Text.unzipSync,
       options
     );
   }
@@ -236,6 +240,7 @@ export default class Text extends Core {
     inflateFn: TextDecompressFn<R, T[number], M>,
     inflateRawFn: TextDecompressFn<R, T[number], M>,
     brotliDecompressFn: TextDecompressFn<R, T[number], M>,
+    unzipFn: TextDecompressFn<R, T[number], M>,
     options?: TextDecompressionOptions<M>
   ): R[] {
     return array.map((text) => {
@@ -248,6 +253,8 @@ export default class Text extends Core {
           return inflateRawFn(text, options);
         case "brotli-decompress":
           return brotliDecompressFn(text, options);
+        case "unzip":
+          return unzipFn(text, options);
         default:
           throw new TypeError(
             `${Text.name}: Invalid decompression method (${method})`
@@ -352,6 +359,15 @@ export default class Text extends Core {
     });
   }
 
+  static async unzipAsync(text: Buffer, options: UnzipOptions = {}) {
+    return new Promise<Buffer>((resolve, reject) => {
+      zlib.unzip(text, options, (err, buf) => {
+        if (err) return reject(err);
+        resolve(buf);
+      });
+    });
+  }
+
   // Stream compression //
 
   static gzipStream(readable: Readable, options: GzipOptions = {}) {
@@ -359,27 +375,18 @@ export default class Text extends Core {
     return Core.stream(readable, gzip);
   }
 
-  static deflateStream(
-    readable: Readable,
-
-    options: DeflateOptions = {}
-  ) {
+  static deflateStream(readable: Readable, options: DeflateOptions = {}) {
     const deflate = zlib.createDeflate(options);
     return Core.stream(readable, deflate);
   }
 
-  static deflateRawStream(
-    readable: Readable,
-
-    options: DeflateRawOptions = {}
-  ) {
+  static deflateRawStream(readable: Readable, options: DeflateRawOptions = {}) {
     const deflateRaw = zlib.createDeflateRaw(options);
     return Core.stream(readable, deflateRaw);
   }
 
   static brotliCompressStream(
     readable: Readable,
-
     options: BrotliCompressOptions = {}
   ) {
     const brotliCompress = zlib.createBrotliCompress(options);
@@ -388,40 +395,32 @@ export default class Text extends Core {
 
   // Stream decompression //
 
-  static gunzipStream(
-    readable: Readable,
-
-    options: GunzipOptions = {}
-  ) {
+  static gunzipStream(readable: Readable, options: GunzipOptions = {}) {
     const gunzip = zlib.createGunzip(options);
     return Core.stream(readable, gunzip);
   }
 
-  static inflateStream(
-    readable: Readable,
-
-    options: InflateOptions = {}
-  ) {
+  static inflateStream(readable: Readable, options: InflateOptions = {}) {
     const inflate = zlib.createInflate(options);
     return Core.stream(readable, inflate);
   }
 
-  static inflateRawStream(
-    readable: Readable,
-
-    options: InflateRawOptions = {}
-  ) {
+  static inflateRawStream(readable: Readable, options: InflateRawOptions = {}) {
     const inflateRaw = zlib.createInflateRaw(options);
     return Core.stream(readable, inflateRaw);
   }
 
   static brotliDecompressStream(
     readable: Readable,
-
     options: BrotliDecompressOptions = {}
   ) {
     const brotliDecompress = zlib.createBrotliDecompress(options);
     return Core.stream(readable, brotliDecompress);
+  }
+
+  static unzipStream(readable: Readable, options: UnzipOptions = {}) {
+    const unzip = zlib.createUnzip(options);
+    return Core.stream(readable, unzip);
   }
 
   // Sync compression //
@@ -464,5 +463,9 @@ export default class Text extends Core {
     options: BrotliDecompressOptions = {}
   ) {
     return zlib.brotliDecompressSync(buffer, options);
+  }
+
+  static unzipSync(buffer: Buffer, options: UnzipOptions = {}) {
+    return zlib.unzipSync(buffer, options);
   }
 }

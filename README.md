@@ -210,12 +210,16 @@ const pdf = new PDF(Buffer.alloc(1));
 
 # Todo
 
+🔴 - not implemented yet.
+🟠 - implemented, not test yet.
+🟢 - tested.
+
 - fix bugs (<https://github.com/RYNBSD/file-processing/issues>)
 - add new features.
 - add streaming.
-- Text unzip.
-- Image watermark.
-- PDF merge.
+- Text unzip. 🟠
+- Image watermark. 🟠
+- PDF merge. 🟠
 - image to pdf
 
 # Support
