@@ -36,7 +36,7 @@ Did you enjoy the process ? (no) 🫠 <br />
 
 # Intro
 
-You have read those questions or not, this is an async/sync file processor, that handle convert, compression, generate, decompression, metadata, parse, filter, customize... and more!
+This is an async/sync file processor, that handle convert, compression, generate, decompression, metadata, parse, filter, customize... and more!
 
 # How it work ?
 
@@ -182,6 +182,9 @@ const pdf = new PDF(Buffer.alloc(1));
 
 # Versions
 
+## 0.7.0
+
+
 ## 0.6.0
 
 - Sync support.
@@ -211,7 +214,7 @@ const pdf = new PDF(Buffer.alloc(1));
 # Todo
 
 🔴 - not implemented yet.
-🟠 - implemented, not test yet.
+🟠 - implemented, not tested yet.
 🟢 - tested.
 
 - fix bugs (<https://github.com/RYNBSD/file-processing/issues>)
@@ -221,6 +224,10 @@ const pdf = new PDF(Buffer.alloc(1));
 - Image watermark. 🟠
 - PDF merge. 🟠
 - image to pdf 🟠
+- Extract text from image 🔴
+- Improve filter for setters 🔴
+- Add glob loader 🔴
+- Add dir loader 🔴
 
 # Support
 

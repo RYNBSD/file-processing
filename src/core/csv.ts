@@ -1,3 +1,4 @@
+import type { Readable } from "node:stream";
 import type {
   CSVCustomCallback,
   CSVSetCallback,
@@ -72,17 +73,19 @@ export default class CSV extends Core {
 
   // Async //
 
-  async parseAsync(options?: ParseOptions) {
-    return Promise.all(this.csvs.map((c) => CSV.parseAsync(c, options)));
+  async parseAsync<P = any>(options?: ParseOptions) {
+    return Promise.all(
+      this.csvs.map((c) => CSV.parseAsync<Buffer, P>(c, options))
+    );
   }
 
-  async transformAsync<T, U>(
+  async transformAsync<T, U, P = any>(
     parsed: any[],
     handler: TransformHandler<T, U>,
     options?: TransformOptions
   ) {
     return Promise.all(
-      parsed.map((p) => CSV.transformAsync(p, handler, options))
+      parsed.map((p) => CSV.transformAsync<T, U, P>(p, handler, options))
     );
   }
 
@@ -94,7 +97,7 @@ export default class CSV extends Core {
 
   async parseStream(options?: ParseOptions) {
     const reads = await Core.toReadable(this.csvs);
-    return reads.map((csv) => Core.stream(csv, CSV.parseStream(options)));
+    return reads.map((csv) => CSV.parseStream(csv, options));
   }
 
   async transformStream<T, U>(
@@ -103,14 +106,12 @@ export default class CSV extends Core {
     options?: TransformOptions
   ) {
     const reads = await Core.toReadable(parsed);
-    return reads.map((csv) =>
-      Core.stream(csv, CSV.transformStream(handler, options))
-    );
+    return reads.map((csv) => CSV.transformStream(csv, handler, options));
   }
 
   async stringifyStream(csvs: StringifyInput, options?: StringifyOptions) {
     const reads = await Core.toReadable(csvs);
-    return reads.map((csv) => Core.stream(csv, CSV.stringifyStream(options)));
+    return reads.map((csv) => CSV.stringifyStream(csv, options));
   }
 
   // Sync //
@@ -216,19 +217,20 @@ export default class CSV extends Core {
     return csv.generate(options);
   }
 
-  static parseStream(options: ParseOptions = {}) {
-    return csv.parse(options);
+  static parseStream(readable: Readable, options: ParseOptions = {}) {
+    return Core.stream(readable, csv.parse(options));
   }
 
   static transformStream<T, U>(
+    readable: Readable,
     handler: TransformHandler<T, U>,
     options: TransformOptions = {}
   ) {
-    return csv.transform(options, handler);
+    return Core.stream(readable, csv.transform(options, handler));
   }
 
-  static stringifyStream(options: StringifyOptions = {}) {
-    return csv.stringify(options);
+  static stringifyStream(readable: Readable, options: StringifyOptions = {}) {
+    return Core.stream(readable, csv.stringify(options));
   }
 
   // Sync //
