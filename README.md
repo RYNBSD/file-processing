@@ -224,7 +224,7 @@ const pdf = new PDF(Buffer.alloc(1));
 - Text unzip. 🟢
 - Image watermark. 🟢
 - PDF merge. 🟠
-- image to pdf. 🟠
+- image to pdf. 🟢
 - Extract text from images/videos. 🔴
 - Improve filter for setters. 🔴
 - Add glob loader. 🔴

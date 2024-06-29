@@ -144,7 +144,7 @@ export default class PDF extends Core {
     options: PDFFromImageOptions = {}
   ) {
     if (Array.isArray(images))
-      return Promise.all(images.map((image) => PDF.fromImage(image)));
+      return Promise.all(images.map((image) => PDF.fromImage(image, options)));
 
     const [isPNG, isJPG] = await Promise.all([
       new FilterFile(images).custom("png"),

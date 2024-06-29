@@ -1,6 +1,6 @@
-import { PDFDocument } from "pdf-lib";
+import { PDFDocument, PageSizes } from "pdf-lib";
+import { imageBuffer } from "../index.js";
 import PDF from "../../build/core/pdf.js";
-import fs from "node:fs";
 
 describe("PDF", () => {
   it("set/get/append/extend/clone", async () => {
@@ -63,7 +63,7 @@ describe("PDF", () => {
     await expect(async () => {
       await PDF.generate("123");
     }).rejects.toThrow();
-  })
+  });
 
   it("(static) fromFile", async () => {
     const file = await PDF.fromFile("asset/pdf.pdf");
@@ -83,6 +83,28 @@ describe("PDF", () => {
     await expect(async () => {
       await PDF.fromUrl("asset/pdf.pdf");
     }).rejects.toThrow();
+  });
+
+  it("(static) fromImage", async () => {
+    const image1 = await imageBuffer();
+    const image2 = await imageBuffer();
+    const image3 = await imageBuffer();
+
+    const pdfs = await PDF.fromImage([image1, image2, image3], {
+      pageSize: PageSizes.A4,
+      scaleImage: [50, 50]
+    });
+
+    pdfs.forEach((pdf) => expect(pdf).toBeInstanceOf(PDFDocument));
+
+    await Promise.all(
+      pdfs.map(async (pdf, index) => {
+        PDF.toFile({
+          path: `tmp/${index}.pdf`,
+          input: await pdf.save(),
+        });
+      })
+    );
   });
 
   it("(static) save/toBuffer/load", async () => {

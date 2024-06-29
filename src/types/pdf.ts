@@ -1,4 +1,8 @@
-import type { CreateOptions, LoadOptions, PDFDocument, PDFPage } from "pdf-lib";
+import type {
+  CreateOptions,
+  LoadOptions,
+  PDFDocument,
+} from "pdf-lib";
 
 export type PDFMergeOptions = {
   create?: CreateOptions;
@@ -10,7 +14,7 @@ export type PDFFromImageOptions = {
   /**
    * @default PageSizes.A4
    */
-  pageSize?: PDFPage | [width: number, height: number];
+  pageSize?: [width: number, height: number];
   /**
    * @default [pageWidth,pageHeight]
    */

@@ -119,7 +119,7 @@ export default class PDF extends Core {
         return __awaiter(this, arguments, void 0, function* (images, options = {}) {
             var _a, _b;
             if (Array.isArray(images))
-                return Promise.all(images.map((image) => PDF.fromImage(image)));
+                return Promise.all(images.map((image) => PDF.fromImage(image, options)));
             const [isPNG, isJPG] = yield Promise.all([
                 new FilterFile(images).custom("png"),
                 new FilterFile(images).custom("jpg"),
@@ -137,6 +137,7 @@ export default class PDF extends Core {
             else {
                 pdfImage = yield pdf.embedJpg(images.buffer);
             }
+            console.log("scaleImage: ", scaleImage);
             let imageDimensions = pdfImage.size();
             if (typeof scaleImage === "number") {
                 imageDimensions = pdfImage.scale(scaleImage);
