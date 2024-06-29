@@ -63,6 +63,18 @@ export default class Image extends Core {
             const input = yield Image.newSharp(buffer)
                 .resize(resize)
                 .ensureAlpha(alpha)
+                .composite([
+                {
+                    input: Buffer.from([0, 0, 0, 128]),
+                    raw: {
+                        width: 1,
+                        height: 1,
+                        channels: 4,
+                    },
+                    tile: true,
+                    blend: "dest-in",
+                },
+            ])
                 .toBuffer();
             return Promise.all(this.images.map((image) => Image.newSharp(image)
                 .composite([{ input, gravity, blend, tile, premultiplied }])

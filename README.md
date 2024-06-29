@@ -182,7 +182,9 @@ const pdf = new PDF(Buffer.alloc(1));
 
 # Versions
 
-## 0.7.0
+## 0.7.0 - Current
+
+- Text unzip (support)
 
 ## 0.6.0
 
@@ -220,16 +222,16 @@ const pdf = new PDF(Buffer.alloc(1));
 - add new features.
 - add streaming. 🟠
 - Text unzip. 🟢
-- Image watermark. 🟠
+- Image watermark. 🟢
 - PDF merge. 🟠
-- image to pdf 🟠
-- Extract text from images/videos 🔴
-- Improve filter for setters 🔴
-- Add glob loader 🔴
-- Add dir loader 🔴
-- Collect images/audios/videos from websites 🔴
-- Add files formatter 🔴
-- Add files minifier 🔴
+- image to pdf. 🟠
+- Extract text from images/videos. 🔴
+- Improve filter for setters. 🔴
+- Add glob loader. 🔴
+- Add dir loader. 🔴
+- Collect images/audios/videos from websites. 🔴
+- Add files formatter. 🔴
+- Add files minifier. 🔴
 
 # Support
 

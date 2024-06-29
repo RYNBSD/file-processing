@@ -1,3 +1,4 @@
+import fs from "node:fs"
 import { faker } from "@faker-js/faker";
 import Image from "../../build/core/image.js";
 import { imageBuffer } from "../index.js";
@@ -36,6 +37,21 @@ describe("Image", () => {
     await expect(async () => {
       await new Image(Buffer.alloc(1)).metadata();
     }).rejects.toThrow();
+  });
+
+  it("watermark", async () => {
+    const logo = await fs.promises.readFile("asset/watermark.png")
+    const image = await imageBuffer();
+
+    const watermark = await new Image(image).watermark(logo, {
+      resize: { width: 50, height: 50 },
+    });
+
+    expect(watermark).toHaveLength(1);
+
+    await Image.toFile(
+      { path: "tmp/watermark.png", input: Image.justBuffer(watermark[0]) },
+    );
   });
 
   it("convert", async () => {

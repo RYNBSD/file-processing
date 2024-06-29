@@ -2,5 +2,6 @@ __test__
 asset
 coverage
 node_modules
+tmp
 example
 jest.config.js
