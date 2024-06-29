@@ -65,7 +65,7 @@ import Image from "../../build/core/image.js";
 const _image = new core.Image(Buffer.alloc(1));
 const image = new Image(Buffer.alloc(1));
 
-image.length // current images length
+image.length; // current images length
 // => number
 
 image.getImages(); // return stored images
@@ -184,7 +184,6 @@ const pdf = new PDF(Buffer.alloc(1));
 
 ## 0.7.0
 
-
 ## 0.6.0
 
 - Sync support.
@@ -224,10 +223,11 @@ const pdf = new PDF(Buffer.alloc(1));
 - Image watermark. 🟠
 - PDF merge. 🟠
 - image to pdf 🟠
-- Extract text from image 🔴
+- Extract text from images/videos 🔴
 - Improve filter for setters 🔴
 - Add glob loader 🔴
 - Add dir loader 🔴
+- Collect images/audios/videos from websites 🔴
 
 # Support
 
