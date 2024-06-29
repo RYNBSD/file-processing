@@ -81,7 +81,7 @@ export default class Image extends Core {
       .ensureAlpha(alpha)
       .composite([
         {
-          input: Buffer.from([0, 0, 0, 128]),
+          input: Buffer.from([0, 0, 0, Math.round(255 * alpha)]),
           raw: {
             width: 1,
             height: 1,
