@@ -219,7 +219,7 @@ const pdf = new PDF(Buffer.alloc(1));
 - fix bugs (<https://github.com/RYNBSD/file-processing/issues>)
 - add new features.
 - add streaming. 🟠
-- Text unzip. 🟠
+- Text unzip. 🟢
 - Image watermark. 🟠
 - PDF merge. 🟠
 - image to pdf 🟠
@@ -228,6 +228,8 @@ const pdf = new PDF(Buffer.alloc(1));
 - Add glob loader 🔴
 - Add dir loader 🔴
 - Collect images/audios/videos from websites 🔴
+- Add files formatter 🔴
+- Add files minifier 🔴
 
 # Support
 

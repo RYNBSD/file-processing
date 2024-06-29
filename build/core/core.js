@@ -22,8 +22,8 @@ export default class Core {
     static stream(readable, writable) {
         return readable.pipe(writable);
     }
-    static initBrowser() {
-        return puppeteer.launch();
+    static initBrowser(options) {
+        return puppeteer.launch(options);
     }
     static loadFile(path) {
         return __awaiter(this, void 0, void 0, function* () {

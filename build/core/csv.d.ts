@@ -1,5 +1,6 @@
 /// <reference types="node" resolution-mode="require"/>
 /// <reference types="node" resolution-mode="require"/>
+import type { Readable } from "node:stream";
 import type { CSVCustomCallback, CSVSetCallback, GenerateOptions, ParseOptions, StringifyInput, StringifyOptions, TransformHandler, TransformOptions, TransformSyncHandler } from "../types/index.js";
 import * as csv from "csv";
 import Core from "./core.js";
@@ -18,8 +19,8 @@ export default class CSV extends Core {
         rows: any;
         columns: any;
     }[]>;
-    parseAsync(options?: ParseOptions): Promise<any[]>;
-    transformAsync<T, U>(parsed: any[], handler: TransformHandler<T, U>, options?: TransformOptions): Promise<any[]>;
+    parseAsync<P = any>(options?: ParseOptions): Promise<Awaited<P>[]>;
+    transformAsync<T, U, P = any>(parsed: any[], handler: TransformHandler<T, U>, options?: TransformOptions): Promise<Awaited<P>[]>;
     stringifyAsync(csvs: StringifyInput, options?: StringifyOptions): Promise<string[]>;
     parseStream(options?: ParseOptions): Promise<import("stream").Writable[]>;
     transformStream<T, U>(parsed: any[], handler: TransformHandler<T, U>, options?: TransformOptions): Promise<import("stream").Writable[]>;
@@ -36,9 +37,9 @@ export default class CSV extends Core {
     static transformAsync<T, U, P = any>(records: T[], handler: TransformHandler<T, U>, options?: TransformOptions): Promise<P>;
     static stringifyAsync(input: StringifyInput, options?: StringifyOptions): Promise<string>;
     static generateStream(options?: GenerateOptions): csv.generator.Generator;
-    static parseStream(options?: ParseOptions): csv.parser.Parser;
-    static transformStream<T, U>(handler: TransformHandler<T, U>, options?: TransformOptions): csv.transformer.Transformer;
-    static stringifyStream(options?: StringifyOptions): csv.stringifier.Stringifier;
+    static parseStream(readable: Readable, options?: ParseOptions): import("stream").Writable;
+    static transformStream<T, U>(readable: Readable, handler: TransformHandler<T, U>, options?: TransformOptions): import("stream").Writable;
+    static stringifyStream(readable: Readable, options?: StringifyOptions): import("stream").Writable;
     static generateSync(options?: GenerateOptions): string & any[];
     static parseSync<T extends Buffer | string>(input: T, options?: ParseOptions): any;
     static transformSync<T, U>(records: T[], handler: TransformSyncHandler<T, U>, options?: TransformOptions): U[];

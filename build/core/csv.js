@@ -82,19 +82,19 @@ export default class CSV extends Core {
     parseStream(options) {
         return __awaiter(this, void 0, void 0, function* () {
             const reads = yield Core.toReadable(this.csvs);
-            return reads.map((csv) => Core.stream(csv, CSV.parseStream(options)));
+            return reads.map((csv) => CSV.parseStream(csv, options));
         });
     }
     transformStream(parsed, handler, options) {
         return __awaiter(this, void 0, void 0, function* () {
             const reads = yield Core.toReadable(parsed);
-            return reads.map((csv) => Core.stream(csv, CSV.transformStream(handler, options)));
+            return reads.map((csv) => CSV.transformStream(csv, handler, options));
         });
     }
     stringifyStream(csvs, options) {
         return __awaiter(this, void 0, void 0, function* () {
             const reads = yield Core.toReadable(csvs);
-            return reads.map((csv) => Core.stream(csv, CSV.stringifyStream(options)));
+            return reads.map((csv) => CSV.stringifyStream(csv, options));
         });
     }
     // Sync //
@@ -189,14 +189,14 @@ export default class CSV extends Core {
     static generateStream(options = {}) {
         return csv.generate(options);
     }
-    static parseStream(options = {}) {
-        return csv.parse(options);
+    static parseStream(readable, options = {}) {
+        return Core.stream(readable, csv.parse(options));
     }
-    static transformStream(handler, options = {}) {
-        return csv.transform(options, handler);
+    static transformStream(readable, handler, options = {}) {
+        return Core.stream(readable, csv.transform(options, handler));
     }
-    static stringifyStream(options = {}) {
-        return csv.stringify(options);
+    static stringifyStream(readable, options = {}) {
+        return Core.stream(readable, csv.stringify(options));
     }
     // Sync //
     static generateSync(options = {}) {

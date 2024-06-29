@@ -1,4 +1,4 @@
-import { Writable } from "stream";
+import fs from "node:fs";
 import Text from "../../build/core/text.js";
 
 describe("Text", () => {
@@ -37,6 +37,7 @@ describe("Text", () => {
     const gzip = await textCompress.compressAsync("gzip");
     let textDecompress = new Text(...gzip);
     await textDecompress.decompressAsync("gunzip");
+    await textDecompress.decompressAsync("unzip");
 
     const deflate = await textCompress.compressAsync("deflate");
     textDecompress = new Text(...deflate);
@@ -93,6 +94,7 @@ describe("Text", () => {
     const gzip = textCompress.compressSync("gzip");
     let textDecompress = new Text(...gzip);
     textDecompress.decompressSync("gunzip");
+    textDecompress.decompressSync("unzip");
 
     const deflate = textCompress.compressSync("deflate");
     textDecompress = new Text(...deflate);

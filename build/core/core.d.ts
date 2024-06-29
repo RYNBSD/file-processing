@@ -12,7 +12,7 @@ export default abstract class Core {
     abstract filter(): Promise<number>;
     abstract metadata(): Promise<unknown>;
     static stream(readable: Readable, writable: Writable): Writable;
-    static initBrowser(): Promise<puppeteer.Browser>;
+    static initBrowser(options?: puppeteer.PuppeteerLaunchOptions): Promise<puppeteer.Browser>;
     /**
      * load file from path
      */

@@ -39,8 +39,8 @@ export default abstract class Core {
     return readable.pipe(writable);
   }
 
-  static initBrowser() {
-    return puppeteer.launch();
+  static initBrowser(options?: puppeteer.PuppeteerLaunchOptions) {
+    return puppeteer.launch(options);
   }
 
   /**
