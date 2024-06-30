@@ -214,9 +214,9 @@ const pdf = new PDF(Buffer.alloc(1));
 
 # Todo
 
-🔴 - not implemented yet.
-🟠 - implemented, not tested yet.
-🟢 - tested.
+🔴 - not implemented yet. <br />
+🟠 - implemented, not tested yet. <br />
+🟢 - tested. <br />
 
 - fix bugs (<https://github.com/RYNBSD/file-processing/issues>)
 - add new features.
