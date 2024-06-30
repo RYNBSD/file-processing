@@ -44,6 +44,17 @@ describe("PDF", () => {
     expect(form).toHaveLength(1);
   });
 
+  it("merge", async () => {
+    const buffers = await PDF.loadFile([
+      "asset/pdf.pdf",
+      "asset/pdf.pdf",
+      "asset/pdf.pdf",
+    ]);
+    const document = await new PDF(...buffers).merge();
+    expect(document).toBeInstanceOf(PDFDocument);
+    await PDF.toFile({ path: "tmp/merge.pdf", input: await document.save() });
+  });
+
   it("custom", async () => {
     const pdf = await PDF.fromFile("asset/pdf.pdf");
     const result = await pdf.custom((pdf) => pdf.flush());
@@ -92,7 +103,7 @@ describe("PDF", () => {
 
     const pdfs = await PDF.fromImage([image1, image2, image3], {
       pageSize: PageSizes.A4,
-      scaleImage: [50, 50]
+      scaleImage: [50, 50],
     });
 
     pdfs.forEach((pdf) => expect(pdf).toBeInstanceOf(PDFDocument));

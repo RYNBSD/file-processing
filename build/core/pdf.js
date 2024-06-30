@@ -137,7 +137,6 @@ export default class PDF extends Core {
             else {
                 pdfImage = yield pdf.embedJpg(images.buffer);
             }
-            console.log("scaleImage: ", scaleImage);
             let imageDimensions = pdfImage.size();
             if (typeof scaleImage === "number") {
                 imageDimensions = pdfImage.scale(scaleImage);

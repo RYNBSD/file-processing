@@ -13,7 +13,9 @@
   },
   "exports": {
     ".": "./build/index.js",
-    "./src": "./build/*"
+    "./core": "./build/core/*",
+    "./helper": "./build/helper/*",
+    "./types": "./build/types/*"
   },
   "types": "./src/types/index.d.ts",
   "keywords": [],

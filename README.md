@@ -182,11 +182,21 @@ const pdf = new PDF(Buffer.alloc(1));
 
 # Versions
 
-## 0.7.0 - Current
+## Next
 
-- Text unzip (support)
+- Refactor code to optimize performance.
+- Full code documentation.
+- Add prettier and eslint.
+- Full organize code to build next version (scalability).
 
-## 0.6.0
+## 0.7.0 - Working
+
+- Text unzip.
+- Image watermark.
+- PDF merge.
+- Image to pdf.
+
+## 0.6.0 - Current
 
 - Sync support.
 - Images screenshots (take screenshots from websites).
@@ -223,7 +233,7 @@ const pdf = new PDF(Buffer.alloc(1));
 - add streaming. 🟠
 - Text unzip. 🟢
 - Image watermark. 🟢
-- PDF merge. 🟠
+- PDF merge. 🟢
 - image to pdf. 🟢
 - Extract text from images/videos. 🔴
 - Improve filter for setters. 🔴
@@ -232,6 +242,7 @@ const pdf = new PDF(Buffer.alloc(1));
 - Collect images/audios/videos from websites. 🔴
 - Add files formatter. 🔴
 - Add files minifier. 🔴
+- Add static new (to create safe new instance). 🔴
 
 # Support
 
