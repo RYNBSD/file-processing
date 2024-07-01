@@ -45,14 +45,10 @@ describe("PDF", () => {
   });
 
   it("merge", async () => {
-    const buffers = await PDF.loadFile([
-      "asset/pdf.pdf",
-      "asset/pdf.pdf",
-      "asset/pdf.pdf",
-    ]);
+    const buffers = await PDF.loadFile(["asset/pdf.pdf", "asset/pdf.pdf", "asset/pdf.pdf"]);
     const document = await new PDF(...buffers).merge();
     expect(document).toBeInstanceOf(PDFDocument);
-    await PDF.toFile({ path: "tmp/merge.pdf", input: await document.save() });
+    await PDF.toFile([{ path: "tmp/merge.pdf", input: await document.save() }]);
   });
 
   it("custom", async () => {
@@ -86,9 +82,7 @@ describe("PDF", () => {
   });
 
   it("(static) fromUrl", async () => {
-    const pdf = await PDF.fromUrl(
-      "https://cse.unl.edu/~cbourke/ComputerScienceOne.pdf"
-    );
+    const pdf = await PDF.fromUrl("https://cse.unl.edu/~cbourke/ComputerScienceOne.pdf");
     expect(pdf).toBeInstanceOf(PDF);
 
     await expect(async () => {
@@ -110,20 +104,18 @@ describe("PDF", () => {
 
     await Promise.all(
       pdfs.map(async (pdf, index) => {
-        PDF.toFile({
-          path: `tmp/${index}.pdf`,
-          input: await pdf.save(),
-        });
-      })
+        PDF.toFile([
+          {
+            path: `tmp/${index}.pdf`,
+            input: await pdf.save(),
+          },
+        ]);
+      }),
     );
   });
 
   it("(static) save/toBuffer/load", async () => {
-    const pdf = await PDF.fromFile(
-      "asset/pdf.pdf",
-      "asset/pdf.pdf",
-      "asset/pdf.pdf"
-    );
+    const pdf = await PDF.fromFile("asset/pdf.pdf", "asset/pdf.pdf", "asset/pdf.pdf");
     const documents = await Promise.all(pdf.getPdfs().map((b) => PDF.load(b)));
 
     const save = await PDF.save(documents);
@@ -141,14 +133,8 @@ describe("PDF", () => {
   });
 
   it("(static) document", async () => {
-    const pdf = await PDF.fromFile(
-      "asset/pdf.pdf",
-      "asset/pdf.pdf",
-      "asset/pdf.pdf"
-    );
-    const documents = await Promise.all(
-      pdf.getPdfs().map((b) => PDF.document().load(b))
-    );
+    const pdf = await PDF.fromFile("asset/pdf.pdf", "asset/pdf.pdf", "asset/pdf.pdf");
+    const documents = await Promise.all(pdf.getPdfs().map((b) => PDF.document().load(b)));
     expect(documents).toHaveLength(3);
     expect(documents[0]).toBeInstanceOf(PDFDocument);
   });

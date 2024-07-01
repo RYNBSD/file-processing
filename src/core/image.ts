@@ -27,13 +27,13 @@ export default class Image extends Core {
   }
 
   async setImages<T>(callback: ImageSetCallback<T>) {
-    const images = await Promise.all(
-      this.images.map((image, index) => callback(image, index))
-    );
-    const filteredImages = images.filter((image) =>
-      Buffer.isBuffer(image)
-    ) as Buffer[];
-    this.images = filteredImages;
+    const images = await Promise.all(this.images.map(async (image, index) => callback(image, index)));
+
+    const filteredImages = images.filter((image) => Buffer.isBuffer(image) && image.length > 0) as Buffer[];
+    const validImages = await Image.filter(...filteredImages);
+
+    this.images = validImages;
+    return this.length;
   }
 
   override async append(...images: Buffer[]) {
@@ -57,23 +57,14 @@ export default class Image extends Core {
   }
 
   override async metadata() {
-    return Promise.all(
-      this.images.map((image) => Image.newSharp(image).metadata())
-    );
+    return Promise.all(this.images.map(async (image) => Image.newSharp(image).metadata()));
   }
 
   /**
    * Add watermark to image
    */
   async watermark(logo: InputFiles, options: ImageWatermarkOptions) {
-    const {
-      resize,
-      gravity = "center",
-      alpha = 0.5,
-      tile = false,
-      blend = "over",
-      premultiplied,
-    } = options;
+    const { resize, gravity = "center", alpha = 0.5, tile = false, blend = "over", premultiplied } = options;
 
     const buffer = await Core.toBuffer(logo);
     const input = await Image.newSharp(buffer)
@@ -94,11 +85,11 @@ export default class Image extends Core {
       .toBuffer();
 
     return Promise.all(
-      this.images.map((image) =>
+      this.images.map(async (image) =>
         Image.newSharp(image)
           .composite([{ input, gravity, blend, tile, premultiplied }])
-          .toBuffer({ resolveWithObject: true })
-      )
+          .toBuffer({ resolveWithObject: true }),
+      ),
     );
   }
 
@@ -107,11 +98,11 @@ export default class Image extends Core {
    */
   async convert<F extends ImageFormats>(format: F, options?: ImageOptions<F>) {
     return Promise.all(
-      this.images.map((image) =>
+      this.images.map(async (image) =>
         Image.newSharp(image).toFormat(format, options).toBuffer({
           resolveWithObject: true,
-        })
-      )
+        }),
+      ),
     );
   }
 
@@ -119,9 +110,7 @@ export default class Image extends Core {
    * Custom image processing
    */
   async custom<T>(callback: ImageCustomCallback<T>): Promise<Awaited<T>[]> {
-    return Promise.all(
-      this.images.map((image, index) => callback(Image.newSharp(image), index))
-    );
+    return Promise.all(this.images.map(async (image, index) => callback(Image.newSharp(image), index)));
   }
 
   static async filter(...images: Buffer[]) {
@@ -136,7 +125,7 @@ export default class Image extends Core {
     rtn: {
       data: Buffer;
       info: sharp.OutputInfo;
-    }[]
+    }[],
   ): Buffer[];
   static justBuffer(
     rtn:
@@ -147,7 +136,7 @@ export default class Image extends Core {
       | {
           data: Buffer;
           info: sharp.OutputInfo;
-        }
+        },
   ) {
     if (Array.isArray(rtn)) return rtn.map((r) => Image.justBuffer(r));
     return rtn.data;
@@ -156,27 +145,19 @@ export default class Image extends Core {
   /**
    * Take screenshot from websites
    */
-  static async screenshot<T extends string>(
-    urls: T,
-    options?: Omit<ScreenshotOptions, "encoding">
-  ): Promise<Buffer>;
+  static async screenshot<T extends string>(urls: T, options?: Omit<ScreenshotOptions, "encoding">): Promise<Buffer>;
   static async screenshot<T extends string[]>(
     urls: T,
-    options?: Omit<ScreenshotOptions, "encoding">
+    options?: Omit<ScreenshotOptions, "encoding">,
   ): Promise<Buffer[]>;
-  static async screenshot<T extends string | string[]>(
-    urls: T,
-    options?: ScreenshotOptions
-  ) {
-    if (Array.isArray(urls))
-      return Promise.all(urls.map((url) => Image.screenshot(url, options)));
+  static async screenshot<T extends string | string[]>(urls: T, options?: ScreenshotOptions) {
+    if (Array.isArray(urls)) return Promise.all(urls.map(async (url) => Image.screenshot(url, options)));
 
     const browser = await Core.initBrowser();
     const page = await browser.newPage();
 
     const res = await page.goto(urls, { waitUntil: "networkidle2" });
-    if (res === null || !res.ok())
-      throw new Error(`${Image.name}: Can\'t fetch (${urls})`);
+    if (res === null || !res.ok()) throw new Error(`${Image.name}: Can't fetch (${urls})`);
 
     const buffer = await page.screenshot(options);
     await browser.close();
@@ -198,10 +179,7 @@ export default class Image extends Core {
   /**
    * new Instance of sharp
    */
-  static newSharp<T extends Buffer | string | undefined = undefined>(
-    image?: T,
-    options?: sharp.SharpOptions
-  ) {
+  static newSharp<T extends Buffer | string | undefined = undefined>(image?: T, options?: sharp.SharpOptions) {
     return sharp(image, options).clone();
   }
 }

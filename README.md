@@ -75,7 +75,7 @@ image.getImages(); // return stored images
 image.setImages(
   /* async */ (image, index) => {
     return Buffer.concat([image, Buffer.alloc(index)]);
-  }
+  },
 );
 // => Promise<void>
 
@@ -99,22 +99,16 @@ image.convert("jpeg", { quality: 100 });
 
 image.custom(
   /* async */ (sharp, index) => {
-    return sharp
-      .resize({ width: 1280, height: 720, fit: "cover" })
-      .blur(index)
-      .toBuffer();
-  }
+    return sharp.resize({ width: 1280, height: 720, fit: "cover" }).blur(index).toBuffer();
+  },
 );
 // => Promise<Buffer[]>
 
 image.custom(
   /* async */ (sharp, index) => {
-    sharp
-      .resize({ width: 1280, height: 720, fit: "cover" })
-      .blur(index)
-      .toBuffer();
+    sharp.resize({ width: 1280, height: 720, fit: "cover" }).blur(index).toBuffer();
     return index;
-  }
+  },
 );
 // => Promise<number[]>
 
@@ -125,10 +119,7 @@ image.metadata();
 Image.fromFile("image1.png", "image2.png");
 // => Promise<Image>
 
-Image.fromFile(
-  "https://example.com/image1.png",
-  "https://example.com/image2.png"
-);
+Image.fromFile("https://example.com/image1.png", "https://example.com/image2.png");
 // Promise<Image>
 
 // Create a new sharp instance
@@ -188,6 +179,8 @@ const pdf = new PDF(Buffer.alloc(1));
 - Full code documentation.
 - Add prettier and eslint.
 - Full organize code to build next version (scalability).
+- Add benchmarks.
+- Add examples.
 
 ## 0.7.0 - Working
 
@@ -195,6 +188,12 @@ const pdf = new PDF(Buffer.alloc(1));
 - Image watermark.
 - PDF merge.
 - Image to pdf.
+- Fast file save (Core.toFile)
+- Improve code quality.
+- Improve security by adding eslint security plugin.
+- Text/CSV setter filter empty buffers.
+- Update doc.
+- Performance optimizations.
 
 ## 0.6.0 - Current
 
@@ -243,6 +242,7 @@ const pdf = new PDF(Buffer.alloc(1));
 - Add files formatter. 🔴
 - Add files minifier. 🔴
 - Add static new (to create safe new instance). 🔴
+- Video watermark. 🔴
 
 # Support
 

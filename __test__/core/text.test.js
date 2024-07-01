@@ -134,9 +134,7 @@ describe("Text", () => {
   });
 
   it("(static) fromUrl", async () => {
-    const text = await Text.fromUrl(
-      "https://cse.unl.edu/~cbourke/ComputerScienceOne.pdf"
-    );
+    const text = await Text.fromUrl("https://cse.unl.edu/~cbourke/ComputerScienceOne.pdf");
     expect(text).toBeInstanceOf(Text);
   });
 });

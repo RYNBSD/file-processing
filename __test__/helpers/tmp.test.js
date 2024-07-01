@@ -11,7 +11,7 @@ describe("TmpFile", () => {
 
     const tmpFile = await new TmpFile(video, audio, image, pdf).init();
     expect(tmpFile.paths).toHaveLength(4);
-    
+
     await tmpFile.clean();
     expect(tmpFile.paths).toHaveLength(0);
   });

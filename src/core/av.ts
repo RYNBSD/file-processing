@@ -24,14 +24,14 @@ abstract class AV extends Core {
     const tmpFile = await new TmpFile(...this.avs).init();
     const result = await Promise.all(
       tmpFile.paths.map(
-        (av) =>
+        async (av) =>
           new Promise<FfprobeData>((resolve, reject) => {
             AV.newFfmpeg(av).ffprobe((err, metadata) => {
               if (err) return reject(err);
               resolve(metadata);
             });
-          })
-      )
+          }),
+      ),
     );
     await tmpFile.clean();
     return result;
@@ -41,12 +41,9 @@ abstract class AV extends Core {
     const tmpFile = await new TmpFile(...this.avs).init();
 
     const result = await Promise.all(
-      tmpFile.paths.map((p) => {
+      tmpFile.paths.map(async (p) => {
         return new Promise<Buffer>((resolve, reject) => {
-          const output = path.join(
-            tmpFile.tmp!.path,
-            TmpFile.generateFileName(format)
-          );
+          const output = path.join(tmpFile.tmp!.path, TmpFile.generateFileName(format));
           AV.newFfmpeg(p, options)
             .on("end", () => {
               readFile(output).then(resolve).catch(reject);
@@ -55,7 +52,7 @@ abstract class AV extends Core {
             .output(output, { end: true })
             .run();
         });
-      })
+      }),
     );
 
     await tmpFile.clean();
@@ -72,9 +69,7 @@ abstract class AV extends Core {
    */
   async custom<T>(callback: AVCustomCallback<T>): Promise<Awaited<T>[]> {
     const tmpFile = await new TmpFile(...this.avs).init();
-    const result = await Promise.all(
-      tmpFile.paths.map((path, index) => callback(AV.newFfmpeg(path), index))
-    );
+    const result = await Promise.all(tmpFile.paths.map(async (path, index) => callback(AV.newFfmpeg(path), index)));
     await tmpFile.clean();
     return result;
   }
@@ -82,15 +77,8 @@ abstract class AV extends Core {
   /**
    * new Instance of ffmpeg
    */
-  static newFfmpeg<T extends Readable | string>(
-    av: T,
-    options?: ffmpeg.FfmpegCommandOptions
-  ) {
-    return ffmpeg(options)
-      .clone()
-      .setFfmpegPath(ffmpegPath)
-      .setFfprobePath(ffprobePath)
-      .input(av);
+  static newFfmpeg<T extends Readable | string>(av: T, options?: ffmpeg.FfmpegCommandOptions) {
+    return ffmpeg(options).clone().setFfmpegPath(ffmpegPath).setFfprobePath(ffprobePath).input(av);
   }
 }
 
@@ -104,13 +92,13 @@ export class Video extends AV {
   }
 
   async setVideos<T>(callback: AVSetCallback<T>) {
-    const videos = await Promise.all(
-      this.avs.map((video, index) => callback(video, index))
-    );
-    const filteredVideos = videos.filter((video) =>
-      Buffer.isBuffer(video)
-    ) as Buffer[];
-    this.avs = filteredVideos;
+    const videos = await Promise.all(this.avs.map(async (video, index) => callback(video, index)));
+
+    const filteredVideos = videos.filter((video) => Buffer.isBuffer(video) && video.length > 0) as Buffer[];
+    const validVideos = await Video.filter(...filteredVideos);
+
+    this.avs = validVideos;
+    return this.length;
   }
 
   override async append(...videos: Buffer[]) {
@@ -160,13 +148,13 @@ export class Audio extends AV {
   }
 
   async setAudios<T>(callback: AVSetCallback<T>) {
-    const audios = await Promise.all(
-      this.avs.map((audio, index) => callback(audio, index))
-    );
-    const filteredVideos = audios.filter((audio) =>
-      Buffer.isBuffer(audio)
-    ) as Buffer[];
-    this.avs = filteredVideos;
+    const audios = await Promise.all(this.avs.map(async (audio, index) => callback(audio, index)));
+
+    const filteredAudios = audios.filter((audio) => Buffer.isBuffer(audio) && audio.length > 0) as Buffer[];
+    const validAudios = await Audio.filter(...filteredAudios);
+
+    this.avs = validAudios;
+    return this.length;
   }
 
   override async append(...audios: Buffer[]) {

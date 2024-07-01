@@ -20,10 +20,7 @@ describe("AV", () => {
     const tmpFile = await new TmpFile().init();
 
     const buffer = await new Video(read).custom((command) => {
-      const output = path.join(
-        tmpFile.tmp.path,
-        TmpFile.generateFileName("avi")
-      );
+      const output = path.join(tmpFile.tmp.path, TmpFile.generateFileName("avi"));
       return new Promise((resolve, reject) => {
         command
           .preset("divx")
@@ -91,9 +88,7 @@ describe("Video", () => {
   });
 
   it("(static) fromUrl", async () => {
-    const video = await Video.fromUrl(
-      "https://videos.pexels.com/video-files/2802271/2802271-hd_1920_1080_30fps.mp4"
-    );
+    const video = await Video.fromUrl("https://videos.pexels.com/video-files/2802271/2802271-hd_1920_1080_30fps.mp4");
     expect(video).toBeInstanceOf(Video);
     expect(video.getVideos()).toHaveLength(1);
   });
@@ -131,9 +126,7 @@ describe("Audio", () => {
   });
 
   it("(static) fromUrl", async () => {
-    const audio = await Audio.fromUrl(
-      "http://commondatastorage.googleapis.com/codeskulptor-assets/week7-button.m4a"
-    );
+    const audio = await Audio.fromUrl("http://commondatastorage.googleapis.com/codeskulptor-assets/week7-button.m4a");
     expect(audio).toBeInstanceOf(Audio);
     expect(audio.getAudios()).toHaveLength(1);
   });

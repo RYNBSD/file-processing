@@ -49,10 +49,12 @@ describe("Image", () => {
 
     expect(watermark).toHaveLength(1);
 
-    await Image.toFile({
-      path: "tmp/watermark.png",
-      input: Image.justBuffer(watermark[0]),
-    });
+    await Image.toFile([
+      {
+        path: "tmp/watermark.png",
+        input: Image.justBuffer(watermark[0]),
+      },
+    ]);
   });
 
   it("convert", async () => {
@@ -70,11 +72,7 @@ describe("Image", () => {
     const buffer = await imageBuffer();
 
     const custom = await new Image(buffer).custom((sharp) => {
-      return sharp
-        .jpeg()
-        .resize({ width: 1280, height: 720, fit: "fill" })
-        .blur()
-        .toBuffer();
+      return sharp.jpeg().resize({ width: 1280, height: 720, fit: "fill" }).blur().toBuffer();
     });
     expect(custom).toHaveLength(1);
   });

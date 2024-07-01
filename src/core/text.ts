@@ -42,13 +42,10 @@ export default class Text extends Core {
   }
 
   async setTexts<T>(callback: TextSetCallback<T>) {
-    const texts = await Promise.all(
-      this.texts.map((text, index) => callback(text, index))
-    );
-    const filteredTexts = texts.filter((text) =>
-      Buffer.isBuffer(text)
-    ) as Buffer[];
+    const texts = await Promise.all(this.texts.map(async (text, index) => callback(text, index)));
+    const filteredTexts = texts.filter((text) => Buffer.isBuffer(text) && text.length > 0) as Buffer[];
     this.texts = filteredTexts;
+    return this.length;
   }
 
   override async append(...texts: Buffer[]) {
@@ -68,7 +65,7 @@ export default class Text extends Core {
 
   override async filter() {
     this.texts = await Text.filter(...this.texts);
-    return this.texts.length;
+    return this.length;
   }
 
   /**
@@ -91,14 +88,11 @@ export default class Text extends Core {
       this.texts.map(async (text) => ({
         size: text.length,
         charactersMap: this.charactersMap(text),
-      }))
+      })),
     );
   }
 
-  async compressAsync<T extends TextCompressionMethods>(
-    method: T,
-    options?: TextCompressionOptions<T>
-  ) {
+  async compressAsync<T extends TextCompressionMethods>(method: T, options?: TextCompressionOptions<T>) {
     return Promise.all(
       Text.compress(
         this.texts,
@@ -107,15 +101,12 @@ export default class Text extends Core {
         Text.deflateAsync,
         Text.deflateRawAsync,
         Text.brotliCompressAsync,
-        options
-      )
+        options,
+      ),
     );
   }
 
-  async decompressAsync<T extends TextDecompressionMethods>(
-    method: T,
-    options?: TextDecompressionOptions<T>
-  ) {
+  async decompressAsync<T extends TextDecompressionMethods>(method: T, options?: TextDecompressionOptions<T>) {
     return Promise.all(
       Text.decompress(
         this.texts,
@@ -125,15 +116,12 @@ export default class Text extends Core {
         Text.inflateRawAsync,
         Text.brotliDecompressAsync,
         Text.unzipAsync,
-        options
-      )
+        options,
+      ),
     );
   }
 
-  async compressStream<T extends TextCompressionMethods>(
-    method: T,
-    options?: TextCompressionOptions<T>
-  ) {
+  async compressStream<T extends TextCompressionMethods>(method: T, options?: TextCompressionOptions<T>) {
     const reads = await Core.toReadable(this.texts);
     return Text.compress(
       reads,
@@ -142,14 +130,11 @@ export default class Text extends Core {
       Text.deflateStream,
       Text.deflateRawStream,
       Text.brotliCompressStream,
-      options
+      options,
     );
   }
 
-  async decompressStream<T extends TextDecompressionMethods>(
-    method: T,
-    options?: TextDecompressionOptions<T>
-  ) {
+  async decompressStream<T extends TextDecompressionMethods>(method: T, options?: TextDecompressionOptions<T>) {
     const reads = await Core.toReadable(this.texts);
     return Text.decompress(
       reads,
@@ -159,14 +144,11 @@ export default class Text extends Core {
       Text.inflateRawStream,
       Text.brotliDecompressStream,
       Text.unzipStream,
-      options
+      options,
     );
   }
 
-  compressSync<T extends TextCompressionMethods>(
-    method: T,
-    options?: TextCompressionOptions<T>
-  ) {
+  compressSync<T extends TextCompressionMethods>(method: T, options?: TextCompressionOptions<T>) {
     return Text.compress(
       this.texts,
       method,
@@ -174,14 +156,11 @@ export default class Text extends Core {
       Text.deflateSync,
       Text.deflateRawSync,
       Text.brotliCompressSync,
-      options
+      options,
     );
   }
 
-  decompressSync<T extends TextDecompressionMethods>(
-    method: T,
-    options?: TextDecompressionOptions<T>
-  ) {
+  decompressSync<T extends TextDecompressionMethods>(method: T, options?: TextDecompressionOptions<T>) {
     return Text.decompress(
       this.texts,
       method,
@@ -190,26 +169,22 @@ export default class Text extends Core {
       Text.inflateRawSync,
       Text.brotliDecompressSync,
       Text.unzipSync,
-      options
+      options,
     );
   }
 
   async custom<T>(callback: TextCustomCallback<T>): Promise<Awaited<T>[]> {
-    return Promise.all(this.texts.map(callback));
+    return Promise.all(this.texts.map(async (text, index) => callback(text, index)));
   }
 
-  static compress<
-    R,
-    T extends Buffer[] | Readable[],
-    M extends TextCompressionMethods
-  >(
+  static compress<R, T extends Buffer[] | Readable[], M extends TextCompressionMethods>(
     array: T,
     method: M,
     gzipFn: TextCompressFn<R, T[number], M>,
     deflateFn: TextCompressFn<R, T[number], M>,
     deflateRawFn: TextCompressFn<R, T[number], M>,
     brotliCompressFn: TextCompressFn<R, T[number], M>,
-    options?: TextCompressionOptions<M>
+    options?: TextCompressionOptions<M>,
   ): R[] {
     return array.map((text) => {
       switch (method) {
@@ -222,18 +197,12 @@ export default class Text extends Core {
         case "brotli-compress":
           return brotliCompressFn(text, options);
         default:
-          throw new TypeError(
-            `${Text.name}: Invalid compression method (${method})`
-          );
+          throw new TypeError(`${Text.name}: Invalid compression method (${method})`);
       }
     });
   }
 
-  static decompress<
-    R,
-    T extends Buffer[] | Readable[],
-    M extends TextDecompressionMethods
-  >(
+  static decompress<R, T extends Buffer[] | Readable[], M extends TextDecompressionMethods>(
     array: T,
     method: M,
     gunzipFn: TextDecompressFn<R, T[number], M>,
@@ -241,7 +210,7 @@ export default class Text extends Core {
     inflateRawFn: TextDecompressFn<R, T[number], M>,
     brotliDecompressFn: TextDecompressFn<R, T[number], M>,
     unzipFn: TextDecompressFn<R, T[number], M>,
-    options?: TextDecompressionOptions<M>
+    options?: TextDecompressionOptions<M>,
   ): R[] {
     return array.map((text) => {
       switch (method) {
@@ -256,9 +225,7 @@ export default class Text extends Core {
         case "unzip":
           return unzipFn(text, options);
         default:
-          throw new TypeError(
-            `${Text.name}: Invalid decompression method (${method})`
-          );
+          throw new TypeError(`${Text.name}: Invalid decompression method (${method})`);
       }
     });
   }
@@ -306,10 +273,7 @@ export default class Text extends Core {
     });
   }
 
-  static async brotliCompressAsync(
-    text: Buffer,
-    options: BrotliCompressOptions = {}
-  ) {
+  static async brotliCompressAsync(text: Buffer, options: BrotliCompressOptions = {}) {
     return new Promise<Buffer>((resolve, reject) => {
       zlib.brotliCompress(text, options, (err, buf) => {
         if (err) return reject(err);
@@ -347,10 +311,7 @@ export default class Text extends Core {
     });
   }
 
-  static async brotliDecompressAsync(
-    text: Buffer,
-    options: BrotliDecompressOptions = {}
-  ) {
+  static async brotliDecompressAsync(text: Buffer, options: BrotliDecompressOptions = {}) {
     return new Promise<Buffer>((resolve, reject) => {
       zlib.brotliDecompress(text, options, (err, buf) => {
         if (err) return reject(err);
@@ -385,10 +346,7 @@ export default class Text extends Core {
     return Core.stream(readable, deflateRaw);
   }
 
-  static brotliCompressStream(
-    readable: Readable,
-    options: BrotliCompressOptions = {}
-  ) {
+  static brotliCompressStream(readable: Readable, options: BrotliCompressOptions = {}) {
     const brotliCompress = zlib.createBrotliCompress(options);
     return Core.stream(readable, brotliCompress);
   }
@@ -410,10 +368,7 @@ export default class Text extends Core {
     return Core.stream(readable, inflateRaw);
   }
 
-  static brotliDecompressStream(
-    readable: Readable,
-    options: BrotliDecompressOptions = {}
-  ) {
+  static brotliDecompressStream(readable: Readable, options: BrotliDecompressOptions = {}) {
     const brotliDecompress = zlib.createBrotliDecompress(options);
     return Core.stream(readable, brotliDecompress);
   }
@@ -437,10 +392,7 @@ export default class Text extends Core {
     return zlib.deflateRawSync(buffer, options);
   }
 
-  static brotliCompressSync(
-    buffer: Buffer,
-    options: BrotliCompressOptions = {}
-  ) {
+  static brotliCompressSync(buffer: Buffer, options: BrotliCompressOptions = {}) {
     return zlib.brotliCompressSync(buffer, options);
   }
 
@@ -458,10 +410,7 @@ export default class Text extends Core {
     return zlib.inflateRawSync(buffer, options);
   }
 
-  static brotliDecompressSync(
-    buffer: Buffer,
-    options: BrotliDecompressOptions = {}
-  ) {
+  static brotliDecompressSync(buffer: Buffer, options: BrotliDecompressOptions = {}) {
     return zlib.brotliDecompressSync(buffer, options);
   }
 

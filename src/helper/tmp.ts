@@ -20,8 +20,7 @@ export default class TmpFile {
 
   private async createFn(file: Buffer) {
     const ext = (await isFileNode.type(file))?.ext ?? "";
-    if (ext.length === 0)
-      throw new Error(`${TmpFile.name}: Unknown file when create`);
+    if (ext.length === 0) throw new Error(`${TmpFile.name}: Unknown file when create`);
 
     const fileName = TmpFile.generateFileName(ext);
     const fullPath = path.join(this.tmp!.path, fileName);

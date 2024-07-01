@@ -31,11 +31,10 @@ export default class CSV extends Core {
   }
 
   async setCsvs<T>(callback: CSVSetCallback<T>) {
-    const csvs = await Promise.all(
-      this.csvs.map((csv, index) => callback(csv, index))
-    );
-    const filteredCsvs = csvs.filter((csv) => Buffer.isBuffer(csv)) as Buffer[];
+    const csvs = await Promise.all(this.csvs.map(async (csv, index) => callback(csv, index)));
+    const filteredCsvs = csvs.filter((csv) => Buffer.isBuffer(csv) && csv.length > 0) as Buffer[];
     this.csvs = filteredCsvs;
+    return this.length;
   }
 
   override async append(...csvs: Buffer[]) {
@@ -67,30 +66,22 @@ export default class CSV extends Core {
           rows: parse.length,
           columns: parse?.[0]?.length ?? 0,
         };
-      })
+      }),
     );
   }
 
   // Async //
 
   async parseAsync<P = any>(options?: ParseOptions) {
-    return Promise.all(
-      this.csvs.map((c) => CSV.parseAsync<Buffer, P>(c, options))
-    );
+    return Promise.all(this.csvs.map(async (c) => CSV.parseAsync<Buffer, P>(c, options)));
   }
 
-  async transformAsync<T, U, P = any>(
-    parsed: any[],
-    handler: TransformHandler<T, U>,
-    options?: TransformOptions
-  ) {
-    return Promise.all(
-      parsed.map((p) => CSV.transformAsync<T, U, P>(p, handler, options))
-    );
+  async transformAsync<T, U, P = any>(parsed: any[], handler: TransformHandler<T, U>, options?: TransformOptions) {
+    return Promise.all(parsed.map(async (p) => CSV.transformAsync<T, U, P>(p, handler, options)));
   }
 
   async stringifyAsync(csvs: StringifyInput, options?: StringifyOptions) {
-    return Promise.all(csvs.map((c) => CSV.stringifyAsync(c, options)));
+    return Promise.all(csvs.map(async (c) => CSV.stringifyAsync(c, options)));
   }
 
   // Stream //
@@ -100,11 +91,7 @@ export default class CSV extends Core {
     return reads.map((csv) => CSV.parseStream(csv, options));
   }
 
-  async transformStream<T, U>(
-    parsed: any[],
-    handler: TransformHandler<T, U>,
-    options?: TransformOptions
-  ) {
+  async transformStream<T, U>(parsed: any[], handler: TransformHandler<T, U>, options?: TransformOptions) {
     const reads = await Core.toReadable(parsed);
     return reads.map((csv) => CSV.transformStream(csv, handler, options));
   }
@@ -120,11 +107,7 @@ export default class CSV extends Core {
     return this.csvs.map((c) => CSV.parseSync(c, options));
   }
 
-  transformSync<T, U>(
-    parsed: any[],
-    handler: TransformSyncHandler<T, U>,
-    options?: TransformOptions
-  ) {
+  transformSync<T, U>(parsed: any[], handler: TransformSyncHandler<T, U>, options?: TransformOptions) {
     return parsed.map((p) => CSV.transformSync(p, handler, options));
   }
 
@@ -146,7 +129,7 @@ export default class CSV extends Core {
   // }
 
   async custom<T>(callback: CSVCustomCallback<T>): Promise<Awaited<T>[]> {
-    return Promise.all(this.csvs.map((csv, index) => callback(csv, index)));
+    return Promise.all(this.csvs.map(async (csv, index) => callback(csv, index)));
   }
 
   static async filter(...csvs: Buffer[]) {
@@ -174,10 +157,7 @@ export default class CSV extends Core {
     });
   }
 
-  static async parseAsync<T extends Buffer | string, P = any>(
-    input: T,
-    options: ParseOptions = {}
-  ) {
+  static async parseAsync<T extends Buffer | string, P = any>(input: T, options: ParseOptions = {}) {
     return new Promise<P>((resolve, reject) => {
       csv.parse(input, options, (err, records) => {
         if (err) return reject(err);
@@ -189,7 +169,7 @@ export default class CSV extends Core {
   static async transformAsync<T, U, P = any>(
     records: T[],
     handler: TransformHandler<T, U>,
-    options: TransformOptions = {}
+    options: TransformOptions = {},
   ) {
     return new Promise<P>((resolve, reject) => {
       csv.transform(records, options, handler, (err, records) => {
@@ -199,10 +179,7 @@ export default class CSV extends Core {
     });
   }
 
-  static async stringifyAsync(
-    input: StringifyInput,
-    options: StringifyOptions = {}
-  ) {
+  static async stringifyAsync(input: StringifyInput, options: StringifyOptions = {}) {
     return new Promise<string>((resolve, reject) => {
       csv.stringify(input, options, (err, str) => {
         if (err) return reject(err);
@@ -221,11 +198,7 @@ export default class CSV extends Core {
     return Core.stream(readable, csv.parse(options));
   }
 
-  static transformStream<T, U>(
-    readable: Readable,
-    handler: TransformHandler<T, U>,
-    options: TransformOptions = {}
-  ) {
+  static transformStream<T, U>(readable: Readable, handler: TransformHandler<T, U>, options: TransformOptions = {}) {
     return Core.stream(readable, csv.transform(options, handler));
   }
 
@@ -239,18 +212,11 @@ export default class CSV extends Core {
     return csvSync.generate(options);
   }
 
-  static parseSync<T extends Buffer | string>(
-    input: T,
-    options: ParseOptions = {}
-  ) {
+  static parseSync<T extends Buffer | string>(input: T, options: ParseOptions = {}) {
     return csvSync.parse(input, options);
   }
 
-  static transformSync<T, U>(
-    records: T[],
-    handler: TransformSyncHandler<T, U>,
-    options: TransformOptions = {}
-  ) {
+  static transformSync<T, U>(records: T[], handler: TransformSyncHandler<T, U>, options: TransformOptions = {}) {
     return csvSync.transform(records, options, handler);
   }
 

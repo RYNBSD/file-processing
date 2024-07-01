@@ -7,18 +7,18 @@ async function testFilter(filter, length) {
   const audio = await fs.readFile("asset/audio.mp3");
   const pdf = await fs.readFile("asset/pdf.pdf");
   const image = await imageBuffer();
-  
+
   const filterFn = new FilterFile(pdf, audio, video, image)[filter];
   const filters = await filterFn();
   expect(filters).toHaveLength(length);
-  }
-  
-  describe("Filter File", () => {
-    it("(static) filter", async () => {
-      const video = await fs.readFile("asset/video.webm");
-      const audio = await fs.readFile("asset/audio.mp3");
-      const pdf = await fs.readFile("asset/pdf.pdf");
-      const image = await imageBuffer();
+}
+
+describe("Filter File", () => {
+  it("(static) filter", async () => {
+    const video = await fs.readFile("asset/video.webm");
+    const audio = await fs.readFile("asset/audio.mp3");
+    const pdf = await fs.readFile("asset/pdf.pdf");
+    const image = await imageBuffer();
 
     const filter = await FilterFile.filter(video, audio, pdf, image);
 

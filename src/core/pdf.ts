@@ -1,10 +1,5 @@
 import type { PDFOptions } from "puppeteer";
-import type {
-  CreateOptions,
-  LoadOptions,
-  PDFImage,
-  SaveOptions,
-} from "pdf-lib";
+import type { CreateOptions, LoadOptions, PDFImage, SaveOptions } from "pdf-lib";
 import type {
   PdfCustomDocumentCallback,
   PDFFromImageOptions,
@@ -32,11 +27,13 @@ export default class PDF extends Core {
   }
 
   async setPdfs<T>(callback: PDFSetCallback<T>) {
-    const pdfs = await Promise.all(
-      this.pdfs.map((pdf, index) => callback(pdf, index))
-    );
-    const filteredPdfs = pdfs.filter((pdf) => Buffer.isBuffer(pdf)) as Buffer[];
-    this.pdfs = filteredPdfs;
+    const pdfs = await Promise.all(this.pdfs.map(async (pdf, index) => callback(pdf, index)));
+
+    const filteredPdfs = pdfs.filter((pdf) => Buffer.isBuffer(pdf) && pdf.length > 0) as Buffer[];
+    const validPdfs = await PDF.filter(...filteredPdfs);
+
+    this.pdfs = validPdfs;
+    return this.length;
   }
 
   override async append(...pdfs: Buffer[]) {
@@ -60,7 +57,7 @@ export default class PDF extends Core {
   }
 
   async getDocuments(options?: LoadOptions) {
-    return Promise.all(this.pdfs.map((pdf) => PDF.load(pdf.buffer, options)));
+    return Promise.all(this.pdfs.map(async (pdf) => PDF.load(pdf.buffer, options)));
   }
 
   override async metadata(options?: LoadOptions) {
@@ -77,7 +74,7 @@ export default class PDF extends Core {
         pageIndices: document.getPageIndices(),
         creationDate: document.getCreationDate(),
         modificationDate: document.getModificationDate(),
-      }))
+      })),
     );
   }
 
@@ -98,21 +95,16 @@ export default class PDF extends Core {
       this.pdfs.map(async (pdf) => {
         const p = await PDF.load(pdf.buffer, options?.load);
         return merge.copyPages(p, p.getPageIndices());
-      })
+      }),
     );
 
     copies.forEach((copied) => copied.forEach((page) => merge.addPage(page)));
     return merge;
   }
 
-  async custom<T>(
-    callback: PdfCustomDocumentCallback<T>,
-    options?: LoadOptions
-  ): Promise<Awaited<T>[]> {
+  async custom<T>(callback: PdfCustomDocumentCallback<T>, options?: LoadOptions): Promise<Awaited<T>[]> {
     const documents = await this.getDocuments(options);
-    return Promise.all(
-      documents.map((document, index) => callback(document, index))
-    );
+    return Promise.all(documents.map(async (document, index) => callback(document, index)));
   }
 
   static async fromFile(...path: string[]) {
@@ -131,27 +123,16 @@ export default class PDF extends Core {
    * Convert image to pdf
    * @param images - must be of format png or jpg
    */
-  static async fromImage<T extends Buffer>(
-    images: T,
-    options?: PDFFromImageOptions
-  ): Promise<PDFDocument>;
-  static async fromImage<T extends Buffer[]>(
-    images: T,
-    options?: PDFFromImageOptions
-  ): Promise<PDFDocument[]>;
-  static async fromImage<T extends Buffer | Buffer[]>(
-    images: T,
-    options: PDFFromImageOptions = {}
-  ) {
-    if (Array.isArray(images))
-      return Promise.all(images.map((image) => PDF.fromImage(image, options)));
+  static async fromImage<T extends Buffer>(images: T, options?: PDFFromImageOptions): Promise<PDFDocument>;
+  static async fromImage<T extends Buffer[]>(images: T, options?: PDFFromImageOptions): Promise<PDFDocument[]>;
+  static async fromImage<T extends Buffer | Buffer[]>(images: T, options: PDFFromImageOptions = {}) {
+    if (Array.isArray(images)) return Promise.all(images.map((image) => PDF.fromImage(image, options)));
 
     const [isPNG, isJPG] = await Promise.all([
       new FilterFile(images).custom("png"),
       new FilterFile(images).custom("jpg"),
     ]);
-    if (isJPG.length === 0 && isPNG.length === 0)
-      throw new Error(`${PDF.name}: Invalid images to convert to pdf`);
+    if (isJPG.length === 0 && isPNG.length === 0) throw new Error(`${PDF.name}: Invalid images to convert to pdf`);
 
     const { pageSize = PageSizes.A4, scaleImage, position } = options;
 
@@ -172,10 +153,7 @@ export default class PDF extends Core {
     } else if (Array.isArray(scaleImage)) {
       imageDimensions = pdfImage.scaleToFit(scaleImage[0], scaleImage[1]);
     } else {
-      imageDimensions = pdfImage.scaleToFit(
-        pageDimensions.width,
-        pageDimensions.height
-      );
+      imageDimensions = pdfImage.scaleToFit(pageDimensions.width, pageDimensions.height);
     }
 
     page.drawImage(pdfImage, {
@@ -191,27 +169,16 @@ export default class PDF extends Core {
   /**
    * Generate pdf from websites
    */
-  static async generate<T extends string>(
-    htmls: T,
-    options?: PDFOptions
-  ): Promise<Buffer>;
-  static async generate<T extends string[]>(
-    htmls: T,
-    options?: PDFOptions
-  ): Promise<Buffer[]>;
-  static async generate<T extends string | string[]>(
-    htmls: T,
-    options?: PDFOptions
-  ) {
-    if (Array.isArray(htmls))
-      return Promise.all(htmls.map((html) => PDF.generate(html, options)));
+  static async generate<T extends string>(htmls: T, options?: PDFOptions): Promise<Buffer>;
+  static async generate<T extends string[]>(htmls: T, options?: PDFOptions): Promise<Buffer[]>;
+  static async generate<T extends string | string[]>(htmls: T, options?: PDFOptions) {
+    if (Array.isArray(htmls)) return Promise.all(htmls.map((html) => PDF.generate(html, options)));
 
     const browser = await Core.initBrowser();
     const page = await browser.newPage();
 
     const res = await page.goto(htmls, { waitUntil: "networkidle2" });
-    if (res === null || !res.ok())
-      throw new Error(`${PDF.name}: Can\'t fetch (${htmls})`);
+    if (res === null || !res.ok()) throw new Error(`${PDF.name}: Can't fetch (${htmls})`);
 
     const buffer = await page.pdf(options);
     await browser.close();
@@ -222,26 +189,14 @@ export default class PDF extends Core {
     return new FilterFile(...pdfs).custom("pdf");
   }
 
-  static async save<T extends PDFDocument>(
-    pdfs: T,
-    options?: SaveOptions
-  ): Promise<Uint8Array>;
-  static async save<T extends PDFDocument[]>(
-    pdfs: T,
-    options?: SaveOptions
-  ): Promise<Uint8Array[]>;
-  static async save<T extends PDFDocument | PDFDocument[]>(
-    pdfs: T,
-    options?: SaveOptions
-  ) {
+  static async save<T extends PDFDocument>(pdfs: T, options?: SaveOptions): Promise<Uint8Array>;
+  static async save<T extends PDFDocument[]>(pdfs: T, options?: SaveOptions): Promise<Uint8Array[]>;
+  static async save<T extends PDFDocument | PDFDocument[]>(pdfs: T, options?: SaveOptions) {
     if (!Array.isArray(pdfs)) return pdfs.save(options);
     return Promise.all(pdfs.map((pdf) => PDF.save(pdf, options)));
   }
 
-  static async load<T extends string | Uint8Array | ArrayBuffer>(
-    pdf: T,
-    options?: LoadOptions
-  ) {
+  static async load<T extends string | Uint8Array | ArrayBuffer>(pdf: T, options?: LoadOptions) {
     return PDFDocument.load(pdf, options);
   }
 

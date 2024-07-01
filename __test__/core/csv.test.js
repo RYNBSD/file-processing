@@ -97,16 +97,12 @@ describe("CSV", () => {
     expect(csv).toBeInstanceOf(CSV);
 
     await expect(async () => {
-      await CSV.fromFile(
-        "https://sample-videos.com/csv/Sample-Spreadsheet-10-rows.csv"
-      );
+      await CSV.fromFile("https://sample-videos.com/csv/Sample-Spreadsheet-10-rows.csv");
     }).rejects.toThrow();
   });
 
   it("(static) fromUrl", async () => {
-    const csv = await CSV.fromUrl(
-      "https://sample-videos.com/csv/Sample-Spreadsheet-10-rows.csv"
-    );
+    const csv = await CSV.fromUrl("https://sample-videos.com/csv/Sample-Spreadsheet-10-rows.csv");
     expect(csv).toBeInstanceOf(CSV);
 
     await expect(async () => {
@@ -149,7 +145,7 @@ describe("CSV", () => {
       function (record) {
         record.push(record.shift());
         return record;
-      }
+      },
     );
     expect(transform).toEqual([
       ["2", "3", "4", "1"],
@@ -167,7 +163,7 @@ describe("CSV", () => {
       ["a", "b", "c", "d"],
     ]);
     expect(stringify).toEqual("1,2,3,4\na,b,c,d\n");
-    
+
     await expect(async () => {
       await CSV.stringifyAsync(null);
     }).rejects.toThrow();
@@ -208,7 +204,7 @@ describe("CSV", () => {
       function (record) {
         record.push(record.shift());
         return record;
-      }
+      },
     );
     expect(transform).toEqual([
       ["2", "3", "4", "1"],
@@ -226,7 +222,7 @@ describe("CSV", () => {
       ["a", "b", "c", "d"],
     ]);
     expect(stringify).toEqual("1,2,3,4\na,b,c,d\n");
-    
+
     await expect(async () => {
       CSV.stringifySync(null);
     }).rejects.toThrow();

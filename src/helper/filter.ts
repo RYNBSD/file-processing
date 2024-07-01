@@ -53,15 +53,13 @@ export default class FilterFile {
    * @param me - mime extension
    */
   async custom(me: string) {
-    const buffer = await Core.toBuffer(this.input)
+    const buffer = await Core.toBuffer(this.input);
     const result = await isFile.isCustom(buffer, me);
-    return result
-      .filter((file) => file.valid)
-      .map((file) => file.value) as Buffer[];
+    return result.filter((file) => file.valid).map((file) => file.value) as Buffer[];
   }
 
   static async filter(...input: InputFiles[]) {
-    const buffer = await Core.toBuffer(input)
+    const buffer = await Core.toBuffer(input);
 
     const mutexes = {
       applications: new Mutex(),
@@ -114,7 +112,7 @@ export default class FilterFile {
           files.videos.push(buffer);
           release();
         }
-      })
+      }),
     );
 
     return files;

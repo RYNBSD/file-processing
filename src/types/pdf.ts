@@ -1,8 +1,4 @@
-import type {
-  CreateOptions,
-  LoadOptions,
-  PDFDocument,
-} from "pdf-lib";
+import type { CreateOptions, LoadOptions, PDFDocument } from "pdf-lib";
 
 export type PDFMergeOptions = {
   create?: CreateOptions;
@@ -27,7 +23,4 @@ export type PDFFromImageOptions = {
 
 export type PDFSetCallback<T> = (pdf: Buffer, index: number) => Promise<T> | T;
 
-export type PdfCustomDocumentCallback<T> = (
-  pdf: PDFDocument,
-  index: number
-) => Promise<T> | T;
+export type PdfCustomDocumentCallback<T> = (pdf: PDFDocument, index: number) => Promise<T> | T;

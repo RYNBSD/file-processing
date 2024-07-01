@@ -1,3 +1,3 @@
-import { core } from "@ryn-bsd/file-processing"
+import { core } from "@ryn-bsd/file-processing";
 
-const image = new core.Image()
+const image = new core.Image();

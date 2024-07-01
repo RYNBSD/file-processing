@@ -14,10 +14,7 @@ export type StringifyOptions = csv.stringifier.Options;
 
 export type CSVSetCallback<T> = (csv: Buffer, index: number) => Promise<T> | T;
 
-export type CSVCustomCallback<T> = (
-  csv: Buffer,
-  index: number
-) => T | Promise<T>;
+export type CSVCustomCallback<T> = (csv: Buffer, index: number) => T | Promise<T>;
 
 // export type CSVParseFn<T extends Buffer | string | Readable, R> = (
 //   input: T,
