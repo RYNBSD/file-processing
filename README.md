@@ -178,7 +178,7 @@ const pdf = new PDF(Buffer.alloc(1));
 - Refactor code to optimize performance.
 - Full code documentation.
 - Add prettier and eslint.
-- Full organize code to build next version (scalability).
+- Full organize code to build next versions (scalability).
 - Add benchmarks.
 - Add examples.
 
@@ -194,6 +194,7 @@ const pdf = new PDF(Buffer.alloc(1));
 - Text/CSV setter filter empty buffers.
 - Update doc.
 - Performance optimizations.
+- Add a manifest version.
 
 ## 0.6.0 - Current
 

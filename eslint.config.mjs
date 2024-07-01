@@ -20,7 +20,7 @@ export default [
   security.configs.recommended,
   ...compat.extends("eslint:recommended", "plugin:@typescript-eslint/recommended", "prettier"),
   {
-    ignores: ["node_modules", "asset/*", "build/*", "coverage/*", "example/*", "tmp/*", "__test__/*"],
+    ignores: ["node_modules", "asset/*", "build/*", "coverage/*", "example/*", "tmp/*", "__test__/*", "dist/*"],
   },
   {
     plugins: {

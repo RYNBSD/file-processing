@@ -28,10 +28,8 @@ export default class Image extends Core {
 
   async setImages<T>(callback: ImageSetCallback<T>) {
     const images = await Promise.all(this.images.map(async (image, index) => callback(image, index)));
-
     const filteredImages = images.filter((image) => Buffer.isBuffer(image) && image.length > 0) as Buffer[];
     const validImages = await Image.filter(...filteredImages);
-
     this.images = validImages;
     return this.length;
   }

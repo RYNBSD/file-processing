@@ -28,10 +28,8 @@ export default class PDF extends Core {
 
   async setPdfs<T>(callback: PDFSetCallback<T>) {
     const pdfs = await Promise.all(this.pdfs.map(async (pdf, index) => callback(pdf, index)));
-
     const filteredPdfs = pdfs.filter((pdf) => Buffer.isBuffer(pdf) && pdf.length > 0) as Buffer[];
     const validPdfs = await PDF.filter(...filteredPdfs);
-
     this.pdfs = validPdfs;
     return this.length;
   }
