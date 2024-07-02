@@ -242,8 +242,8 @@ const pdf = new PDF(Buffer.alloc(1));
 - Improve filter for setters. 🟠
 - Add static new (to create safe new instance). 🟠
 - Add dir loader. 🟠
+- Add glob loader. 🟠
 - Extract text from images/videos. 🔴
-- Add glob loader. 🔴
 - Collect images/audios/videos from websites. 🔴
 - Add files formatter. 🔴
 - Add files minifier. 🔴

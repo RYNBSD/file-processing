@@ -18,6 +18,7 @@ import {
   url2buffer,
 } from "@ryn-bsd/from-buffer-to";
 import isBase64 from "is-base64";
+import { default as fastGlob } from "fast-glob";
 import puppeteer from "puppeteer";
 import { isUrl } from "../helper/index.js";
 
@@ -59,6 +60,27 @@ export default abstract class Core {
     if (Array.isArray(paths)) return Promise.all(paths.map((path) => Core.loadDir(path)));
     const files = await readdir(paths);
     return Core.loadFile(files.map((file) => path.join(paths, file)));
+  }
+
+  static async loadGlob<T extends fastGlob.Pattern | fastGlob.Pattern[]>(
+    globs: T,
+    options?: fastGlob.Options,
+  ): Promise<(Buffer | Buffer[])[]> {
+    const entries = await fastGlob(globs, options);
+    const cwd = options?.cwd ?? process.cwd();
+
+    const results = await Promise.all(
+      entries.map(async (entry) => {
+        const fullPath = path.join(cwd, entry);
+        const stat = await fsStat(fullPath);
+
+        if (stat.isFile()) return Core.loadFile(fullPath);
+        else if (stat.isDirectory()) return Core.loadDir(fullPath);
+        return null;
+      }),
+    );
+
+    return results.filter((result) => result !== null) as (Buffer | Buffer[])[];
   }
 
   /**
