@@ -177,7 +177,6 @@ const pdf = new PDF(Buffer.alloc(1));
 
 - Refactor code to optimize performance.
 - Full code documentation.
-- Add prettier and eslint.
 - Full organize code to build next versions (scalability).
 - Add benchmarks.
 - Add examples.
@@ -191,10 +190,14 @@ const pdf = new PDF(Buffer.alloc(1));
 - Fast file save (Core.toFile)
 - Improve code quality.
 - Improve security by adding eslint security plugin.
-- Text/CSV setter filter empty buffers.
+- All setters filter empty buffers.
+- Image/Video/Audio/PDF setters filter by signature.
 - Update doc.
 - Performance optimizations.
 - Add a manifest version.
+- Add formatter prettier.
+- Add manifest esbuild.
+- Return length of elements in append/extend.
 
 ## 0.6.0 - Current
 

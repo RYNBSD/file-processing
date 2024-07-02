@@ -40,12 +40,14 @@ export default class CSV extends Core {
   override async append(...csvs: Buffer[]) {
     // const filteredCsvs = await CSV.filter(...csvs);
     this.csvs.push(...csvs);
+    return this.length;
   }
 
   override extend(...csvs: CSV[]) {
     csvs.forEach((csv) => {
       this.csvs.push(...csv.getCsvs());
     });
+    return this.length;
   }
 
   override clone() {

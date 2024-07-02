@@ -6,8 +6,8 @@ import puppeteer from "puppeteer";
 export default abstract class Core {
     constructor();
     abstract get length(): number;
-    abstract append(...buffers: Buffer[]): Promise<void>;
-    abstract extend(...cors: unknown[]): void;
+    abstract append(...buffers: Buffer[]): Promise<number>;
+    abstract extend(...cors: unknown[]): number;
     abstract clone(): Core;
     abstract filter(): Promise<number>;
     abstract metadata(): Promise<unknown>;

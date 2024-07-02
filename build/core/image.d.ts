@@ -9,8 +9,8 @@ export default class Image extends Core {
     get length(): number;
     getImages(): Buffer[];
     setImages<T>(callback: ImageSetCallback<T>): Promise<number>;
-    append(...images: Buffer[]): Promise<void>;
-    extend(...images: Image[]): void;
+    append(...images: Buffer[]): Promise<number>;
+    extend(...images: Image[]): number;
     clone(): Image;
     filter(): Promise<number>;
     metadata(): Promise<sharp.Metadata[]>;

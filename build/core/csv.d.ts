@@ -10,8 +10,8 @@ export default class CSV extends Core {
     get length(): number;
     getCsvs(): Buffer[];
     setCsvs<T>(callback: CSVSetCallback<T>): Promise<number>;
-    append(...csvs: Buffer[]): Promise<void>;
-    extend(...csvs: CSV[]): void;
+    append(...csvs: Buffer[]): Promise<number>;
+    extend(...csvs: CSV[]): number;
     clone(): CSV;
     filter(): Promise<number>;
     metadata(): Promise<{

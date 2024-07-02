@@ -11,8 +11,7 @@ import { Readable } from "node:stream";
 import { isAnyArrayBuffer, isUint8Array } from "node:util/types";
 import { readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
-import { any2buffer, array2buffer, buffer2readable, isReadable, isReadableStream, isStream, readable2buffer, readablestream2buffer, stream2buffer, string2buffer, uint8array2buffer, } from "@ryn-bsd/from-buffer-to";
-import fetch from "node-fetch";
+import { any2buffer, array2buffer, buffer2readable, isReadable, isReadableStream, isStream, readable2buffer, readablestream2buffer, stream2buffer, string2buffer, uint8array2buffer, url2buffer, } from "@ryn-bsd/from-buffer-to";
 import isBase64 from "is-base64";
 import puppeteer from "puppeteer";
 import { isUrl } from "../helper/index.js";
@@ -36,11 +35,7 @@ export default class Core {
         return __awaiter(this, void 0, void 0, function* () {
             if (Array.isArray(url))
                 return Promise.all(url.map((u) => Core.loadUrl(u)));
-            const res = yield fetch(url);
-            if (!res.ok)
-                throw new Error(`${Core.name}: Can't fetch (${url})`);
-            const arrayBuffer = yield res.arrayBuffer();
-            return array2buffer(arrayBuffer);
+            return url2buffer(url);
         });
     }
     static toBuffer(input) {

@@ -10,8 +10,8 @@ export default class PDF extends Core {
     get length(): number;
     getPdfs(): Buffer[];
     setPdfs<T>(callback: PDFSetCallback<T>): Promise<number>;
-    append(...pdfs: Buffer[]): Promise<void>;
-    extend(...pdfs: PDF[]): void;
+    append(...pdfs: Buffer[]): Promise<number>;
+    extend(...pdfs: PDF[]): number;
     clone(): PDF;
     filter(): Promise<number>;
     getDocuments(options?: LoadOptions): Promise<PDFDocument[]>;

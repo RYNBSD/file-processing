@@ -11,7 +11,6 @@ import ffmpeg from "fluent-ffmpeg";
 import { path as ffmpegPath } from "@ffmpeg-installer/ffmpeg";
 import { path as ffprobePath } from "@ffprobe-installer/ffprobe";
 import path from "node:path";
-import { readFile } from "node:fs/promises";
 import { TmpFile } from "../../helper/index.js";
 import Core from "../core.js";
 export default class AV extends Core {
@@ -46,7 +45,7 @@ export default class AV extends Core {
                     const output = path.join(tmpFile.tmp.path, TmpFile.generateFileName(format));
                     AV.newFfmpeg(p, options)
                         .on("end", () => {
-                        readFile(output).then(resolve).catch(reject);
+                        Core.loadFile(output).then(resolve).catch(reject);
                     })
                         .on("error", reject)
                         .output(output, { end: true })

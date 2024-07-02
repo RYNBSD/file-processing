@@ -51,12 +51,14 @@ export default class Text extends Core {
   override async append(...texts: Buffer[]) {
     // const filteredTexts = await Text.filter(...texts);
     this.texts.push(...texts);
+    return this.length;
   }
 
   override extend(...texts: Text[]) {
     texts.forEach((text) => {
       this.texts.push(...text.getTexts());
     });
+    return this.length;
   }
 
   override clone() {

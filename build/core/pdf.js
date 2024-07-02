@@ -34,12 +34,14 @@ export default class PDF extends Core {
         return __awaiter(this, void 0, void 0, function* () {
             const filteredPdfs = yield PDF.filter(...pdfs);
             this.pdfs.push(...filteredPdfs);
+            return this.length;
         });
     }
     extend(...pdfs) {
         pdfs.forEach((pdf) => {
             this.pdfs.push(...pdf.getPdfs());
         });
+        return this.length;
     }
     clone() {
         return new PDF(...this.pdfs);

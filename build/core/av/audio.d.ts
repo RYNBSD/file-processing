@@ -5,8 +5,8 @@ export declare class Audio extends AV {
     constructor(...audios: Buffer[]);
     getAudios(): Buffer[];
     setAudios<T>(callback: AVSetCallback<T>): Promise<number>;
-    append(...audios: Buffer[]): Promise<void>;
-    extend(...audios: Audio[]): void;
+    append(...audios: Buffer[]): Promise<number>;
+    extend(...audios: Audio[]): number;
     clone(): Audio;
     filter(): Promise<number>;
     static filter(...audios: Buffer[]): Promise<Buffer[]>;

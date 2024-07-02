@@ -36,12 +36,14 @@ export default class Text extends Core {
         return __awaiter(this, void 0, void 0, function* () {
             // const filteredTexts = await Text.filter(...texts);
             this.texts.push(...texts);
+            return this.length;
         });
     }
     extend(...texts) {
         texts.forEach((text) => {
             this.texts.push(...text.getTexts());
         });
+        return this.length;
     }
     clone() {
         return new Text(...this.texts);

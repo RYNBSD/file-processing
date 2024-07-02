@@ -34,12 +34,14 @@ export default class Image extends Core {
         return __awaiter(this, void 0, void 0, function* () {
             const filteredImages = yield Image.filter(...images);
             this.images.push(...filteredImages);
+            return this.length;
         });
     }
     extend(...images) {
         images.forEach((image) => {
             this.images.push(...image.getImages());
         });
+        return this.length;
     }
     clone() {
         return new Image(...this.images);

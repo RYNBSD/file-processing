@@ -15,8 +15,8 @@ import {
   stream2buffer,
   string2buffer,
   uint8array2buffer,
+  url2buffer,
 } from "@ryn-bsd/from-buffer-to";
-import fetch from "node-fetch";
 import isBase64 from "is-base64";
 import puppeteer from "puppeteer";
 import { isUrl } from "../helper/index.js";
@@ -26,8 +26,8 @@ export default abstract class Core {
 
   abstract get length(): number;
 
-  abstract append(...buffers: Buffer[]): Promise<void>;
-  abstract extend(...cors: unknown[]): void;
+  abstract append(...buffers: Buffer[]): Promise<number>;
+  abstract extend(...cors: unknown[]): number;
   abstract clone(): Core;
 
   abstract filter(): Promise<number>;
@@ -60,11 +60,7 @@ export default abstract class Core {
   static async loadUrl<T extends string[] | URL[]>(url: T): Promise<Buffer[]>;
   static async loadUrl<T extends string | URL | string[] | URL[]>(url: T) {
     if (Array.isArray(url)) return Promise.all(url.map((u) => Core.loadUrl(u)));
-
-    const res = await fetch(url);
-    if (!res.ok) throw new Error(`${Core.name}: Can't fetch (${url})`);
-    const arrayBuffer = await res.arrayBuffer();
-    return array2buffer(arrayBuffer);
+    return url2buffer(url);
   }
 
   /**
@@ -98,9 +94,7 @@ export default abstract class Core {
   static async toReadable<T extends InputFiles[]>(input: T): Promise<Readable[]>;
   static async toReadable<T extends InputFiles | InputFiles[]>(input: T) {
     if (Array.isArray(input)) return Promise.all(input.map((i) => Core.toReadable(i)));
-
     if (isReadable(input) && Readable.isReadable(input)) return input;
-
     const buffer = await Core.toBuffer(input);
     return buffer2readable(buffer);
   }
@@ -112,9 +106,7 @@ export default abstract class Core {
   static async toBase64<T extends InputFiles[]>(input: T, encoding?: "base64" | "base64url"): Promise<string[]>;
   static async toBase64<T extends InputFiles | InputFiles[]>(input: T, encoding: "base64" | "base64url" = "base64") {
     if (Array.isArray(input)) return Promise.all(input.map((i) => Core.toBase64(i)));
-
     if (typeof input === "string" && isBase64(input)) return input;
-
     const buffer = await Core.toBuffer(input);
     return buffer.toString(encoding);
   }

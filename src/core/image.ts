@@ -37,12 +37,14 @@ export default class Image extends Core {
   override async append(...images: Buffer[]) {
     const filteredImages = await Image.filter(...images);
     this.images.push(...filteredImages);
+    return this.length;
   }
 
   override extend(...images: Image[]) {
     images.forEach((image) => {
       this.images.push(...image.getImages());
     });
+    return this.length;
   }
 
   override clone() {

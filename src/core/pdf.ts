@@ -37,12 +37,14 @@ export default class PDF extends Core {
   override async append(...pdfs: Buffer[]) {
     const filteredPdfs = await PDF.filter(...pdfs);
     this.pdfs.push(...filteredPdfs);
+    return this.length;
   }
 
   override extend(...pdfs: PDF[]) {
     pdfs.forEach((pdf) => {
       this.pdfs.push(...pdf.getPdfs());
     });
+    return this.length;
   }
 
   override clone() {

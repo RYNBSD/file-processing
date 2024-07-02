@@ -30,12 +30,14 @@ export class Video extends AV {
         return __awaiter(this, void 0, void 0, function* () {
             const filteredVideos = yield Video.filter(...videos);
             this.avs.push(...filteredVideos);
+            return this.length;
         });
     }
     extend(...videos) {
         videos.forEach((video) => {
             this.avs.push(...video.getVideos());
         });
+        return this.length;
     }
     clone() {
         return new Video(...this.avs);

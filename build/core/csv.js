@@ -34,12 +34,14 @@ export default class CSV extends Core {
         return __awaiter(this, void 0, void 0, function* () {
             // const filteredCsvs = await CSV.filter(...csvs);
             this.csvs.push(...csvs);
+            return this.length;
         });
     }
     extend(...csvs) {
         csvs.forEach((csv) => {
             this.csvs.push(...csv.getCsvs());
         });
+        return this.length;
     }
     clone() {
         return new CSV(...this.csvs);

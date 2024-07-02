@@ -30,12 +30,14 @@ export class Audio extends AV {
         return __awaiter(this, void 0, void 0, function* () {
             const filteredAudios = yield Audio.filter(...audios);
             this.avs.push(...filteredAudios);
+            return this.length;
         });
     }
     extend(...audios) {
         audios.forEach((audio) => {
             this.avs.push(...audio.getAudios());
         });
+        return this.length;
     }
     clone() {
         return new Audio(...this.avs);

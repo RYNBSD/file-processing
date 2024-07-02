@@ -23,12 +23,14 @@ export class Video extends AV {
   override async append(...videos: Buffer[]) {
     const filteredVideos = await Video.filter(...videos);
     this.avs.push(...filteredVideos);
+    return this.length;
   }
 
   override extend(...videos: Video[]) {
     videos.forEach((video) => {
       this.avs.push(...video.getVideos());
     });
+    return this.length;
   }
 
   override clone() {

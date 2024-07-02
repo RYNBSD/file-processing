@@ -5,8 +5,8 @@ export declare class Video extends AV {
     constructor(...videos: Buffer[]);
     getVideos(): Buffer[];
     setVideos<T>(callback: AVSetCallback<T>): Promise<number>;
-    append(...videos: Buffer[]): Promise<void>;
-    extend(...videos: Video[]): void;
+    append(...videos: Buffer[]): Promise<number>;
+    extend(...videos: Video[]): number;
     clone(): Video;
     filter(): Promise<number>;
     static filter(...videos: Buffer[]): Promise<Buffer[]>;

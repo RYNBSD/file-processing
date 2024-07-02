@@ -12,8 +12,8 @@ export default class Text extends Core {
     get length(): number;
     getTexts(): Buffer[];
     setTexts<T>(callback: TextSetCallback<T>): Promise<number>;
-    append(...texts: Buffer[]): Promise<void>;
-    extend(...texts: Text[]): void;
+    append(...texts: Buffer[]): Promise<number>;
+    extend(...texts: Text[]): number;
     clone(): Text;
     filter(): Promise<number>;
     /**

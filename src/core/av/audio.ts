@@ -23,12 +23,14 @@ export class Audio extends AV {
   override async append(...audios: Buffer[]) {
     const filteredAudios = await Audio.filter(...audios);
     this.avs.push(...filteredAudios);
+    return this.length;
   }
 
   override extend(...audios: Audio[]) {
     audios.forEach((audio) => {
       this.avs.push(...audio.getAudios());
     });
+    return this.length;
   }
 
   override clone() {
