@@ -239,8 +239,8 @@ const pdf = new PDF(Buffer.alloc(1));
 - Image watermark. 🟢
 - PDF merge. 🟢
 - image to pdf. 🟢
+- Improve filter for setters. 🟠
 - Extract text from images/videos. 🔴
-- Improve filter for setters. 🔴
 - Add glob loader. 🔴
 - Add dir loader. 🔴
 - Collect images/audios/videos from websites. 🔴
