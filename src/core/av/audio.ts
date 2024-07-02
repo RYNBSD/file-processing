@@ -3,7 +3,7 @@ import { FilterFile } from "../../helper/index.js";
 import Core from "../core.js";
 import AV from "./av.js";
 
-export class Audio extends AV {
+export default class Audio extends AV {
   constructor(...audios: Buffer[]) {
     super(...audios);
   }

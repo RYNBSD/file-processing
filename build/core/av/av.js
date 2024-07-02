@@ -45,7 +45,7 @@ export default class AV extends Core {
                     const output = path.join(tmpFile.tmp.path, TmpFile.generateFileName(format));
                     AV.newFfmpeg(p, options)
                         .on("end", () => {
-                        Core.loadFile(output).then(resolve).catch(reject);
+                        Core.loadFile(output).then(resolve, reject);
                     })
                         .on("error", reject)
                         .output(output, { end: true })

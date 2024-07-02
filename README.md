@@ -240,13 +240,13 @@ const pdf = new PDF(Buffer.alloc(1));
 - PDF merge. 🟢
 - image to pdf. 🟢
 - Improve filter for setters. 🟠
+- Add static new (to create safe new instance). 🟠
+- Add dir loader. 🟠
 - Extract text from images/videos. 🔴
 - Add glob loader. 🔴
-- Add dir loader. 🔴
 - Collect images/audios/videos from websites. 🔴
 - Add files formatter. 🔴
 - Add files minifier. 🔴
-- Add static new (to create safe new instance). 🔴
 - Video watermark. 🔴
 
 # Support

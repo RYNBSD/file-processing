@@ -1,7 +1,7 @@
 import type { InputFiles } from "../types/index.js";
 import { Readable, type Writable } from "node:stream";
 import { isAnyArrayBuffer, isUint8Array } from "node:util/types";
-import { readFile, writeFile } from "node:fs/promises";
+import { readFile, writeFile, stat as fsStat, readdir } from "node:fs/promises";
 import path from "node:path";
 import {
   any2buffer,
@@ -46,21 +46,29 @@ export default abstract class Core {
   /**
    * load file from path
    */
-  static async loadFile<T extends string>(path: T): Promise<Buffer>;
-  static async loadFile<T extends string[]>(path: T): Promise<Buffer[]>;
-  static async loadFile<T extends string | string>(path: T) {
-    if (Array.isArray(path)) return Promise.all(path.map((p) => Core.loadFile(p)));
-    return readFile(path);
+  static async loadFile<T extends string>(paths: T): Promise<Buffer>;
+  static async loadFile<T extends string[]>(paths: T): Promise<Buffer[]>;
+  static async loadFile<T extends string | string>(paths: T) {
+    if (Array.isArray(paths)) return Promise.all(paths.map((path) => Core.loadFile(path)));
+    return readFile(paths);
+  }
+
+  static async loadDir<T extends string>(paths: T): Promise<Buffer[]>;
+  static async loadDir<T extends string[]>(paths: T): Promise<Buffer[][]>;
+  static async loadDir<T extends string | string[]>(paths: T) {
+    if (Array.isArray(paths)) return Promise.all(paths.map((path) => Core.loadDir(path)));
+    const files = await readdir(paths);
+    return Core.loadFile(files.map((file) => path.join(paths, file)));
   }
 
   /**
    * load file from url
    */
-  static async loadUrl<T extends string | URL>(url: T): Promise<Buffer>;
-  static async loadUrl<T extends string[] | URL[]>(url: T): Promise<Buffer[]>;
-  static async loadUrl<T extends string | URL | string[] | URL[]>(url: T) {
-    if (Array.isArray(url)) return Promise.all(url.map((u) => Core.loadUrl(u)));
-    return url2buffer(url);
+  static async loadUrl<T extends string | URL>(urls: T): Promise<Buffer>;
+  static async loadUrl<T extends string[] | URL[]>(urls: T): Promise<Buffer[]>;
+  static async loadUrl<T extends string | URL | string[] | URL[]>(urls: T) {
+    if (Array.isArray(urls)) return Promise.all(urls.map((url) => Core.loadUrl(url)));
+    return url2buffer(urls);
   }
 
   /**
@@ -79,8 +87,9 @@ export default abstract class Core {
     else if (isReadableStream(input)) return readablestream2buffer(input);
     else if (isReadable(input) && Readable.isReadable(input)) return readable2buffer(input);
     else if (typeof input === "string") {
-      if (isUrl(input)) return Core.loadUrl(input);
-      else if (path.isAbsolute(input)) return Core.loadFile(input);
+      const fileStat = await fsStat(input);
+      if (fileStat.isFile()) return Core.loadFile(input);
+      else if (isUrl(input)) return Core.loadUrl(input);
       else if (isBase64(input, { allowEmpty: false })) return Buffer.from(input, "base64");
       return string2buffer(input, false);
     }
@@ -115,7 +124,7 @@ export default abstract class Core {
    * Save any type of inputs into file
    */
   static async toFile(file: { path: string; input: InputFiles }[]) {
-    return Promise.all(
+    await Promise.all(
       file.map(async (f) => {
         const buffer = await Core.toBuffer(f.input);
         return writeFile(f.path, buffer);

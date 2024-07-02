@@ -1,7 +1,7 @@
 /// <reference types="node" resolution-mode="require"/>
 import type { AVSetCallback } from "../../types/index.js";
 import AV from "./av.js";
-export declare class Audio extends AV {
+export default class Audio extends AV {
     constructor(...audios: Buffer[]);
     getAudios(): Buffer[];
     setAudios<T>(callback: AVSetCallback<T>): Promise<number>;

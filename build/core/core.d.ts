@@ -16,13 +16,15 @@ export default abstract class Core {
     /**
      * load file from path
      */
-    static loadFile<T extends string>(path: T): Promise<Buffer>;
-    static loadFile<T extends string[]>(path: T): Promise<Buffer[]>;
+    static loadFile<T extends string>(paths: T): Promise<Buffer>;
+    static loadFile<T extends string[]>(paths: T): Promise<Buffer[]>;
+    static loadDir<T extends string>(paths: T): Promise<Buffer[]>;
+    static loadDir<T extends string[]>(paths: T): Promise<Buffer[][]>;
     /**
      * load file from url
      */
-    static loadUrl<T extends string | URL>(url: T): Promise<Buffer>;
-    static loadUrl<T extends string[] | URL[]>(url: T): Promise<Buffer[]>;
+    static loadUrl<T extends string | URL>(urls: T): Promise<Buffer>;
+    static loadUrl<T extends string[] | URL[]>(urls: T): Promise<Buffer[]>;
     /**
      * Convert any of supported inputs to Buffer
      */
@@ -44,6 +46,6 @@ export default abstract class Core {
     static toFile(file: {
         path: string;
         input: InputFiles;
-    }[]): Promise<void[]>;
+    }[]): Promise<void>;
 }
 //# sourceMappingURL=core.d.ts.map

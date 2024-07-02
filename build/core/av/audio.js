@@ -10,7 +10,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 import { FilterFile } from "../../helper/index.js";
 import Core from "../core.js";
 import AV from "./av.js";
-export class Audio extends AV {
+export default class Audio extends AV {
     constructor(...audios) {
         super(...audios);
     }
