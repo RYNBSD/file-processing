@@ -65,5 +65,13 @@ export class Audio extends AV {
             return new Audio(...audios);
         });
     }
+    static new(audios) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const filtered = yield Audio.filter(...audios);
+            if (filtered.length === 0)
+                throw new Error(`${Audio.name}: Non valid audio`);
+            return new Audio(...filtered);
+        });
+    }
 }
 //# sourceMappingURL=audio.js.map

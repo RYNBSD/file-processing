@@ -160,6 +160,12 @@ export default class Text extends Core {
             return new Text(...buffer);
         });
     }
+    static new(texts) {
+        const filtered = texts.filter((text) => text.length > 0);
+        if (filtered.length === 0)
+            throw new Error(`${Text.name}: Non valid text`);
+        return new Text(...filtered);
+    }
     // Async Compression //
     static gzipAsync(text_1) {
         return __awaiter(this, arguments, void 0, function* (text, options = {}) {

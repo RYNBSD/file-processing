@@ -207,4 +207,10 @@ export default class PDF extends Core {
   static document() {
     return PDFDocument;
   }
+
+  static async new(pdfs: Buffer[]) {
+    const filtered = await PDF.filter(...pdfs);
+    if (filtered.length === 0) throw new Error(`${PDF.name}: Non valid pdf`);
+    return new PDF(...filtered);
+  }
 }

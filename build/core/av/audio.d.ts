@@ -12,5 +12,6 @@ export declare class Audio extends AV {
     static filter(...audios: Buffer[]): Promise<Buffer[]>;
     static fromFile(...path: string[]): Promise<Audio>;
     static fromUrl<T extends string[] | URL[]>(...url: T): Promise<Audio>;
+    static new(audios: Buffer[]): Promise<Audio>;
 }
 //# sourceMappingURL=audio.d.ts.map

@@ -182,4 +182,10 @@ export default class Image extends Core {
   static newSharp<T extends Buffer | string | undefined = undefined>(image?: T, options?: sharp.SharpOptions) {
     return sharp(image, options).clone();
   }
+
+  static async new(images: Buffer[]) {
+    const filtered = await Image.filter(...images);
+    if (filtered.length === 0) throw new Error(`${Image.name}: Non valid image`);
+    return new Image(...filtered);
+  }
 }

@@ -57,4 +57,10 @@ export class Video extends AV {
     const videos = await Video.filter(...buffer);
     return new Video(...videos);
   }
+
+  static async new(videos: Buffer[]) {
+    const filtered = await Video.filter(...videos);
+    if (filtered.length === 0) throw new Error(`${Video.name}: Non valid video`);
+    return new Video(...filtered);
+  }
 }

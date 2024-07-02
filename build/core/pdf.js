@@ -197,5 +197,13 @@ export default class PDF extends Core {
     static document() {
         return PDFDocument;
     }
+    static new(pdfs) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const filtered = yield PDF.filter(...pdfs);
+            if (filtered.length === 0)
+                throw new Error(`${PDF.name}: Non valid pdf`);
+            return new PDF(...filtered);
+        });
+    }
 }
 //# sourceMappingURL=pdf.js.map

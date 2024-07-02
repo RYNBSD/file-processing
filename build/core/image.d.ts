@@ -55,5 +55,6 @@ export default class Image extends Core {
      * new Instance of sharp
      */
     static newSharp<T extends Buffer | string | undefined = undefined>(image?: T, options?: sharp.SharpOptions): sharp.Sharp;
+    static new(images: Buffer[]): Promise<Image>;
 }
 //# sourceMappingURL=image.d.ts.map

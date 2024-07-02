@@ -57,4 +57,10 @@ export class Audio extends AV {
     const audios = await Audio.filter(...buffer);
     return new Audio(...audios);
   }
+
+  static async new(audios: Buffer[]) {
+    const filtered = await Audio.filter(...audios);
+    if (filtered.length === 0) throw new Error(`${Audio.name}: Non valid audio`);
+    return new Audio(...filtered);
+  }
 }

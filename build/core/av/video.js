@@ -67,5 +67,13 @@ export class Video extends AV {
             return new Video(...videos);
         });
     }
+    static new(videos) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const filtered = yield Video.filter(...videos);
+            if (filtered.length === 0)
+                throw new Error(`${Video.name}: Non valid video`);
+            return new Video(...filtered);
+        });
+    }
 }
 //# sourceMappingURL=video.js.map

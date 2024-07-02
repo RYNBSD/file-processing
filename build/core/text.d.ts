@@ -36,6 +36,7 @@ export default class Text extends Core {
     static filter(...texts: Buffer[]): Promise<Buffer[]>;
     static fromFile(...path: string[]): Promise<Text>;
     static fromUrl<T extends string[] | URL[]>(...url: T): Promise<Text>;
+    static new(texts: Buffer[]): Text;
     static gzipAsync(text: Buffer, options?: GzipOptions): Promise<Buffer>;
     static deflateAsync(text: Buffer, options?: DeflateOptions): Promise<Buffer>;
     static deflateRawAsync(text: Buffer, options?: DeflateRawOptions): Promise<Buffer>;

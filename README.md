@@ -198,6 +198,7 @@ const pdf = new PDF(Buffer.alloc(1));
 - Add formatter prettier.
 - Add manifest esbuild.
 - Return length of elements in append/extend.
+- Static fn (new) for all processors to generate safe new instance.
 
 ## 0.6.0 - Current
 

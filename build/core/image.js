@@ -151,5 +151,13 @@ export default class Image extends Core {
     static newSharp(image, options) {
         return sharp(image, options).clone();
     }
+    static new(images) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const filtered = yield Image.filter(...images);
+            if (filtered.length === 0)
+                throw new Error(`${Image.name}: Non valid image`);
+            return new Image(...filtered);
+        });
+    }
 }
 //# sourceMappingURL=image.js.map

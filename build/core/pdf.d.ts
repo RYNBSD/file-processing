@@ -50,5 +50,6 @@ export default class PDF extends Core {
     static load<T extends string | Uint8Array | ArrayBuffer>(pdf: T, options?: LoadOptions): Promise<PDFDocument>;
     static create(options?: CreateOptions): Promise<PDFDocument>;
     static document(): typeof PDFDocument;
+    static new(pdfs: Buffer[]): Promise<PDF>;
 }
 //# sourceMappingURL=pdf.d.ts.map

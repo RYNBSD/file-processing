@@ -12,5 +12,6 @@ export declare class Video extends AV {
     static filter(...videos: Buffer[]): Promise<Buffer[]>;
     static fromFile(...path: string[]): Promise<Video>;
     static fromUrl<T extends string[] | URL[]>(...url: T): Promise<Video>;
+    static new(videos: Buffer[]): Promise<Video>;
 }
 //# sourceMappingURL=video.d.ts.map

@@ -143,6 +143,12 @@ export default class CSV extends Core {
             return new CSV(...buffer);
         });
     }
+    static new(csvs) {
+        const filtered = csvs.filter((csv) => csv.length > 0);
+        if (filtered.length === 0)
+            throw new Error(`${CSV.name}: Non valid csv`);
+        return new CSV(...filtered);
+    }
     // Async //
     static generateAsync() {
         return __awaiter(this, arguments, void 0, function* (options = {}) {
