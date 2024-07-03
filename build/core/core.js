@@ -13,6 +13,7 @@ import { readFile, writeFile, stat as fsStat, readdir } from "node:fs/promises";
 import path from "node:path";
 import { any2buffer, array2buffer, buffer2readable, isReadable, isReadableStream, isStream, readable2buffer, readablestream2buffer, stream2buffer, string2buffer, uint8array2buffer, url2buffer, } from "@ryn-bsd/from-buffer-to";
 import isBase64 from "is-base64";
+import { default as fastGlob } from "fast-glob";
 import puppeteer from "puppeteer";
 import { isUrl } from "../helper/index.js";
 export default class Core {
@@ -37,6 +38,23 @@ export default class Core {
                 return Promise.all(paths.map((path) => Core.loadDir(path)));
             const files = yield readdir(paths);
             return Core.loadFile(files.map((file) => path.join(paths, file)));
+        });
+    }
+    static loadGlob(globs, options) {
+        return __awaiter(this, void 0, void 0, function* () {
+            var _a;
+            const entries = yield fastGlob(globs, options);
+            const cwd = (_a = options === null || options === void 0 ? void 0 : options.cwd) !== null && _a !== void 0 ? _a : process.cwd();
+            const results = yield Promise.all(entries.map((entry) => __awaiter(this, void 0, void 0, function* () {
+                const fullPath = path.join(cwd, entry);
+                const stat = yield fsStat(fullPath);
+                if (stat.isFile())
+                    return Core.loadFile(fullPath);
+                else if (stat.isDirectory())
+                    return Core.loadDir(fullPath);
+                return null;
+            })));
+            return results.filter((result) => result !== null);
         });
     }
     static loadUrl(urls) {
@@ -68,6 +86,8 @@ export default class Core {
                 const fileStat = yield fsStat(input);
                 if (fileStat.isFile())
                     return Core.loadFile(input);
+                else if (fileStat.isDirectory())
+                    return Core.loadDir(input);
                 else if (isUrl(input))
                     return Core.loadUrl(input);
                 else if (isBase64(input, { allowEmpty: false }))

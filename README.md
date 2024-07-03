@@ -243,11 +243,10 @@ const pdf = new PDF(Buffer.alloc(1));
 - Add static new (to create safe new instance). 🟠
 - Add dir loader. 🟠
 - Add glob loader. 🟠
-- Extract text from images/videos. 🔴
+- Extract text from images/videos/pdf. 🔴
 - Collect images/audios/videos from websites. 🔴
-- Add files formatter. 🔴
-- Add files minifier. 🔴
 - Video watermark. 🔴
+- Extract image from pdf. 🔴
 
 # Support
 

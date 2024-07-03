@@ -45,7 +45,16 @@ export default abstract class Core {
   }
 
   /**
-   * load file from path
+   *  load file
+   *
+   * @example
+   * ```js
+   *  const files = Core.loadFile(["/file1.txt", "/file2.txt"])
+   *  // => Buffer[]
+   *
+   *  const file = Core.loadFile("/file.txt")
+   *  // => Buffer
+   * ```
    */
   static async loadFile<T extends string>(paths: T): Promise<Buffer>;
   static async loadFile<T extends string[]>(paths: T): Promise<Buffer[]>;
@@ -54,6 +63,18 @@ export default abstract class Core {
     return readFile(paths);
   }
 
+  /**
+   *  load files from directory
+   *
+   * @example
+   * ```js
+   *  const files = Core.loadDir(["/dir1", "/dir2"])
+   *  // => Buffer[][]
+   *
+   *  const file = Core.loadDir("/dir")
+   *  // => Buffer[]
+   * ```
+   */
   static async loadDir<T extends string>(paths: T): Promise<Buffer[]>;
   static async loadDir<T extends string[]>(paths: T): Promise<Buffer[][]>;
   static async loadDir<T extends string | string[]>(paths: T) {
@@ -84,7 +105,16 @@ export default abstract class Core {
   }
 
   /**
-   * load file from url
+   *  load file from url
+   *
+   * @example
+   * ```js
+   *  const files = Core.loadUrl(["https://example.com/file.text", "https://example.com/image.png"])
+   *  // => Buffer[]
+   *
+   *  const file = Core.loadUrl("https://example.com/file.text")
+   *  // => Buffer
+   * ```
    */
   static async loadUrl<T extends string | URL>(urls: T): Promise<Buffer>;
   static async loadUrl<T extends string[] | URL[]>(urls: T): Promise<Buffer[]>;
@@ -111,6 +141,7 @@ export default abstract class Core {
     else if (typeof input === "string") {
       const fileStat = await fsStat(input);
       if (fileStat.isFile()) return Core.loadFile(input);
+      else if (fileStat.isDirectory()) return Core.loadDir(input);
       else if (isUrl(input)) return Core.loadUrl(input);
       else if (isBase64(input, { allowEmpty: false })) return Buffer.from(input, "base64");
       return string2buffer(input, false);

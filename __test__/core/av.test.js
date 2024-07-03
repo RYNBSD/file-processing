@@ -1,5 +1,5 @@
 import fs from "node:fs";
-import { Video, Audio } from "../../build/core/av.js";
+import { Video, Audio } from "../../build/core/av/index.js";
 import { TmpFile } from "../../build/helper/index.js";
 import path from "node:path";
 
