@@ -239,8 +239,7 @@ const pdf = new PDF(Buffer.alloc(1));
 - Add instance check for each processor. 🟠
 - Extract text from images/videos/pdf. 🔴
 - Collect images/audios/videos from websites. 🔴
-- Video watermark. 🔴
-- PDF watermark. 🔴
+- PDF/Video/Audio watermark. 🔴
 - PDF remove page. 🔴
 - PDF split. 🔴
 - Extract image from pdf. 🔴
