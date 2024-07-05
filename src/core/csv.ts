@@ -155,6 +155,10 @@ export default class CSV extends Core {
     return new CSV(...filtered);
   }
 
+  static isCSV(obj: unknown): obj is CSV {
+    return obj instanceof CSV;
+  }
+
   // Async //
 
   static async generateAsync<P = any>(options: GenerateOptions = {}) {

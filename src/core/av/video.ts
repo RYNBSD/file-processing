@@ -61,4 +61,8 @@ export default class Video extends AV {
     if (filtered.length === 0) throw new Error(`${Video.name}: Non valid video`);
     return new Video(...filtered);
   }
+
+  static isVideo(obj: unknown): obj is Video {
+    return obj instanceof Video;
+  }
 }

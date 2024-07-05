@@ -17,9 +17,9 @@
   },
   "exports": {
     ".": "./build/index.js",
-    "./core": "./build/core/**/*",
-    "./helper": "./build/helper/**/*",
-    "./types": "./build/types/**/*",
+    "./core": "./build/core/*",
+    "./helper": "./build/helper/*",
+    "./types": "./build/types/*",
     "./min": "./dist/index.js"
   },
   "types": "./src/types/index.d.ts",

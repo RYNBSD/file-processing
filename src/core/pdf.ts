@@ -211,4 +211,8 @@ export default class PDF extends Core {
     if (filtered.length === 0) throw new Error(`${PDF.name}: Non valid pdf`);
     return new PDF(...filtered);
   }
+
+  static isPDF(obj: unknown): obj is PDF {
+    return obj instanceof PDF;
+  }
 }

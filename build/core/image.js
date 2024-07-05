@@ -381,5 +381,8 @@ export default class Image extends Core {
             return new Image(...filtered);
         });
     }
+    static isImage(obj) {
+        return obj instanceof Image;
+    }
 }
 //# sourceMappingURL=image.js.map

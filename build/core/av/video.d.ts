@@ -13,5 +13,6 @@ export default class Video extends AV {
     static fromFile(...path: string[]): Promise<Video>;
     static fromUrl<T extends string[] | URL[]>(...url: T): Promise<Video>;
     static new(videos: Buffer[]): Promise<Video>;
+    static isVideo(obj: unknown): obj is Video;
 }
 //# sourceMappingURL=video.d.ts.map

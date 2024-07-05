@@ -12,6 +12,6 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@ryn-bsd/file-processing": "^0.6.0"
+    "@ryn-bsd/file-processing": "^0.7.1"
   }
 }

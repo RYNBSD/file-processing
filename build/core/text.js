@@ -167,6 +167,9 @@ export default class Text extends Core {
             throw new Error(`${Text.name}: Non valid text`);
         return new Text(...filtered);
     }
+    static isText(obj) {
+        return obj instanceof Text;
+    }
     // Async Compression //
     static gzipAsync(text_1) {
         return __awaiter(this, arguments, void 0, function* (text, options = {}) {

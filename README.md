@@ -236,6 +236,7 @@ const pdf = new PDF(Buffer.alloc(1));
 - add streaming. 🟠
 - Add dir loader. 🟠
 - Add glob loader. 🟠
+- Add instance check for each processor. 🟠
 - Extract text from images/videos/pdf. 🔴
 - Collect images/audios/videos from websites. 🔴
 - Video watermark. 🔴
@@ -244,7 +245,6 @@ const pdf = new PDF(Buffer.alloc(1));
 - PDF split. 🔴
 - Extract image from pdf. 🔴
 - Video/Audio split. 🔴
-- Add instance check for each processor. 🔴
 
 # Support
 

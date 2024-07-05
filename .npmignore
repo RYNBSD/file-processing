@@ -7,3 +7,5 @@ example
 jest.config.js
 eslint.config.js
 esbuild.config.js
+.prettierrc
+eslint.config.js

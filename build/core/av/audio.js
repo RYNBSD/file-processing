@@ -71,5 +71,8 @@ export default class Audio extends AV {
             return new Audio(...filtered);
         });
     }
+    static isAudio(obj) {
+        return obj instanceof Audio;
+    }
 }
 //# sourceMappingURL=audio.js.map

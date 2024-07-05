@@ -253,6 +253,10 @@ export default class Text extends Core {
     return new Text(...filtered);
   }
 
+  static isText(obj: unknown): obj is Text {
+    return obj instanceof Text;
+  }
+
   // Async Compression //
 
   static async gzipAsync(text: Buffer, options: GzipOptions = {}) {

@@ -33,6 +33,7 @@ export default class CSV extends Core {
     static fromFile(...path: string[]): Promise<CSV>;
     static fromUrl<T extends string[] | URL[]>(...url: T): Promise<CSV>;
     static new(csvs: Buffer[]): CSV;
+    static isCSV(obj: unknown): obj is CSV;
     static generateAsync<P = any>(options?: GenerateOptions): Promise<P>;
     static parseAsync<T extends Buffer | string, P = any>(input: T, options?: ParseOptions): Promise<P>;
     static transformAsync<T, U, P = any>(records: T[], handler: TransformHandler<T, U>, options?: TransformOptions): Promise<P>;

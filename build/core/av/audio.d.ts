@@ -13,5 +13,6 @@ export default class Audio extends AV {
     static fromFile(...path: string[]): Promise<Audio>;
     static fromUrl<T extends string[] | URL[]>(...url: T): Promise<Audio>;
     static new(audios: Buffer[]): Promise<Audio>;
+    static isAudio(obj: unknown): obj is Audio;
 }
 //# sourceMappingURL=audio.d.ts.map

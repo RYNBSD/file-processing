@@ -439,4 +439,8 @@ export default class Image extends Core {
     if (filtered.length === 0) throw new Error(`${Image.name}: Non valid image`);
     return new Image(...filtered);
   }
+
+  static isImage(obj: unknown): obj is Image {
+    return obj instanceof Image;
+  }
 }

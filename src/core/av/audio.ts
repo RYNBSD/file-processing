@@ -61,4 +61,8 @@ export default class Audio extends AV {
     if (filtered.length === 0) throw new Error(`${Audio.name}: Non valid audio`);
     return new Audio(...filtered);
   }
+
+  static isAudio(obj: unknown): obj is Audio {
+    return obj instanceof Audio;
+  }
 }

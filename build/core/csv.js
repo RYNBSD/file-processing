@@ -150,6 +150,9 @@ export default class CSV extends Core {
             throw new Error(`${CSV.name}: Non valid csv`);
         return new CSV(...filtered);
     }
+    static isCSV(obj) {
+        return obj instanceof CSV;
+    }
     // Async //
     static generateAsync() {
         return __awaiter(this, arguments, void 0, function* (options = {}) {

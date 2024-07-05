@@ -308,5 +308,6 @@ export default class Image extends Core {
      * ```
      */
     static new(images: Buffer[]): Promise<Image>;
+    static isImage(obj: unknown): obj is Image;
 }
 //# sourceMappingURL=image.d.ts.map

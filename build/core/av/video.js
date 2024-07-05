@@ -73,5 +73,8 @@ export default class Video extends AV {
             return new Video(...filtered);
         });
     }
+    static isVideo(obj) {
+        return obj instanceof Video;
+    }
 }
 //# sourceMappingURL=video.js.map

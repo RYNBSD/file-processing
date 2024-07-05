@@ -203,5 +203,8 @@ export default class PDF extends Core {
             return new PDF(...filtered);
         });
     }
+    static isPDF(obj) {
+        return obj instanceof PDF;
+    }
 }
 //# sourceMappingURL=pdf.js.map
