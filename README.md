@@ -190,8 +190,6 @@ const pdf = new PDF(Buffer.alloc(1));
 - Fast file save (Core.toFile)
 - Improve code quality.
 - Improve security by adding eslint security plugin.
-- All setters filter empty buffers.
-- Image/Video/Audio/PDF setters filter by signature.
 - Update doc.
 - Performance optimizations.
 - Add a manifest version.
@@ -199,6 +197,7 @@ const pdf = new PDF(Buffer.alloc(1));
 - Add manifest esbuild.
 - Return length of elements in append/extend.
 - Static fn (new) for all processors to generate safe new instance.
+- Improve filter for setters.
 
 ## 0.6.0 - Current
 
@@ -246,6 +245,8 @@ const pdf = new PDF(Buffer.alloc(1));
 - Extract text from images/videos/pdf. 🔴
 - Collect images/audios/videos from websites. 🔴
 - Video watermark. 🔴
+- PDF watermark. 🔴
+- PDF remove page. 🔴
 - Extract image from pdf. 🔴
 
 # Support
