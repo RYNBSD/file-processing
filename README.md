@@ -244,6 +244,7 @@ const pdf = new PDF(Buffer.alloc(1));
 - PDF split. 🔴
 - Extract image from pdf. 🔴
 - Video/Audio split. 🔴
+- Add instance check for each processor. 🔴
 
 # Support
 
