@@ -12,10 +12,22 @@ export default abstract class Core {
     abstract clone(): Core;
     abstract filter(): Promise<number>;
     abstract metadata(): Promise<unknown>;
+    /**
+     * @param readable - input
+     * @param writable - output or middleware
+     *
+     * @example
+     * ```js
+     *  const writable = Core.stream(readable, transform)
+     *  // => Writable
+     *
+     *  writable.pipe(output)
+     * ```
+     */
     static stream(readable: Readable, writable: Writable): Writable;
     static initBrowser(options?: puppeteer.PuppeteerLaunchOptions): Promise<puppeteer.Browser>;
     /**
-     *  load file
+     *  @param paths - file/files path
      *
      * @example
      * ```js
@@ -29,7 +41,7 @@ export default abstract class Core {
     static loadFile<T extends string>(paths: T): Promise<Buffer>;
     static loadFile<T extends string[]>(paths: T): Promise<Buffer[]>;
     /**
-     *  load files from directory
+     *  @param paths - directory/directories path
      *
      * @example
      * ```js
@@ -42,9 +54,19 @@ export default abstract class Core {
      */
     static loadDir<T extends string>(paths: T): Promise<Buffer[]>;
     static loadDir<T extends string[]>(paths: T): Promise<Buffer[][]>;
+    /**
+     * @example
+     * ```js
+     *  Core.loadGlob("/*.txt")
+     *  // => (Buffer | Buffer[])[]
+     *
+     *  Core.loadGlob(["/*.txt", "/images"])
+     *  // => (Buffer | Buffer[])[]
+     * ```
+     */
     static loadGlob<T extends fastGlob.Pattern | fastGlob.Pattern[]>(globs: T, options?: fastGlob.Options): Promise<(Buffer | Buffer[])[]>;
     /**
-     *  load file from url
+     *  @param urls - file/files url
      *
      * @example
      * ```js
@@ -58,22 +80,55 @@ export default abstract class Core {
     static loadUrl<T extends string | URL>(urls: T): Promise<Buffer>;
     static loadUrl<T extends string[] | URL[]>(urls: T): Promise<Buffer[]>;
     /**
-     * Convert any of supported inputs to Buffer
+     * @param input - any type of supported inputs
+     *
+     * @example
+     * ```js
+     *  Core.toBuffer("cnluYnNk")
+     *  Core.toBuffer("/file.text")
+     *  Core.toBuffer("https://example.com/file.text")
+     * ```
      */
     static toBuffer<T extends InputFiles>(input: T): Promise<Buffer>;
     static toBuffer<T extends InputFiles[]>(input: T): Promise<Buffer[]>;
     /**
      * Convert any type of inputs to Readable
+     *
+     * @example
+     * ```js
+     *  Core.toReadable("cnluYnNk")
+     *  Core.toReadable("/file.text")
+     *  Core.toReadable("https://example.com/file.text")
+     * ```
      */
     static toReadable<T extends InputFiles>(input: T): Promise<Readable>;
     static toReadable<T extends InputFiles[]>(input: T): Promise<Readable[]>;
     /**
      * Convert any type of inputs into base64 | base64url
+     *
+     * @example
+     * ```js
+     *  Core.toBase64("cnluYnNk")
+     *  Core.toBase64("/file.text")
+     *  Core.toBase64("https://example.com/file.text")
+     * ```
      */
     static toBase64<T extends InputFiles>(input: T, encoding?: "base64" | "base64url"): Promise<string>;
     static toBase64<T extends InputFiles[]>(input: T, encoding?: "base64" | "base64url"): Promise<string[]>;
     /**
      * Save any type of inputs into file
+     *
+     * @example
+     * ```js
+     *  Core.toFile(
+     *    [
+     *      {
+     *        path: "where-to-store.txt",
+     *        input: Buffer.alloc(1)
+     *      }
+     *    ]
+     *  )
+     * ```
      */
     static toFile(file: {
         path: string;

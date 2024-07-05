@@ -36,6 +36,18 @@ export default abstract class Core {
 
   // abstract stream(): Promise<void>;
 
+  /**
+   * @param readable - input
+   * @param writable - output or middleware
+   *
+   * @example
+   * ```js
+   *  const writable = Core.stream(readable, transform)
+   *  // => Writable
+   *
+   *  writable.pipe(output)
+   * ```
+   */
   static stream(readable: Readable, writable: Writable) {
     return readable.pipe(writable);
   }
@@ -45,7 +57,7 @@ export default abstract class Core {
   }
 
   /**
-   *  load file
+   *  @param paths - file/files path
    *
    * @example
    * ```js
@@ -64,7 +76,7 @@ export default abstract class Core {
   }
 
   /**
-   *  load files from directory
+   *  @param paths - directory/directories path
    *
    * @example
    * ```js
@@ -83,6 +95,16 @@ export default abstract class Core {
     return Core.loadFile(files.map((file) => path.join(paths, file)));
   }
 
+  /**
+   * @example
+   * ```js
+   *  Core.loadGlob("/*.txt")
+   *  // => (Buffer | Buffer[])[]
+   *
+   *  Core.loadGlob(["/*.txt", "/images"])
+   *  // => (Buffer | Buffer[])[]
+   * ```
+   */
   static async loadGlob<T extends fastGlob.Pattern | fastGlob.Pattern[]>(
     globs: T,
     options?: fastGlob.Options,
@@ -105,7 +127,7 @@ export default abstract class Core {
   }
 
   /**
-   *  load file from url
+   *  @param urls - file/files url
    *
    * @example
    * ```js
@@ -124,7 +146,14 @@ export default abstract class Core {
   }
 
   /**
-   * Convert any of supported inputs to Buffer
+   * @param input - any type of supported inputs
+   *
+   * @example
+   * ```js
+   *  Core.toBuffer("cnluYnNk")
+   *  Core.toBuffer("/file.text")
+   *  Core.toBuffer("https://example.com/file.text")
+   * ```
    */
   static async toBuffer<T extends InputFiles>(input: T): Promise<Buffer>;
   static async toBuffer<T extends InputFiles[]>(input: T): Promise<Buffer[]>;
@@ -141,8 +170,6 @@ export default abstract class Core {
     else if (typeof input === "string") {
       const fileStat = await fsStat(input);
       if (fileStat.isFile()) return Core.loadFile(input);
-      else if (fileStat.isDirectory()) return Core.loadDir(input);
-      else if (isUrl(input)) return Core.loadUrl(input);
       else if (isBase64(input, { allowEmpty: false })) return Buffer.from(input, "base64");
       return string2buffer(input, false);
     }
@@ -151,6 +178,13 @@ export default abstract class Core {
 
   /**
    * Convert any type of inputs to Readable
+   *
+   * @example
+   * ```js
+   *  Core.toReadable("cnluYnNk")
+   *  Core.toReadable("/file.text")
+   *  Core.toReadable("https://example.com/file.text")
+   * ```
    */
   static async toReadable<T extends InputFiles>(input: T): Promise<Readable>;
   static async toReadable<T extends InputFiles[]>(input: T): Promise<Readable[]>;
@@ -163,6 +197,13 @@ export default abstract class Core {
 
   /**
    * Convert any type of inputs into base64 | base64url
+   *
+   * @example
+   * ```js
+   *  Core.toBase64("cnluYnNk")
+   *  Core.toBase64("/file.text")
+   *  Core.toBase64("https://example.com/file.text")
+   * ```
    */
   static async toBase64<T extends InputFiles>(input: T, encoding?: "base64" | "base64url"): Promise<string>;
   static async toBase64<T extends InputFiles[]>(input: T, encoding?: "base64" | "base64url"): Promise<string[]>;
@@ -175,6 +216,18 @@ export default abstract class Core {
 
   /**
    * Save any type of inputs into file
+   *
+   * @example
+   * ```js
+   *  Core.toFile(
+   *    [
+   *      {
+   *        path: "where-to-store.txt",
+   *        input: Buffer.alloc(1)
+   *      }
+   *    ]
+   *  )
+   * ```
    */
   static async toFile(file: { path: string; input: InputFiles }[]) {
     await Promise.all(

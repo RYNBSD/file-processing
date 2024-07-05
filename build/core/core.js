@@ -19,6 +19,18 @@ import { isUrl } from "../helper/index.js";
 export default class Core {
     constructor() { }
     // abstract stream(): Promise<void>;
+    /**
+     * @param readable - input
+     * @param writable - output or middleware
+     *
+     * @example
+     * ```js
+     *  const writable = Core.stream(readable, transform)
+     *  // => Writable
+     *
+     *  writable.pipe(output)
+     * ```
+     */
     static stream(readable, writable) {
         return readable.pipe(writable);
     }
@@ -40,6 +52,16 @@ export default class Core {
             return Core.loadFile(files.map((file) => path.join(paths, file)));
         });
     }
+    /**
+     * @example
+     * ```js
+     *  Core.loadGlob("/*.txt")
+     *  // => (Buffer | Buffer[])[]
+     *
+     *  Core.loadGlob(["/*.txt", "/images"])
+     *  // => (Buffer | Buffer[])[]
+     * ```
+     */
     static loadGlob(globs, options) {
         return __awaiter(this, void 0, void 0, function* () {
             var _a;
@@ -86,10 +108,6 @@ export default class Core {
                 const fileStat = yield fsStat(input);
                 if (fileStat.isFile())
                     return Core.loadFile(input);
-                else if (fileStat.isDirectory())
-                    return Core.loadDir(input);
-                else if (isUrl(input))
-                    return Core.loadUrl(input);
                 else if (isBase64(input, { allowEmpty: false }))
                     return Buffer.from(input, "base64");
                 return string2buffer(input, false);
@@ -119,6 +137,18 @@ export default class Core {
     }
     /**
      * Save any type of inputs into file
+     *
+     * @example
+     * ```js
+     *  Core.toFile(
+     *    [
+     *      {
+     *        path: "where-to-store.txt",
+     *        input: Buffer.alloc(1)
+     *      }
+     *    ]
+     *  )
+     * ```
      */
     static toFile(file) {
         return __awaiter(this, void 0, void 0, function* () {
