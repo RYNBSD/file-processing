@@ -173,15 +173,15 @@ const pdf = new PDF(Buffer.alloc(1));
 
 # Versions
 
-## Next
+## 0.8.0 - Working
 
+- Add examples.
 - Refactor code to optimize performance.
 - Full code documentation.
 - Full organize code to build next versions (scalability).
 - Add benchmarks.
-- Add examples.
 
-## 0.7.0 - Working
+## 0.7.0 - Current
 
 - Text unzip.
 - Image watermark.
@@ -199,7 +199,7 @@ const pdf = new PDF(Buffer.alloc(1));
 - Static fn (new) for all processors to generate safe new instance.
 - Improve filter for setters.
 
-## 0.6.0 - Current
+## 0.6.0
 
 - Sync support.
 - Images screenshots (take screenshots from websites).
@@ -234,12 +234,6 @@ const pdf = new PDF(Buffer.alloc(1));
 - fix bugs (<https://github.com/RYNBSD/file-processing/issues>)
 - add new features.
 - add streaming. 🟠
-- Text unzip. 🟢
-- Image watermark. 🟢
-- PDF merge. 🟢
-- image to pdf. 🟢
-- Improve filter for setters. 🟢
-- Add static new (to create safe new instance). 🟢
 - Add dir loader. 🟠
 - Add glob loader. 🟠
 - Extract text from images/videos/pdf. 🔴
