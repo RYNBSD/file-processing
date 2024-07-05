@@ -3,11 +3,11 @@ import { Image, Text, PDF, CSV, Video, Audio } from "./core/index.js";
 export default class Processor {
     private readonly files;
     constructor(...files: Buffer[]);
-    image(): Image;
-    pdf(): PDF;
+    image(): Promise<Image>;
+    pdf(): Promise<PDF>;
     csv(): CSV;
     text(): Text;
-    video(): Video;
-    audio(): Audio;
+    video(): Promise<Video>;
+    audio(): Promise<Audio>;
 }
 //# sourceMappingURL=processor.d.ts.map

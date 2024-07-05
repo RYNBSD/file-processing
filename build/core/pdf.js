@@ -54,7 +54,7 @@ export default class PDF extends Core {
     }
     getDocuments(options) {
         return __awaiter(this, void 0, void 0, function* () {
-            return Promise.all(this.pdfs.map((pdf) => __awaiter(this, void 0, void 0, function* () { return PDF.load(pdf.buffer, options); })));
+            return Promise.all(this.pdfs.map((pdf) => PDF.load(pdf.buffer, options)));
         });
     }
     metadata(options) {

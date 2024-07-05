@@ -249,6 +249,7 @@ const pdf = new PDF(Buffer.alloc(1));
 - PDF remove page. 🔴
 - PDF split. 🔴
 - Extract image from pdf. 🔴
+- Video/Audio split. 🔴
 
 # Support
 

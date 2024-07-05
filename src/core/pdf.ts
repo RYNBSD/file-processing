@@ -57,7 +57,7 @@ export default class PDF extends Core {
   }
 
   async getDocuments(options?: LoadOptions) {
-    return Promise.all(this.pdfs.map(async (pdf) => PDF.load(pdf.buffer, options)));
+    return Promise.all(this.pdfs.map((pdf) => PDF.load(pdf.buffer, options)));
   }
 
   override async metadata(options?: LoadOptions) {

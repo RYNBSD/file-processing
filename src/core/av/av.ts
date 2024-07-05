@@ -23,7 +23,7 @@ export default abstract class AV extends Core {
     const tmpFile = await new TmpFile(...this.avs).init();
     const result = await Promise.all(
       tmpFile.paths.map(
-        async (av) =>
+        (av) =>
           new Promise<FfprobeData>((resolve, reject) => {
             AV.newFfmpeg(av).ffprobe((err, metadata) => {
               if (err) return reject(err);
@@ -40,7 +40,7 @@ export default abstract class AV extends Core {
     const tmpFile = await new TmpFile(...this.avs).init();
 
     const result = await Promise.all(
-      tmpFile.paths.map(async (p) => {
+      tmpFile.paths.map((p) => {
         return new Promise<Buffer>((resolve, reject) => {
           const output = path.join(tmpFile.tmp!.path, TmpFile.generateFileName(format));
           AV.newFfmpeg(p, options)

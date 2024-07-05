@@ -76,15 +76,15 @@ export default class CSV extends Core {
   // Async //
 
   async parseAsync<P = any>(options?: ParseOptions) {
-    return Promise.all(this.csvs.map(async (c) => CSV.parseAsync<Buffer, P>(c, options)));
+    return Promise.all(this.csvs.map((c) => CSV.parseAsync<Buffer, P>(c, options)));
   }
 
   async transformAsync<T, U, P = any>(parsed: any[], handler: TransformHandler<T, U>, options?: TransformOptions) {
-    return Promise.all(parsed.map(async (p) => CSV.transformAsync<T, U, P>(p, handler, options)));
+    return Promise.all(parsed.map((p) => CSV.transformAsync<T, U, P>(p, handler, options)));
   }
 
   async stringifyAsync(csvs: StringifyInput, options?: StringifyOptions) {
-    return Promise.all(csvs.map(async (c) => CSV.stringifyAsync(c, options)));
+    return Promise.all(csvs.map((c) => CSV.stringifyAsync(c, options)));
   }
 
   // Stream //

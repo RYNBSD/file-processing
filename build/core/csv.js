@@ -69,17 +69,17 @@ export default class CSV extends Core {
     // Async //
     parseAsync(options) {
         return __awaiter(this, void 0, void 0, function* () {
-            return Promise.all(this.csvs.map((c) => __awaiter(this, void 0, void 0, function* () { return CSV.parseAsync(c, options); })));
+            return Promise.all(this.csvs.map((c) => CSV.parseAsync(c, options)));
         });
     }
     transformAsync(parsed, handler, options) {
         return __awaiter(this, void 0, void 0, function* () {
-            return Promise.all(parsed.map((p) => __awaiter(this, void 0, void 0, function* () { return CSV.transformAsync(p, handler, options); })));
+            return Promise.all(parsed.map((p) => CSV.transformAsync(p, handler, options)));
         });
     }
     stringifyAsync(csvs, options) {
         return __awaiter(this, void 0, void 0, function* () {
-            return Promise.all(csvs.map((c) => __awaiter(this, void 0, void 0, function* () { return CSV.stringifyAsync(c, options); })));
+            return Promise.all(csvs.map((c) => CSV.stringifyAsync(c, options)));
         });
     }
     // Stream //

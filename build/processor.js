@@ -4,22 +4,22 @@ export default class Processor {
         this.files = files;
     }
     image() {
-        return new Image(...this.files);
+        return Image.new(this.files);
     }
     pdf() {
-        return new PDF(...this.files);
+        return PDF.new(this.files);
     }
     csv() {
-        return new CSV(...this.files);
+        return CSV.new(this.files);
     }
     text() {
-        return new Text(...this.files);
+        return Text.new(this.files);
     }
     video() {
-        return new Video(...this.files);
+        return Video.new(this.files);
     }
     audio() {
-        return new Audio(...this.files);
+        return Audio.new(this.files);
     }
 }
 //# sourceMappingURL=processor.js.map

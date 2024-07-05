@@ -24,13 +24,11 @@ export default class AV extends Core {
     metadata() {
         return __awaiter(this, void 0, void 0, function* () {
             const tmpFile = yield new TmpFile(...this.avs).init();
-            const result = yield Promise.all(tmpFile.paths.map((av) => __awaiter(this, void 0, void 0, function* () {
-                return new Promise((resolve, reject) => {
-                    AV.newFfmpeg(av).ffprobe((err, metadata) => {
-                        if (err)
-                            return reject(err);
-                        resolve(metadata);
-                    });
+            const result = yield Promise.all(tmpFile.paths.map((av) => new Promise((resolve, reject) => {
+                AV.newFfmpeg(av).ffprobe((err, metadata) => {
+                    if (err)
+                        return reject(err);
+                    resolve(metadata);
                 });
             })));
             yield tmpFile.clean();
@@ -40,7 +38,7 @@ export default class AV extends Core {
     convert(format, options) {
         return __awaiter(this, void 0, void 0, function* () {
             const tmpFile = yield new TmpFile(...this.avs).init();
-            const result = yield Promise.all(tmpFile.paths.map((p) => __awaiter(this, void 0, void 0, function* () {
+            const result = yield Promise.all(tmpFile.paths.map((p) => {
                 return new Promise((resolve, reject) => {
                     const output = path.join(tmpFile.tmp.path, TmpFile.generateFileName(format));
                     AV.newFfmpeg(p, options)
@@ -51,7 +49,7 @@ export default class AV extends Core {
                         .output(output, { end: true })
                         .run();
                 });
-            })));
+            }));
             yield tmpFile.clean();
             return result;
         });
