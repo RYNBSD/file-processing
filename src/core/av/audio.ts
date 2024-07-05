@@ -48,14 +48,12 @@ export default class Audio extends AV {
 
   static async fromFile(...path: string[]) {
     const buffer = await Core.loadFile(path);
-    const audios = await Audio.filter(...buffer);
-    return new Audio(...audios);
+    return Audio.new(buffer);
   }
 
   static async fromUrl<T extends string[] | URL[]>(...url: T) {
     const buffer = await Core.loadUrl(url);
-    const audios = await Audio.filter(...buffer);
-    return new Audio(...audios);
+    return Audio.new(buffer);
   }
 
   static async new(audios: Buffer[]) {

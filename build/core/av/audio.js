@@ -54,15 +54,13 @@ export default class Audio extends AV {
     static fromFile(...path) {
         return __awaiter(this, void 0, void 0, function* () {
             const buffer = yield Core.loadFile(path);
-            const audios = yield Audio.filter(...buffer);
-            return new Audio(...audios);
+            return Audio.new(buffer);
         });
     }
     static fromUrl(...url) {
         return __awaiter(this, void 0, void 0, function* () {
             const buffer = yield Core.loadUrl(url);
-            const audios = yield Audio.filter(...buffer);
-            return new Audio(...audios);
+            return Audio.new(buffer);
         });
     }
     static new(audios) {

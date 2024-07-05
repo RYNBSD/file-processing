@@ -48,14 +48,12 @@ export default class Video extends AV {
 
   static async fromFile(...path: string[]) {
     const buffer = await Core.loadFile(path);
-    const videos = await Video.filter(...buffer);
-    return new Video(...videos);
+    return Video.new(buffer);
   }
 
   static async fromUrl<T extends string[] | URL[]>(...url: T) {
     const buffer = await Core.loadUrl(url);
-    const videos = await Video.filter(...buffer);
-    return new Video(...videos);
+    return Video.new(buffer);
   }
 
   static async new(videos: Buffer[]) {

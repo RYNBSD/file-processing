@@ -9,10 +9,6 @@ describe("AV", () => {
 
     const videoMetadata = await new Video(videoStream).metadata();
     expect(videoMetadata).toHaveLength(1);
-
-    await expect(async () => {
-      await new Video(Buffer.alloc(1)).metadata();
-    }).rejects.toThrow();
   });
 
   it("custom", async () => {
@@ -84,13 +80,24 @@ describe("Video", () => {
   it("(static) fromFile", async () => {
     const video = await Video.fromFile("asset/video.webm");
     expect(video).toBeInstanceOf(Video);
-    expect(video.getVideos()).toHaveLength(1);
+    expect(video.length).toEqual(1);
   });
 
   it("(static) fromUrl", async () => {
     const video = await Video.fromUrl("https://videos.pexels.com/video-files/2802271/2802271-hd_1920_1080_30fps.mp4");
     expect(video).toBeInstanceOf(Video);
-    expect(video.getVideos()).toHaveLength(1);
+    expect(video.length).toEqual(1);
+  });
+
+  it("(static) new", async () => {
+    const buffer = await Video.loadFile("asset/video.webm");
+    const video = await Video.new([buffer]);
+    expect(video).toBeInstanceOf(Video);
+    expect(video.length).toEqual(1);
+
+    await expect(async () => {
+      await Video.new([Buffer.alloc(1)]);
+    }).rejects.toThrow(Error);
   });
 });
 
@@ -122,12 +129,23 @@ describe("Audio", () => {
   it("(static) fromFile", async () => {
     const audio = await Audio.fromFile("asset/audio.mp3");
     expect(audio).toBeInstanceOf(Audio);
-    expect(audio.getAudios()).toHaveLength(1);
+    expect(audio.length).toEqual(1);
   });
 
   it("(static) fromUrl", async () => {
     const audio = await Audio.fromUrl("http://commondatastorage.googleapis.com/codeskulptor-assets/week7-button.m4a");
     expect(audio).toBeInstanceOf(Audio);
-    expect(audio.getAudios()).toHaveLength(1);
+    expect(audio.length).toEqual(1);
+  });
+
+  it("(static) new", async () => {
+    const buffer = await Audio.loadFile("asset/audio.mp3");
+    const audio = await Audio.new([buffer]);
+    expect(audio).toBeInstanceOf(Audio);
+    expect(audio.length).toEqual(1);
+
+    await expect(async () => {
+      await Audio.new([Buffer.alloc(1)]);
+    }).rejects.toThrow(Error);
   });
 });

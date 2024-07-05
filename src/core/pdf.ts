@@ -109,14 +109,12 @@ export default class PDF extends Core {
 
   static async fromFile(...path: string[]) {
     const buffer = await Core.loadFile(path);
-    const pdfs = await PDF.filter(...buffer);
-    return new PDF(...pdfs);
+    return PDF.new(buffer);
   }
 
   static async fromUrl<T extends string[] | URL[]>(...url: T) {
     const buffer = await Core.loadUrl(url);
-    const pdfs = await PDF.filter(...buffer);
-    return new PDF(...pdfs);
+    return PDF.new(buffer);
   }
 
   /**

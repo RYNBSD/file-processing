@@ -3,21 +3,26 @@ import CSV from "../../build/core/csv.js";
 
 describe("CSV", () => {
   it("set/get/append/extend/clone", async () => {
-    const csv = new CSV(Buffer.alloc(0));
-    expect(csv.getCsvs()).toHaveLength(1);
+    const csv = CSV.new([Buffer.alloc(1)]);
+    let length = csv.length;
+    expect(length).toEqual(1);
 
     // CSV files don't have a signature
-    const buffer = await CSV.loadFile("asset/csv.csv");
-    await csv.append(Buffer.alloc(0), buffer);
-    expect(csv.getCsvs()).toHaveLength(1);
+    const csvFile = await CSV.fromFile("asset/csv.csv");
+    length = await csv.append(Buffer.alloc(0), ...csvFile.getCsvs());
+    expect(length).toEqual(2);
 
-    await csv.setCsvs((csv) => csv.toString());
-    expect(csv.getCsvs()).toHaveLength(0);
+    length = await csv.setCsvs((csv) => csv.toString());
+    expect(length).toEqual(0);
 
-    csv.extend(new CSV(Buffer.alloc(0)));
-    expect(csv.getCsvs()).toHaveLength(1);
+    length = csv.extend(CSV.new([Buffer.alloc(1)]));
+    expect(length).toEqual(1);
 
     expect(csv.clone()).toBeInstanceOf(CSV);
+
+    await expect(async () => {
+      CSV.new(Buffer.alloc(0));
+    }).rejects.toThrow();
   });
 
   it("metadata", async () => {
@@ -95,6 +100,7 @@ describe("CSV", () => {
   it("(static) fromFile", async () => {
     const csv = await CSV.fromFile("asset/csv.csv");
     expect(csv).toBeInstanceOf(CSV);
+    expect(csv.length).toEqual(1);
 
     await expect(async () => {
       await CSV.fromFile("https://sample-videos.com/csv/Sample-Spreadsheet-10-rows.csv");
@@ -104,9 +110,21 @@ describe("CSV", () => {
   it("(static) fromUrl", async () => {
     const csv = await CSV.fromUrl("https://sample-videos.com/csv/Sample-Spreadsheet-10-rows.csv");
     expect(csv).toBeInstanceOf(CSV);
+    expect(csv.length).toEqual(1);
 
     await expect(async () => {
       await CSV.fromUrl("asset/csv.csv");
+    }).rejects.toThrow();
+  });
+
+  it("(static) new", async () => {
+    const buffer = await CSV.loadFile("asset/csv.csv");
+    const csv = CSV.new([buffer]);
+    expect(csv).toBeInstanceOf(CSV);
+    expect(csv.length).toEqual(1);
+
+    await expect(async () => {
+      CSV.new([Buffer.alloc(0)]);
     }).rejects.toThrow();
   });
 

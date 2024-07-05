@@ -134,15 +134,13 @@ export default class Image extends Core {
     static fromFile(...path) {
         return __awaiter(this, void 0, void 0, function* () {
             const buffer = yield Core.loadFile(path);
-            const images = yield Image.filter(...buffer);
-            return new Image(...images);
+            return Image.new(buffer);
         });
     }
     static fromUrl(...url) {
         return __awaiter(this, void 0, void 0, function* () {
             const buffer = yield Core.loadUrl(url);
-            const images = yield Image.filter(...buffer);
-            return new Image(...images);
+            return Image.new(buffer);
         });
     }
     /**

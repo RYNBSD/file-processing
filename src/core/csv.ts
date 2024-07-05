@@ -39,7 +39,8 @@ export default class CSV extends Core {
 
   override async append(...csvs: Buffer[]) {
     // const filteredCsvs = await CSV.filter(...csvs);
-    this.csvs.push(...csvs);
+    const filteredCsvs = csvs.filter((csv) => Buffer.isBuffer(csv) && csv.length > 0) as Buffer[];
+    this.csvs.push(...filteredCsvs);
     return this.length;
   }
 
@@ -140,12 +141,12 @@ export default class CSV extends Core {
 
   static async fromFile(...path: string[]) {
     const buffer = await Core.loadFile(path);
-    return new CSV(...buffer);
+    return CSV.new(buffer);
   }
 
   static async fromUrl<T extends string[] | URL[]>(...url: T) {
     const buffer = await Core.loadUrl(url);
-    return new CSV(...buffer);
+    return CSV.new(buffer);
   }
 
   static new(csvs: Buffer[]) {

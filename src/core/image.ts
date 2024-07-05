@@ -166,14 +166,12 @@ export default class Image extends Core {
 
   static async fromFile(...path: string[]) {
     const buffer = await Core.loadFile(path);
-    const images = await Image.filter(...buffer);
-    return new Image(...images);
+    return Image.new(buffer);
   }
 
   static async fromUrl<T extends string[] | URL[]>(...url: T) {
     const buffer = await Core.loadUrl(url);
-    const images = await Image.filter(...buffer);
-    return new Image(...images);
+    return Image.new(buffer);
   }
 
   /**

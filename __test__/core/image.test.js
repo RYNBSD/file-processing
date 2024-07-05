@@ -95,6 +95,7 @@ describe("Image", () => {
   it("(static) fromFile", async () => {
     const image = await Image.fromFile("asset/rynbsd.png");
     expect(image).toBeInstanceOf(Image);
+    expect(image.length).toEqual(1);
 
     await expect(async () => {
       await Image.fromFile(faker.image.avatar());
@@ -104,9 +105,21 @@ describe("Image", () => {
   it("(static) fromUrl", async () => {
     const image = await Image.fromUrl(faker.image.avatar());
     expect(image).toBeInstanceOf(Image);
+    expect(image.length).toEqual(1);
 
     await expect(async () => {
       await Image.fromUrl("asset/rynbsd.png");
+    }).rejects.toThrow();
+  });
+
+  it("(static) new", async () => {
+    const buffer = await Image.loadFile("asset/rynbsd.png");
+    const image = await Image.new([buffer]);
+    expect(image).toBeInstanceOf(Image);
+    expect(image.length).toEqual(1);
+
+    await expect(async () => {
+      await Image.new([Buffer.alloc(1)]);
     }).rejects.toThrow();
   });
 });

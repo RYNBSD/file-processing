@@ -50,7 +50,8 @@ export default class Text extends Core {
 
   override async append(...texts: Buffer[]) {
     // const filteredTexts = await Text.filter(...texts);
-    this.texts.push(...texts);
+    const filteredTexts = texts.filter((text) => Buffer.isBuffer(text) && text.length > 0) as Buffer[];
+    this.texts.push(...filteredTexts);
     return this.length;
   }
 
@@ -238,12 +239,12 @@ export default class Text extends Core {
 
   static async fromFile(...path: string[]) {
     const buffer = await Core.loadFile(path);
-    return new Text(...buffer);
+    return Text.new(buffer);
   }
 
   static async fromUrl<T extends string[] | URL[]>(...url: T) {
     const buffer = await Core.loadUrl(url);
-    return new Text(...buffer);
+    return Text.new(buffer);
   }
 
   static new(texts: Buffer[]) {

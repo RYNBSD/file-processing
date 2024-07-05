@@ -56,15 +56,13 @@ export default class Video extends AV {
     static fromFile(...path) {
         return __awaiter(this, void 0, void 0, function* () {
             const buffer = yield Core.loadFile(path);
-            const videos = yield Video.filter(...buffer);
-            return new Video(...videos);
+            return Video.new(buffer);
         });
     }
     static fromUrl(...url) {
         return __awaiter(this, void 0, void 0, function* () {
             const buffer = yield Core.loadUrl(url);
-            const videos = yield Video.filter(...buffer);
-            return new Video(...videos);
+            return Video.new(buffer);
         });
     }
     static new(videos) {

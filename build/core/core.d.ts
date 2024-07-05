@@ -19,7 +19,7 @@ export default abstract class Core {
      *
      * @example
      * ```js
-     *  const files = Core.loadFile(["/file1.txt", "/file2.txt"])
+     *  const files = Core.loadFile(["/file.txt", "/image.png"])
      *  // => Buffer[]
      *
      *  const file = Core.loadFile("/file.txt")

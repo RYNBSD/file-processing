@@ -131,10 +131,23 @@ describe("Text", () => {
   it("(static) fromFile", async () => {
     const text = await Text.fromFile("asset/csv.csv");
     expect(text).toBeInstanceOf(Text);
+    expect(text.length).toEqual(1);
   });
 
   it("(static) fromUrl", async () => {
     const text = await Text.fromUrl("https://cse.unl.edu/~cbourke/ComputerScienceOne.pdf");
     expect(text).toBeInstanceOf(Text);
+    expect(text.length).toEqual(1);
+  });
+
+  it("(static) new", async () => {
+    const buffer = await Text.loadFile("asset/rynbsd.png");
+    const text = Text.new([buffer]);
+    expect(text).toBeInstanceOf(Text);
+    expect(text.length).toEqual(1);
+
+    await expect(async () => {
+      Text.new([Buffer.alloc(0)]);
+    }).rejects.toThrow();
   });
 });

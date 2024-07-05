@@ -73,8 +73,9 @@ describe("PDF", () => {
   });
 
   it("(static) fromFile", async () => {
-    const file = await PDF.fromFile("asset/pdf.pdf");
-    expect(file).toBeInstanceOf(PDF);
+    const pdf = await PDF.fromFile("asset/pdf.pdf");
+    expect(pdf).toBeInstanceOf(PDF);
+    expect(pdf.length).toEqual(1);
 
     await expect(async () => {
       await PDF.fromFile("https://cse.unl.edu/~cbourke/ComputerScienceOne.pdf");
@@ -84,6 +85,7 @@ describe("PDF", () => {
   it("(static) fromUrl", async () => {
     const pdf = await PDF.fromUrl("https://cse.unl.edu/~cbourke/ComputerScienceOne.pdf");
     expect(pdf).toBeInstanceOf(PDF);
+    expect(pdf.length).toEqual(1);
 
     await expect(async () => {
       await PDF.fromUrl("asset/pdf.pdf");
@@ -127,7 +129,7 @@ describe("PDF", () => {
     expect(buffer[0]).toBeInstanceOf(Buffer);
   });
 
-  it("create", async () => {
+  it("(static) create", async () => {
     const pdf = await PDF.create();
     expect(pdf).toBeInstanceOf(PDFDocument);
   });
@@ -137,5 +139,16 @@ describe("PDF", () => {
     const documents = await Promise.all(pdf.getPdfs().map((b) => PDF.document().load(b)));
     expect(documents).toHaveLength(3);
     expect(documents[0]).toBeInstanceOf(PDFDocument);
+  });
+
+  it("(static) new", async () => {
+    const buffer = await PDF.loadFile("asset/pdf.pdf");
+    const pdf = await PDF.new([buffer]);
+    expect(pdf).toBeInstanceOf(PDF);
+    expect(pdf.length).toEqual(1);
+
+    await expect(async () => {
+      await PDF.new([Buffer.alloc(1)]);
+    }).rejects.toThrow();
   });
 });

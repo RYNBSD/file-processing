@@ -35,7 +35,8 @@ export default class Text extends Core {
     append(...texts) {
         return __awaiter(this, void 0, void 0, function* () {
             // const filteredTexts = await Text.filter(...texts);
-            this.texts.push(...texts);
+            const filteredTexts = texts.filter((text) => Buffer.isBuffer(text) && text.length > 0);
+            this.texts.push(...filteredTexts);
             return this.length;
         });
     }
@@ -151,13 +152,13 @@ export default class Text extends Core {
     static fromFile(...path) {
         return __awaiter(this, void 0, void 0, function* () {
             const buffer = yield Core.loadFile(path);
-            return new Text(...buffer);
+            return Text.new(buffer);
         });
     }
     static fromUrl(...url) {
         return __awaiter(this, void 0, void 0, function* () {
             const buffer = yield Core.loadUrl(url);
-            return new Text(...buffer);
+            return Text.new(buffer);
         });
     }
     static new(texts) {

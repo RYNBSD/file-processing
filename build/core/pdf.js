@@ -108,15 +108,13 @@ export default class PDF extends Core {
     static fromFile(...path) {
         return __awaiter(this, void 0, void 0, function* () {
             const buffer = yield Core.loadFile(path);
-            const pdfs = yield PDF.filter(...buffer);
-            return new PDF(...pdfs);
+            return PDF.new(buffer);
         });
     }
     static fromUrl(...url) {
         return __awaiter(this, void 0, void 0, function* () {
             const buffer = yield Core.loadUrl(url);
-            const pdfs = yield PDF.filter(...buffer);
-            return new PDF(...pdfs);
+            return PDF.new(buffer);
         });
     }
     static fromImage(images_1) {

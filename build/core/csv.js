@@ -33,7 +33,8 @@ export default class CSV extends Core {
     append(...csvs) {
         return __awaiter(this, void 0, void 0, function* () {
             // const filteredCsvs = await CSV.filter(...csvs);
-            this.csvs.push(...csvs);
+            const filteredCsvs = csvs.filter((csv) => Buffer.isBuffer(csv) && csv.length > 0);
+            this.csvs.push(...filteredCsvs);
             return this.length;
         });
     }
@@ -134,13 +135,13 @@ export default class CSV extends Core {
     static fromFile(...path) {
         return __awaiter(this, void 0, void 0, function* () {
             const buffer = yield Core.loadFile(path);
-            return new CSV(...buffer);
+            return CSV.new(buffer);
         });
     }
     static fromUrl(...url) {
         return __awaiter(this, void 0, void 0, function* () {
             const buffer = yield Core.loadUrl(url);
-            return new CSV(...buffer);
+            return CSV.new(buffer);
         });
     }
     static new(csvs) {
