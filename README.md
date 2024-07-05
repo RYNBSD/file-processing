@@ -247,6 +247,7 @@ const pdf = new PDF(Buffer.alloc(1));
 - Video watermark. 🔴
 - PDF watermark. 🔴
 - PDF remove page. 🔴
+- PDF split. 🔴
 - Extract image from pdf. 🔴
 
 # Support
