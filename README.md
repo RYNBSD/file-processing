@@ -194,7 +194,7 @@ const pdf = new PDF(Buffer.alloc(1));
 - Performance optimizations.
 - Add a manifest version.
 - Add formatter prettier.
-- Add manifest esbuild.
+- Add minified esbuild.
 - Return length of elements in append/extend.
 - Static fn (new) for all processors to generate safe new instance.
 - Improve filter for setters.
