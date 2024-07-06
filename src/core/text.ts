@@ -28,19 +28,60 @@ import Core from "./core.js";
 export default class Text extends Core {
   private texts: Buffer[];
 
+  /**
+   * Create unsafe instance
+   *
+   * to create safe instance:
+   * ```js
+   *  const textFile = await Text.loadFile("text.txt")
+   *
+   *  // create safe new instance
+   *  const text = Text.new(textFile)
+   *  // => Text
+   * ```
+   */
   constructor(...texts: Buffer[]) {
     super();
     this.texts = texts;
   }
 
+  /** get current length of texts */
   get length() {
     return this.texts.length;
   }
 
+  /**
+   * get texts of this instance
+   *
+   * @example
+   * ```js
+   *  const buffer = await Text.loadFile("text.txt")
+   *
+   *  // not the same reference
+   *  const texts = new Text(buffer).getTexts()
+   *  // => 1
+   * ```
+   */
   getTexts() {
     return [...this.texts];
   }
 
+  /**
+   * set texts
+   *
+   * @returns - new length
+   *
+   * @example
+   * ```js
+   *  const text = await Text.fromFile("text.txt")
+   *
+   *  // this method filter invalid texts after set
+   *  const newLength = await text.setTexts(\* async *\(text, index) => {
+   *    return index % 2 ? text : text.toString()
+   *  })
+   *  // => 0
+   * ```
+   */
   async setTexts<T>(callback: TextSetCallback<T>) {
     const texts = await Promise.all(this.texts.map(async (text, index) => callback(text, index)));
     const filteredTexts = texts.filter((text) => Buffer.isBuffer(text) && text.length > 0) as Buffer[];
@@ -48,6 +89,22 @@ export default class Text extends Core {
     return this.length;
   }
 
+  /**
+   *
+   * @param texts - new texts (Buffer) to append the exists list
+   * @returns - new length
+   *
+   * @example
+   * ```js
+   *  const text = new Text()
+   *  const buffer1 = await Text.loadFile("text1.png")
+   *  const buffer2 = await Text.loadFile("text2.png")
+   *
+   *  // filter invalid texts
+   *  await text.append(buffer1, Buffer.alloc(0), buffer2)
+   *  // => 2
+   * ```
+   */
   override async append(...texts: Buffer[]) {
     // const filteredTexts = await Text.filter(...texts);
     const filteredTexts = texts.filter((text) => Buffer.isBuffer(text) && text.length > 0) as Buffer[];
@@ -55,6 +112,24 @@ export default class Text extends Core {
     return this.length;
   }
 
+  /**
+   *
+   * @param texts - extend texts from instance to an another
+   * @returns - new length
+   *
+   * @example
+   * ```js
+   *  const buffer1 = await Text.loadFile("text1.txt")
+   *  const buffer2 = await Text.loadFile("text2.txt")
+   *  const text1 = new Text(buffer1, buffer2)
+   *
+   *  const text2 = new Text()
+   *
+   *  // don't apply any filters
+   *  text2.extend(text1)
+   *  // => 2
+   * ```
+   */
   override extend(...texts: Text[]) {
     texts.forEach((text) => {
       this.texts.push(...text.getTexts());
@@ -62,10 +137,34 @@ export default class Text extends Core {
     return this.length;
   }
 
+  /**
+   *
+   * @returns - clone current instance
+   *
+   * @example
+   * ```js
+   *  const text = new Text()
+   *
+   *  // not the same reference
+   *  const clone = text.clone()
+   *  // => Text
+   * ```
+   */
   override clone() {
     return new Text(...this.texts);
   }
 
+  /**
+   * filter texts
+   * @returns - new length
+   *
+   * @example
+   * ```js
+   *  const text = new Text(Buffer.alloc(1))
+   *  await text.filter()
+   *  // => 0
+   * ```
+   */
   override async filter() {
     this.texts = await Text.filter(...this.texts);
     return this.length;
@@ -86,6 +185,19 @@ export default class Text extends Core {
     return map;
   }
 
+  /**
+   * @returns - texts metadata
+   *
+   * @example
+   * ```js
+   *  const text1 = await Text.loadFile("text1.txt")
+   *  const text2 = await Text.loadFile("text2.txt")
+   *
+   *  const text = new Text(text1, text2)
+   *  const metadata = await text.metadata()
+   *  // => { size: number; charactersMap: Map<number, number>; }[]
+   * ```
+   */
   override async metadata() {
     return Promise.all(
       this.texts.map(async (text) => ({
@@ -95,6 +207,20 @@ export default class Text extends Core {
     );
   }
 
+  /**
+   *
+   * @param method - compress method
+   * @param options - compress options
+   * @returns - compressed data
+   *
+   * @example
+   * ```js
+   *  const textFile = await Text.loadFile("text.txt")
+   *  const text = new Text(textFile)
+   *  const buffers = await text.compressAsync("gzip")
+   *  // => Buffer[]
+   * ```
+   */
   async compressAsync<T extends TextCompressionMethods>(method: T, options?: TextCompressionOptions<T>) {
     return Promise.all(
       Text.compress(
@@ -109,6 +235,20 @@ export default class Text extends Core {
     );
   }
 
+  /**
+   *
+   * @param method - decompress method
+   * @param options - decompress options
+   * @returns - decompressed data
+   *
+   * @example
+   * ```js
+   *  const textFile = await Text.loadFile("text.txt.gz")
+   *  const text = new Text(textFile)
+   *  const buffers = await text.decompressAsync("gunzip")
+   *  // => Buffer[]
+   * ```
+   */
   async decompressAsync<T extends TextDecompressionMethods>(method: T, options?: TextDecompressionOptions<T>) {
     return Promise.all(
       Text.decompress(
@@ -124,6 +264,20 @@ export default class Text extends Core {
     );
   }
 
+  /**
+   *
+   * @param method - compress method
+   * @param options - compress options
+   * @returns - compressed data
+   *
+   * @example
+   * ```js
+   *  const textFile = await Text.loadFile("text.txt")
+   *  const text = new Text(textFile)
+   *  const buffers = text.compressStream("gzip")
+   *  // => Writable[]
+   * ```
+   */
   async compressStream<T extends TextCompressionMethods>(method: T, options?: TextCompressionOptions<T>) {
     const reads = await Core.toReadable(this.texts);
     return Text.compress(
@@ -137,6 +291,20 @@ export default class Text extends Core {
     );
   }
 
+  /**
+   *
+   * @param method - decompress method
+   * @param options - decompress options
+   * @returns - decompressed data
+   *
+   * @example
+   * ```js
+   *  const textFile = await Text.loadFile("text.txt.gz")
+   *  const text = new Text(textFile)
+   *  const buffers = text.decompressStream("gunzip")
+   *  // => Writable[]
+   * ```
+   */
   async decompressStream<T extends TextDecompressionMethods>(method: T, options?: TextDecompressionOptions<T>) {
     const reads = await Core.toReadable(this.texts);
     return Text.decompress(
@@ -151,6 +319,20 @@ export default class Text extends Core {
     );
   }
 
+  /**
+   *
+   * @param method - compress method
+   * @param options - compress options
+   * @returns - compressed data
+   *
+   * @example
+   * ```js
+   *  const textFile = await Text.loadFile("text.txt")
+   *  const text = new Text(textFile)
+   *  const buffers = text.compressSync("gzip")
+   *  // => Buffer[]
+   * ```
+   */
   compressSync<T extends TextCompressionMethods>(method: T, options?: TextCompressionOptions<T>) {
     return Text.compress(
       this.texts,
@@ -163,6 +345,20 @@ export default class Text extends Core {
     );
   }
 
+  /**
+   *
+   * @param method - decompress method
+   * @param options - decompress options
+   * @returns - decompressed data
+   *
+   * @example
+   * ```js
+   *  const textFile = await Text.loadFile("text.txt.gz")
+   *  const text = new Text(textFile)
+   *  const buffers = text.decompressSync("gunzip")
+   *  // => Buffer[]
+   * ```
+   */
   decompressSync<T extends TextDecompressionMethods>(method: T, options?: TextDecompressionOptions<T>) {
     return Text.decompress(
       this.texts,
@@ -176,10 +372,43 @@ export default class Text extends Core {
     );
   }
 
+  /**
+   * @returns - base on the callback return type
+   *
+   * @example
+   * ```js
+   *  const text1 = await Text.loadFile("text1.txt")
+   *  const text2 = await Text.loadFile("text2.txt")
+   *
+   *  const text = new Text(text1, text2)
+   *
+   *  await text.custom(\* async *\(text, _index) => {
+   *    return text.toString();
+   *  })
+   *  // => Buffer[]
+   *
+   *  await text.custom(\* async *\(_text, index) => {
+   *    return index
+   *  })
+   *  // => number[]
+   * ```
+   */
   async custom<T>(callback: TextCustomCallback<T>): Promise<Awaited<T>[]> {
     return Promise.all(this.texts.map(async (text, index) => callback(text, index)));
   }
 
+  /**
+   * compress core
+   *
+   * @param array - texts
+   * @param method - compress method
+   * @param gzipFn - gunzip function
+   * @param deflateFn - deflate function
+   * @param deflateRawFn - deflate raw function
+   * @param brotliCompressFn - brotli compress function
+   * @param options - compress option for each method
+   * @returns - base on what your functions return
+   */
   static compress<R, T extends Buffer[] | Readable[], M extends TextCompressionMethods>(
     array: T,
     method: M,
@@ -205,6 +434,19 @@ export default class Text extends Core {
     });
   }
 
+  /**
+   * decompress core
+   *
+   * @param array - texts
+   * @param method - decompress method
+   * @param gunzipFn - gunzip function
+   * @param inflateFn - inflate function
+   * @param inflateRawFn - inflate raw function
+   * @param brotliDecompressFn - brotli decompress function
+   * @param unzipFn - unzip function
+   * @param options - decompress option for each method
+   * @returns - base on what your functions return
+   */
   static decompress<R, T extends Buffer[] | Readable[], M extends TextDecompressionMethods>(
     array: T,
     method: M,
@@ -233,20 +475,93 @@ export default class Text extends Core {
     });
   }
 
+  /**
+   *
+   * @returns - filter non text
+   *
+   * @example
+   * ```js
+   *  const text1 = await Text.loadFile("text1.txt")
+   *  const text2 = await Text.loadFile("text2.txt")
+   *
+   *  const buffer = await Text.filter(text1, text2)
+   *  // => Buffer[]
+   * ```
+   */
   static async filter(...texts: Buffer[]) {
     return new FilterFile(...texts).text();
   }
 
+  /**
+   * @throws
+   *
+   * load texts from files
+   * @returns - loaded files
+   *
+   * @example
+   * ```js
+   *  const text = await Text.fromFile("image.png")
+   *  // => Text
+   *
+   *  const text = await Text.fromFile("image.png", "text.txt")
+   *  // => Text
+   *  const length = text.length
+   *  // => 2
+   *
+   *  const text = await Text.fromFile("")
+   *  // => Error (throw)
+   * ```
+   */
   static async fromFile(...path: string[]) {
     const buffer = await Core.loadFile(path);
     return Text.new(buffer);
   }
 
+  /**
+   * @throws
+   *
+   * load texts from urls
+   * @returns - loaded urls
+   *
+   * @example
+   * ```js
+   *  const text = await Text.fromUrl("http://example.com/text.txt")
+   *  // => Text
+   *
+   *  const text = await Text.fromUrl("http://example.com/image.png", "http://example.com/text.txt")
+   *  // => Text
+   *  const length = text.length
+   *  // => 2
+   *
+   *  const text = await Text.fromUrl("text.txt")
+   *  // => Error (throw)
+   * ```
+   */
   static async fromUrl<T extends string[] | URL[]>(...url: T) {
     const buffer = await Core.loadUrl(url);
     return Text.new(buffer);
   }
 
+  /**
+   * @throws
+   *
+   * @param texts - texts buffer
+   * @returns - create new safe instance
+   *
+   * @example
+   * ```js
+   *  const text = await Text.new(Buffer.alloc(0))
+   *  // => Error (throw)
+   *
+   *  const textFile = await Text.loadFile("text.txt")
+   *
+   *  // filter non text
+   *  const text = await Text.new(textFile, Buffer.alloc(0))
+   *  // => Text
+   *  const length = text.length
+   *  // => 1
+   * ```
+   */
   static new(texts: Buffer[]) {
     const filtered = texts.filter((text) => text.length > 0);
     if (filtered.length === 0) throw new Error(`${Text.name}: Non valid text`);

@@ -55,8 +55,8 @@ export default class Image extends Core {
      * ```js
      *  const image = await Image.fromFile("image.png")
      *
-     *  // this method filter invalid images after set, the callback could be async
-     *  const newLength = await image.setImages((image, index) => {
+     *  // this method filter invalid images after set
+     *  const newLength = await image.setImages(\* async *\(image, index) => {
      *    return index % 2 ? image : image.toString()
      *  })
      *  // => 0
@@ -96,7 +96,7 @@ export default class Image extends Core {
     }
     /**
      *
-     * @param images - extend images from instance to another
+     * @param images - extend images from instance to an another
      * @returns - new length
      *
      * @example
@@ -163,7 +163,7 @@ export default class Image extends Core {
      *  const metadata = await image.metadata()
      *  // => Metadata[]
      * ```
-     * */
+     */
     metadata() {
         return __awaiter(this, void 0, void 0, function* () {
             return Promise.all(this.images.map((image) => Image.newSharp(image).metadata()));
@@ -246,7 +246,7 @@ export default class Image extends Core {
      *  })
      *  // => number[]
      * ```
-     * */
+     */
     custom(callback) {
         return __awaiter(this, void 0, void 0, function* () {
             return Promise.all(this.images.map((image, index) => __awaiter(this, void 0, void 0, function* () { return callback(Image.newSharp(image), index); })));
@@ -323,10 +323,10 @@ export default class Image extends Core {
      *
      * @example
      * ```js
-     *  const image = await Image.fromUrl("image.png")
+     *  const image = await Image.fromUrl("http://example.com/image.png")
      *  // => Image
      *
-     *  const image = await Image.fromUrl("image.png", "text.txt")
+     *  const image = await Image.fromUrl("http://example.com/image.png", "http://example.com/text.txt")
      *  // => Image
      *  const length = image.length
      *  // => 1

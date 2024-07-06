@@ -8,34 +8,349 @@ import Core from "./core.js";
  */
 export default class Text extends Core {
     private texts;
+    /**
+     * Create unsafe instance
+     *
+     * to create safe instance:
+     * ```js
+     *  const textFile = await Text.loadFile("text.txt")
+     *
+     *  // create safe new instance
+     *  const text = Text.new(textFile)
+     *  // => Text
+     * ```
+     */
     constructor(...texts: Buffer[]);
+    /** get current length of texts */
     get length(): number;
+    /**
+     * get texts of this instance
+     *
+     * @example
+     * ```js
+     *  const buffer = await Text.loadFile("text.txt")
+     *
+     *  // not the same reference
+     *  const texts = new Text(buffer).getTexts()
+     *  // => 1
+     * ```
+     */
     getTexts(): Buffer[];
+    /**
+     * set texts
+     *
+     * @returns - new length
+     *
+     * @example
+     * ```js
+     *  const text = await Text.fromFile("text.txt")
+     *
+     *  // this method filter invalid texts after set
+     *  const newLength = await text.setTexts(\* async *\(text, index) => {
+     *    return index % 2 ? text : text.toString()
+     *  })
+     *  // => 0
+     * ```
+     */
     setTexts<T>(callback: TextSetCallback<T>): Promise<number>;
+    /**
+     *
+     * @param texts - new texts (Buffer) to append the exists list
+     * @returns - new length
+     *
+     * @example
+     * ```js
+     *  const text = new Text()
+     *  const buffer1 = await Text.loadFile("text1.png")
+     *  const buffer2 = await Text.loadFile("text2.png")
+     *
+     *  // filter invalid texts
+     *  await text.append(buffer1, Buffer.alloc(0), buffer2)
+     *  // => 2
+     * ```
+     */
     append(...texts: Buffer[]): Promise<number>;
+    /**
+     *
+     * @param texts - extend texts from instance to an another
+     * @returns - new length
+     *
+     * @example
+     * ```js
+     *  const buffer1 = await Text.loadFile("text1.txt")
+     *  const buffer2 = await Text.loadFile("text2.txt")
+     *  const text1 = new Text(buffer1, buffer2)
+     *
+     *  const text2 = new Text()
+     *
+     *  // don't apply any filters
+     *  text2.extend(text1)
+     *  // => 2
+     * ```
+     */
     extend(...texts: Text[]): number;
+    /**
+     *
+     * @returns - clone current instance
+     *
+     * @example
+     * ```js
+     *  const text = new Text()
+     *
+     *  // not the same reference
+     *  const clone = text.clone()
+     *  // => Text
+     * ```
+     */
     clone(): Text;
+    /**
+     * filter texts
+     * @returns - new length
+     *
+     * @example
+     * ```js
+     *  const text = new Text(Buffer.alloc(1))
+     *  await text.filter()
+     *  // => 0
+     * ```
+     */
     filter(): Promise<number>;
     /**
      * @returns - key is the character code and value is the count
      */
     private charactersMap;
+    /**
+     * @returns - texts metadata
+     *
+     * @example
+     * ```js
+     *  const text1 = await Text.loadFile("text1.txt")
+     *  const text2 = await Text.loadFile("text2.txt")
+     *
+     *  const text = new Text(text1, text2)
+     *  const metadata = await text.metadata()
+     *  // => { size: number; charactersMap: Map<number, number>; }[]
+     * ```
+     */
     metadata(): Promise<{
         size: number;
         charactersMap: Map<number, number>;
     }[]>;
+    /**
+     *
+     * @param method - compress method
+     * @param options - compress options
+     * @returns - compressed data
+     *
+     * @example
+     * ```js
+     *  const textFile = await Text.loadFile("text.txt")
+     *  const text = new Text(textFile)
+     *  const buffers = await text.compressAsync("gzip")
+     *  // => Buffer[]
+     * ```
+     */
     compressAsync<T extends TextCompressionMethods>(method: T, options?: TextCompressionOptions<T>): Promise<Buffer[]>;
+    /**
+     *
+     * @param method - decompress method
+     * @param options - decompress options
+     * @returns - decompressed data
+     *
+     * @example
+     * ```js
+     *  const textFile = await Text.loadFile("text.txt.gz")
+     *  const text = new Text(textFile)
+     *  const buffers = await text.decompressAsync("gunzip")
+     *  // => Buffer[]
+     * ```
+     */
     decompressAsync<T extends TextDecompressionMethods>(method: T, options?: TextDecompressionOptions<T>): Promise<Buffer[]>;
+    /**
+     *
+     * @param method - compress method
+     * @param options - compress options
+     * @returns - compressed data
+     *
+     * @example
+     * ```js
+     *  const textFile = await Text.loadFile("text.txt")
+     *  const text = new Text(textFile)
+     *  const buffers = text.compressStream("gzip")
+     *  // => Writable[]
+     * ```
+     */
     compressStream<T extends TextCompressionMethods>(method: T, options?: TextCompressionOptions<T>): Promise<import("stream").Writable[]>;
+    /**
+     *
+     * @param method - decompress method
+     * @param options - decompress options
+     * @returns - decompressed data
+     *
+     * @example
+     * ```js
+     *  const textFile = await Text.loadFile("text.txt.gz")
+     *  const text = new Text(textFile)
+     *  const buffers = text.decompressStream("gunzip")
+     *  // => Writable[]
+     * ```
+     */
     decompressStream<T extends TextDecompressionMethods>(method: T, options?: TextDecompressionOptions<T>): Promise<import("stream").Writable[]>;
+    /**
+     *
+     * @param method - compress method
+     * @param options - compress options
+     * @returns - compressed data
+     *
+     * @example
+     * ```js
+     *  const textFile = await Text.loadFile("text.txt")
+     *  const text = new Text(textFile)
+     *  const buffers = text.compressSync("gzip")
+     *  // => Buffer[]
+     * ```
+     */
     compressSync<T extends TextCompressionMethods>(method: T, options?: TextCompressionOptions<T>): Buffer[];
+    /**
+     *
+     * @param method - decompress method
+     * @param options - decompress options
+     * @returns - decompressed data
+     *
+     * @example
+     * ```js
+     *  const textFile = await Text.loadFile("text.txt.gz")
+     *  const text = new Text(textFile)
+     *  const buffers = text.decompressSync("gunzip")
+     *  // => Buffer[]
+     * ```
+     */
     decompressSync<T extends TextDecompressionMethods>(method: T, options?: TextDecompressionOptions<T>): Buffer[];
+    /**
+     * @returns - base on the callback return type
+     *
+     * @example
+     * ```js
+     *  const text1 = await Text.loadFile("text1.txt")
+     *  const text2 = await Text.loadFile("text2.txt")
+     *
+     *  const text = new Text(text1, text2)
+     *
+     *  await text.custom(\* async *\(text, _index) => {
+     *    return text.toString();
+     *  })
+     *  // => Buffer[]
+     *
+     *  await text.custom(\* async *\(_text, index) => {
+     *    return index
+     *  })
+     *  // => number[]
+     * ```
+     */
     custom<T>(callback: TextCustomCallback<T>): Promise<Awaited<T>[]>;
+    /**
+     * compress core
+     *
+     * @param array - texts
+     * @param method - compress method
+     * @param gzipFn - gunzip function
+     * @param deflateFn - deflate function
+     * @param deflateRawFn - deflate raw function
+     * @param brotliCompressFn - brotli compress function
+     * @param options - compress option for each method
+     * @returns - base on what your functions return
+     */
     static compress<R, T extends Buffer[] | Readable[], M extends TextCompressionMethods>(array: T, method: M, gzipFn: TextCompressFn<R, T[number], M>, deflateFn: TextCompressFn<R, T[number], M>, deflateRawFn: TextCompressFn<R, T[number], M>, brotliCompressFn: TextCompressFn<R, T[number], M>, options?: TextCompressionOptions<M>): R[];
+    /**
+     * decompress core
+     *
+     * @param array - texts
+     * @param method - decompress method
+     * @param gunzipFn - gunzip function
+     * @param inflateFn - inflate function
+     * @param inflateRawFn - inflate raw function
+     * @param brotliDecompressFn - brotli decompress function
+     * @param unzipFn - unzip function
+     * @param options - decompress option for each method
+     * @returns - base on what your functions return
+     */
     static decompress<R, T extends Buffer[] | Readable[], M extends TextDecompressionMethods>(array: T, method: M, gunzipFn: TextDecompressFn<R, T[number], M>, inflateFn: TextDecompressFn<R, T[number], M>, inflateRawFn: TextDecompressFn<R, T[number], M>, brotliDecompressFn: TextDecompressFn<R, T[number], M>, unzipFn: TextDecompressFn<R, T[number], M>, options?: TextDecompressionOptions<M>): R[];
+    /**
+     *
+     * @returns - filter non text
+     *
+     * @example
+     * ```js
+     *  const text1 = await Text.loadFile("text1.txt")
+     *  const text2 = await Text.loadFile("text2.txt")
+     *
+     *  const buffer = await Text.filter(text1, text2)
+     *  // => Buffer[]
+     * ```
+     */
     static filter(...texts: Buffer[]): Promise<Buffer[]>;
+    /**
+     * @throws
+     *
+     * load texts from files
+     * @returns - loaded files
+     *
+     * @example
+     * ```js
+     *  const text = await Text.fromFile("image.png")
+     *  // => Text
+     *
+     *  const text = await Text.fromFile("image.png", "text.txt")
+     *  // => Text
+     *  const length = text.length
+     *  // => 2
+     *
+     *  const text = await Text.fromFile("")
+     *  // => Error (throw)
+     * ```
+     */
     static fromFile(...path: string[]): Promise<Text>;
+    /**
+     * @throws
+     *
+     * load texts from urls
+     * @returns - loaded urls
+     *
+     * @example
+     * ```js
+     *  const text = await Text.fromUrl("http://example.com/text.txt")
+     *  // => Text
+     *
+     *  const text = await Text.fromUrl("http://example.com/image.png", "http://example.com/text.txt")
+     *  // => Text
+     *  const length = text.length
+     *  // => 2
+     *
+     *  const text = await Text.fromUrl("text.txt")
+     *  // => Error (throw)
+     * ```
+     */
     static fromUrl<T extends string[] | URL[]>(...url: T): Promise<Text>;
+    /**
+     * @throws
+     *
+     * @param texts - texts buffer
+     * @returns - create new safe instance
+     *
+     * @example
+     * ```js
+     *  const text = await Text.new(Buffer.alloc(0))
+     *  // => Error (throw)
+     *
+     *  const textFile = await Text.loadFile("text.txt")
+     *
+     *  // filter non text
+     *  const text = await Text.new(textFile, Buffer.alloc(0))
+     *  // => Text
+     *  const length = text.length
+     *  // => 1
+     * ```
+     */
     static new(texts: Buffer[]): Text;
     /**
      * check if an object is instance of Text or not
