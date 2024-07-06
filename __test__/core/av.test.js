@@ -99,6 +99,16 @@ describe("Video", () => {
       await Video.new([Buffer.alloc(1)]);
     }).rejects.toThrow(Error);
   });
+
+  it("(static) isVideo", () => {
+    const video = new Video();
+    const isVideo = Video.isVideo(video);
+    expect(isVideo).toBe(true);
+
+    const object = new Object();
+    const isNotVideo = Video.isVideo(object);
+    expect(isNotVideo).toBe(false);
+  });
 });
 
 describe("Audio", () => {

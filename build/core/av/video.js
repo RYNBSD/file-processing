@@ -73,6 +73,21 @@ export default class Video extends AV {
             return new Video(...filtered);
         });
     }
+    /**
+     * check if an object is instance of Video or not
+     * @returns - boolean
+     *
+     * @example
+     * ```js
+     *  const video = new Video()
+     *  const isVideo = Video.isVideo(video)
+     *  // => true
+     *
+     *  const object = new Object()
+     *  const isNotVideo = Video.isVideo(object)
+     *  // => false
+     * ```
+     */
     static isVideo(obj) {
         return obj instanceof Video;
     }
