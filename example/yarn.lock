@@ -182,10 +182,10 @@
     unbzip2-stream "1.4.3"
     yargs "17.7.2"
 
-"@ryn-bsd/file-processing@^0.7.1":
-  version "0.7.1"
-  resolved "https://registry.yarnpkg.com/@ryn-bsd/file-processing/-/file-processing-0.7.1.tgz#c5e0d3a68d3345460431d341314076237fcbd75b"
-  integrity sha512-TAVYyCCqFLKyzKO3I+Blzn1B041t8868yTcy35QXuuOuawDZqJa0/OP9/gDnawfsCSE6q2rinjF7K/Nba/hzqg==
+"@ryn-bsd/file-processing@^0.7.2":
+  version "0.7.2"
+  resolved "https://registry.yarnpkg.com/@ryn-bsd/file-processing/-/file-processing-0.7.2.tgz#a4cd4705d796a66f4e6f7ca9f160b6c04db6a23b"
+  integrity sha512-XjVvs4ckIF7J+iLz4nr/9q/w6JAFBh/oYJut33ohEn/OekcE8P9c2SajkLp/CQW0Is0HAYSp/1ugdVvWPpU3Rg==
   dependencies:
     "@ffmpeg-installer/ffmpeg" "^1.1.0"
     "@ffprobe-installer/ffprobe" "^2.1.2"
