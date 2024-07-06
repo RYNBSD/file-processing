@@ -212,6 +212,21 @@ export default class PDF extends Core {
     return new PDF(...filtered);
   }
 
+  /**
+   * check if an object is instance of PDF or not
+   * @returns - boolean
+   *
+   * @example
+   * ```js
+   *  const pdf = new PDF()
+   *  const isPDF = PDF.isPDF(pdf)
+   *  // => true
+   *
+   *  const object = new Object()
+   *  const isNotPDF = PDF.isPDF(object)
+   *  // => false
+   * ```
+   */
   static isPDF(obj: unknown): obj is PDF {
     return obj instanceof PDF;
   }

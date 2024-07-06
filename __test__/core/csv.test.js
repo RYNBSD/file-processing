@@ -128,6 +128,16 @@ describe("CSV", () => {
     }).rejects.toThrow();
   });
 
+  it("(static) isCSV", () => {
+    const csv = new CSV();
+    const isCSV = CSV.isCSV(csv);
+    expect(isCSV).toBe(true);
+
+    const object = new Object();
+    const isNotCSV = CSV.isCSV(object);
+    expect(isNotCSV).toBe(false);
+  });
+
   it("(static) generateAsync", async () => {
     const generate = await CSV.generateAsync({
       seed: 1,

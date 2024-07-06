@@ -260,7 +260,7 @@ export default class Text extends Core {
    * @example
    * ```js
    *  const text = new Text()
-   *   const isText = Text.isText(text)
+   *  const isText = Text.isText(text)
    *  // => true
    *
    *  const object = new Object()

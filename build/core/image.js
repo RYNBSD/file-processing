@@ -388,7 +388,7 @@ export default class Image extends Core {
      * @example
      * ```js
      *  const image = new Image()
-     *   const isImage = Image.isImage(image)
+     *  const isImage = Image.isImage(image)
      *  // => true
      *
      *  const object = new Object()

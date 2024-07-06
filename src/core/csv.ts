@@ -155,6 +155,21 @@ export default class CSV extends Core {
     return new CSV(...filtered);
   }
 
+  /**
+   * check if an object is instance of CSV or not
+   * @returns - boolean
+   *
+   * @example
+   * ```js
+   *  const csv = new CSV()
+   *  const isCSV = CSV.isCSV(csv)
+   *  // => true
+   *
+   *  const object = new Object()
+   *  const isNotCSV = CSV.isCSV(object)
+   *  // => false
+   * ```
+   */
   static isCSV(obj: unknown): obj is CSV {
     return obj instanceof CSV;
   }

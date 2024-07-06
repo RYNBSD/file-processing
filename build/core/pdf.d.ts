@@ -51,6 +51,21 @@ export default class PDF extends Core {
     static create(options?: CreateOptions): Promise<PDFDocument>;
     static document(): typeof PDFDocument;
     static new(pdfs: Buffer[]): Promise<PDF>;
+    /**
+     * check if an object is instance of PDF or not
+     * @returns - boolean
+     *
+     * @example
+     * ```js
+     *  const pdf = new PDF()
+     *  const isPDF = PDF.isPDF(pdf)
+     *  // => true
+     *
+     *  const object = new Object()
+     *  const isNotPDF = PDF.isPDF(object)
+     *  // => false
+     * ```
+     */
     static isPDF(obj: unknown): obj is PDF;
 }
 //# sourceMappingURL=pdf.d.ts.map

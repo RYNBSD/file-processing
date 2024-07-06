@@ -151,4 +151,14 @@ describe("PDF", () => {
       await PDF.new([Buffer.alloc(1)]);
     }).rejects.toThrow();
   });
+
+  it("(static) isPDF", () => {
+    const pdf = new PDF();
+    const isPDF = PDF.isPDF(pdf);
+    expect(isPDF).toBe(true);
+
+    const object = new Object();
+    const isNotPDF = PDF.isPDF(object);
+    expect(isNotPDF).toBe(false);
+  });
 });

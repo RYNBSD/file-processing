@@ -33,6 +33,21 @@ export default class CSV extends Core {
     static fromFile(...path: string[]): Promise<CSV>;
     static fromUrl<T extends string[] | URL[]>(...url: T): Promise<CSV>;
     static new(csvs: Buffer[]): CSV;
+    /**
+     * check if an object is instance of CSV or not
+     * @returns - boolean
+     *
+     * @example
+     * ```js
+     *  const csv = new CSV()
+     *  const isCSV = CSV.isCSV(csv)
+     *  // => true
+     *
+     *  const object = new Object()
+     *  const isNotCSV = CSV.isCSV(object)
+     *  // => false
+     * ```
+     */
     static isCSV(obj: unknown): obj is CSV;
     static generateAsync<P = any>(options?: GenerateOptions): Promise<P>;
     static parseAsync<T extends Buffer | string, P = any>(input: T, options?: ParseOptions): Promise<P>;
