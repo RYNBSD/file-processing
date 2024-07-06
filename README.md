@@ -192,9 +192,9 @@ const pdf = new PDF(Buffer.alloc(1));
 - Improve security by adding eslint security plugin.
 - Update doc.
 - Performance optimizations.
-- Add a manifest version.
+- Add a minified version.
 - Add formatter prettier.
-- Add minified esbuild.
+- Add esbuild to create a minified version.
 - Return length of elements in append/extend.
 - Static fn (new) for all processors to generate safe new instance.
 - Improve filter for setters.
