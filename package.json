@@ -5,6 +5,7 @@
   "main": "./build/index.js",
   "scripts": {
     "test": "yarn build && cross-env NODE_OPTIONS=\"$NODE_OPTIONS --experimental-vm-modules\" jest",
+    "benchmark": "yarn build && node ./benchmark/index.js",
     "build": "clear || cls && yarn build:ts && yarn build:min",
     "build:ts": "tsc",
     "build:min": "node ./esbuild.config.js",

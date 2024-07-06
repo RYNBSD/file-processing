@@ -1,18 +1,22 @@
-import Core from "@ryn-bsd/file-processing/core/core.js";
-import Image from "@ryn-bsd/file-processing/core/image.js";
+import Core from "../build/core/core.js";
+import Image from "../build/core/image.js";
 
 export async function image() {
   const result = {
-    load: 0,
+    load: {
+      time: 0,
+      size: 0,
+    },
     new: 0,
     convert: 0,
     metadata: 0,
   };
 
   const loadStart = Date.now();
-  const files = await Core.loadDir("../asset/images");
+  const files = await Core.loadDir(process.cwd() + "/asset/images");
   const loadEnd = Date.now();
-  result.load = loadEnd - loadStart;
+  result.load.time = loadEnd - loadStart;
+  result.load.size = files.reduce((prev, curr) => prev + curr.length, 0);
 
   const newStart = Date.now();
   const image = await Image.new(files);
