@@ -441,7 +441,7 @@ export default class Image extends Core {
   }
 
   /**
-   * check in an object is instance of Image or not
+   * check if an object is instance of Image or not
    * @returns - boolean
    *
    * @example

@@ -253,6 +253,21 @@ export default class Text extends Core {
     return new Text(...filtered);
   }
 
+  /**
+   * check if an object is instance of Text or not
+   * @returns - boolean
+   *
+   * @example
+   * ```js
+   *  const text = new Text()
+   *   const isText = Text.isText(text)
+   *  // => true
+   *
+   *  const object = new Object()
+   *  const isNotText = Text.isText(object)
+   *  // => false
+   * ```
+   */
   static isText(obj: unknown): obj is Text {
     return obj instanceof Text;
   }

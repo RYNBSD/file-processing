@@ -124,12 +124,12 @@ describe("Image", () => {
   });
 
   it("(static) isImage", () => {
-    const image = new Image()
-    const isImage = Image.isImage(image)
-    expect(isImage).toBe(true)
+    const image = new Image();
+    const isImage = Image.isImage(image);
+    expect(isImage).toBe(true);
 
-    const object = new Object()
-    const isNotImage = Image.isImage(object)
-    expect(isNotImage).toBe(false)
-  })
+    const object = new Object();
+    const isNotImage = Image.isImage(object);
+    expect(isNotImage).toBe(false);
+  });
 });

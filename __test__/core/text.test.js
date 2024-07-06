@@ -150,4 +150,14 @@ describe("Text", () => {
       Text.new([Buffer.alloc(0)]);
     }).rejects.toThrow();
   });
+
+  it("(static) isText", () => {
+    const text = new Text();
+    const isText = Text.isText(text);
+    expect(isText).toBe(true);
+
+    const object = new Object();
+    const isNotText = Text.isText(object);
+    expect(isNotText).toBe(false);
+  });
 });
