@@ -1,6 +1,6 @@
 {
   "name": "@ryn-bsd/file-processing",
-  "version": "0.7.2",
+  "version": "0.7.3",
   "description": "file processing made easy",
   "main": "./build/index.js",
   "scripts": {
@@ -17,9 +17,9 @@
   },
   "exports": {
     ".": "./build/index.js",
-    "./core": "./build/core/*",
-    "./helper": "./build/helper/*",
-    "./types": "./build/types/*",
+    "./core/*": "./build/core/*",
+    "./helper/*": "./build/helper/*",
+    "./types/*": "./build/types/*",
     "./min": "./dist/index.js"
   },
   "types": "./src/types/index.d.ts",
