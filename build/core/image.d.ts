@@ -308,6 +308,22 @@ export default class Image extends Core {
      * ```
      */
     static new(images: Buffer[]): Promise<Image>;
+    /**
+     * check in an object is instance of Image or not
+     * @returns - boolean
+     *
+     * @example
+     * ```js
+     *  const image = new Image()
+     *  const object = new Object()
+     *
+     *  Image.isImage(image)
+     *  // => true
+     *
+     *  Image.isImage(object)
+     *  // => false
+     * ```
+     */
     static isImage(obj: unknown): obj is Image;
 }
 //# sourceMappingURL=image.d.ts.map

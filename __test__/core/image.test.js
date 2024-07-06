@@ -122,4 +122,14 @@ describe("Image", () => {
       await Image.new([Buffer.alloc(1)]);
     }).rejects.toThrow();
   });
+
+  it("(static) isImage", () => {
+    const image = new Image()
+    const isImage = Image.isImage(image)
+    expect(isImage).toBe(true)
+
+    const object = new Object()
+    const isNotImage = Image.isImage(object)
+    expect(isNotImage).toBe(false)
+  })
 });

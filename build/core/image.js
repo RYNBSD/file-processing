@@ -381,6 +381,22 @@ export default class Image extends Core {
             return new Image(...filtered);
         });
     }
+    /**
+     * check in an object is instance of Image or not
+     * @returns - boolean
+     *
+     * @example
+     * ```js
+     *  const image = new Image()
+     *  const object = new Object()
+     *
+     *  Image.isImage(image)
+     *  // => true
+     *
+     *  Image.isImage(object)
+     *  // => false
+     * ```
+     */
     static isImage(obj) {
         return obj instanceof Image;
     }
