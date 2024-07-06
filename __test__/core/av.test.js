@@ -148,4 +148,14 @@ describe("Audio", () => {
       await Audio.new([Buffer.alloc(1)]);
     }).rejects.toThrow(Error);
   });
+
+  it("(static) isAudio", () => {
+    const audio = new Audio();
+    const isAudio = Audio.isAudio(audio);
+    expect(isAudio).toBe(true);
+
+    const object = new Object();
+    const isNotAudio = Audio.isAudio(object);
+    expect(isNotAudio).toBe(false);
+  });
 });

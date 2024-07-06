@@ -71,6 +71,21 @@ export default class Audio extends AV {
             return new Audio(...filtered);
         });
     }
+    /**
+     * check if an object is instance of Audio or not
+     * @returns - boolean
+     *
+     * @example
+     * ```js
+     *  const audio = new Audio()
+     *  const isAudio = Audio.isAudio(audio)
+     *  // => true
+     *
+     *  const object = new Object()
+     *  const isNotAudio = Audio.isAudio(object)
+     *  // => false
+     * ```
+     */
     static isAudio(obj) {
         return obj instanceof Audio;
     }
