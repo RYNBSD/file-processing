@@ -4,8 +4,11 @@ coverage
 node_modules
 tmp
 example
+benchamrk
+
 jest.config.js
 eslint.config.js
 esbuild.config.js
 .prettierrc
 eslint.config.js
+benchamrk.json
