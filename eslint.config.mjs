@@ -39,6 +39,7 @@ export default [
       "prettier/prettier": ["error"],
       "@typescript-eslint/no-explicit-any": "warn",
       "@typescript-eslint/ban-types": "warn",
+      "@typescript-eslint/no-unused-vars": "warn",
     },
   },
   {

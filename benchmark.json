@@ -1,202 +1,395 @@
 {
-    "0": {
-        "images": {
-            "load": {
-                "time": 20,
+    "results": [
+        {
+            "images": {
+                "load": 7,
+                "new": 3,
+                "convert": 3379,
+                "metadata": 1,
                 "size": 10699607
             },
-            "new": 3,
-            "convert": 4393,
-            "metadata": 3
-        },
-        "videos": {
-            "load": {
-                "time": 2250,
+            "videos": {
+                "load": 18,
+                "new": 1,
+                "convert": 31984,
+                "metadata": 149,
                 "size": 53335976
             },
-            "new": 1,
-            "convert": 31526,
-            "metadata": 150
+            "audios": {
+                "load": 26,
+                "new": 2,
+                "convert": 756,
+                "metadata": 74,
+                "size": 62783319
+            },
+            "texts": {
+                "load": 1,
+                "new": 0,
+                "convert": 31,
+                "metadata": 43,
+                "size": 1911212
+            },
+            "csvs": {
+                "load": 5,
+                "new": 1,
+                "convert": 465,
+                "metadata": 400,
+                "size": 7260349
+            }
+        },
+        {
+            "images": {
+                "load": 7,
+                "new": 1,
+                "convert": 3376,
+                "metadata": 1,
+                "size": 10699607
+            },
+            "videos": {
+                "load": 13,
+                "new": 0,
+                "convert": 31870,
+                "metadata": 136,
+                "size": 53335976
+            },
+            "audios": {
+                "load": 14,
+                "new": 2,
+                "convert": 760,
+                "metadata": 75,
+                "size": 62783319
+            },
+            "texts": {
+                "load": 1,
+                "new": 0,
+                "convert": 32,
+                "metadata": 40,
+                "size": 1911212
+            },
+            "csvs": {
+                "load": 5,
+                "new": 0,
+                "convert": 451,
+                "metadata": 415,
+                "size": 7260349
+            }
+        },
+        {
+            "images": {
+                "load": 4,
+                "new": 1,
+                "convert": 3557,
+                "metadata": 1,
+                "size": 10699607
+            },
+            "videos": {
+                "load": 14,
+                "new": 1,
+                "convert": 32665,
+                "metadata": 133,
+                "size": 53335976
+            },
+            "audios": {
+                "load": 16,
+                "new": 1,
+                "convert": 790,
+                "metadata": 81,
+                "size": 62783319
+            },
+            "texts": {
+                "load": 1,
+                "new": 0,
+                "convert": 32,
+                "metadata": 41,
+                "size": 1911212
+            },
+            "csvs": {
+                "load": 4,
+                "new": 0,
+                "convert": 485,
+                "metadata": 415,
+                "size": 7260349
+            }
+        },
+        {
+            "images": {
+                "load": 5,
+                "new": 0,
+                "convert": 3473,
+                "metadata": 1,
+                "size": 10699607
+            },
+            "videos": {
+                "load": 16,
+                "new": 1,
+                "convert": 32858,
+                "metadata": 141,
+                "size": 53335976
+            },
+            "audios": {
+                "load": 15,
+                "new": 1,
+                "convert": 781,
+                "metadata": 77,
+                "size": 62783319
+            },
+            "texts": {
+                "load": 2,
+                "new": 0,
+                "convert": 39,
+                "metadata": 46,
+                "size": 1911212
+            },
+            "csvs": {
+                "load": 5,
+                "new": 0,
+                "convert": 472,
+                "metadata": 428,
+                "size": 7260349
+            }
+        },
+        {
+            "images": {
+                "load": 4,
+                "new": 1,
+                "convert": 3451,
+                "metadata": 1,
+                "size": 10699607
+            },
+            "videos": {
+                "load": 15,
+                "new": 1,
+                "convert": 33294,
+                "metadata": 150,
+                "size": 53335976
+            },
+            "audios": {
+                "load": 25,
+                "new": 2,
+                "convert": 859,
+                "metadata": 80,
+                "size": 62783319
+            },
+            "texts": {
+                "load": 2,
+                "new": 0,
+                "convert": 36,
+                "metadata": 44,
+                "size": 1911212
+            },
+            "csvs": {
+                "load": 4,
+                "new": 0,
+                "convert": 485,
+                "metadata": 446,
+                "size": 7260349
+            }
+        },
+        {
+            "images": {
+                "load": 7,
+                "new": 0,
+                "convert": 3577,
+                "metadata": 1,
+                "size": 10699607
+            },
+            "videos": {
+                "load": 13,
+                "new": 1,
+                "convert": 33133,
+                "metadata": 145,
+                "size": 53335976
+            },
+            "audios": {
+                "load": 14,
+                "new": 1,
+                "convert": 796,
+                "metadata": 79,
+                "size": 62783319
+            },
+            "texts": {
+                "load": 1,
+                "new": 0,
+                "convert": 33,
+                "metadata": 42,
+                "size": 1911212
+            },
+            "csvs": {
+                "load": 5,
+                "new": 0,
+                "convert": 467,
+                "metadata": 424,
+                "size": 7260349
+            }
+        },
+        {
+            "images": {
+                "load": 4,
+                "new": 0,
+                "convert": 3594,
+                "metadata": 1,
+                "size": 10699607
+            },
+            "videos": {
+                "load": 17,
+                "new": 1,
+                "convert": 35172,
+                "metadata": 178,
+                "size": 53335976
+            },
+            "audios": {
+                "load": 19,
+                "new": 1,
+                "convert": 976,
+                "metadata": 92,
+                "size": 62783319
+            },
+            "texts": {
+                "load": 2,
+                "new": 0,
+                "convert": 36,
+                "metadata": 46,
+                "size": 1911212
+            },
+            "csvs": {
+                "load": 5,
+                "new": 0,
+                "convert": 533,
+                "metadata": 491,
+                "size": 7260349
+            }
+        },
+        {
+            "images": {
+                "load": 14,
+                "new": 1,
+                "convert": 3850,
+                "metadata": 1,
+                "size": 10699607
+            },
+            "videos": {
+                "load": 20,
+                "new": 1,
+                "convert": 38705,
+                "metadata": 171,
+                "size": 53335976
+            },
+            "audios": {
+                "load": 27,
+                "new": 1,
+                "convert": 972,
+                "metadata": 106,
+                "size": 62783319
+            },
+            "texts": {
+                "load": 20,
+                "new": 0,
+                "convert": 48,
+                "metadata": 50,
+                "size": 1911212
+            },
+            "csvs": {
+                "load": 21,
+                "new": 0,
+                "convert": 573,
+                "metadata": 471,
+                "size": 7260349
+            }
+        },
+        {
+            "images": {
+                "load": 15,
+                "new": 1,
+                "convert": 4040,
+                "metadata": 1,
+                "size": 10699607
+            },
+            "videos": {
+                "load": 19,
+                "new": 1,
+                "convert": 39046,
+                "metadata": 159,
+                "size": 53335976
+            },
+            "audios": {
+                "load": 32,
+                "new": 1,
+                "convert": 860,
+                "metadata": 81,
+                "size": 62783319
+            },
+            "texts": {
+                "load": 16,
+                "new": 0,
+                "convert": 34,
+                "metadata": 43,
+                "size": 1911212
+            },
+            "csvs": {
+                "load": 16,
+                "new": 0,
+                "convert": 468,
+                "metadata": 431,
+                "size": 7260349
+            }
+        },
+        {
+            "images": {
+                "load": 13,
+                "new": 1,
+                "convert": 3771,
+                "metadata": 1,
+                "size": 10699607
+            },
+            "videos": {
+                "load": 22,
+                "new": 0,
+                "convert": 38511,
+                "metadata": 146,
+                "size": 53335976
+            },
+            "audios": {
+                "load": 17,
+                "new": 1,
+                "convert": 824,
+                "metadata": 88,
+                "size": 62783319
+            },
+            "texts": {
+                "load": 1,
+                "new": 0,
+                "convert": 33,
+                "metadata": 42,
+                "size": 1911212
+            },
+            "csvs": {
+                "load": 3,
+                "new": 1,
+                "convert": 469,
+                "metadata": 430,
+                "size": 7260349
+            }
         }
+    ],
+    "min": {
+        "images": 0.0003163667600127743,
+        "videos": 0.0006003265038217356,
+        "audios": 0.000013554555788934957,
+        "texts": 0.00003819565804316842,
+        "csvs": 0.00011996668479710824
     },
-    "1": {
-        "images": {
-            "load": {
-                "time": 10,
-                "size": 10699607
-            },
-            "new": 1,
-            "convert": 5504,
-            "metadata": 2
-        },
-        "videos": {
-            "load": {
-                "time": 3064,
-                "size": 53335976
-            },
-            "new": 3,
-            "convert": 33090,
-            "metadata": 142
-        }
+    "max": {
+        "images": 0.0003791728051320016,
+        "videos": 0.0007354323093290727,
+        "audios": 0.000017616144186324395,
+        "texts": 0.00006174092669991608,
+        "csvs": 0.00014668716338567196
     },
-    "2": {
-        "images": {
-            "load": {
-                "time": 9,
-                "size": 10699607
-            },
-            "new": 0,
-            "convert": 4847,
-            "metadata": 3
-        },
-        "videos": {
-            "load": {
-                "time": 2493,
-                "size": 53335976
-            },
-            "new": 1,
-            "convert": 34046,
-            "metadata": 139
-        }
-    },
-    "3": {
-        "images": {
-            "load": {
-                "time": 9,
-                "size": 10699607
-            },
-            "new": 1,
-            "convert": 5852,
-            "metadata": 2
-        },
-        "videos": {
-            "load": {
-                "time": 3369,
-                "size": 53335976
-            },
-            "new": 2,
-            "convert": 33371,
-            "metadata": 147
-        }
-    },
-    "4": {
-        "images": {
-            "load": {
-                "time": 11,
-                "size": 10699607
-            },
-            "new": 1,
-            "convert": 5010,
-            "metadata": 3
-        },
-        "videos": {
-            "load": {
-                "time": 2498,
-                "size": 53335976
-            },
-            "new": 1,
-            "convert": 36066,
-            "metadata": 165
-        }
-    },
-    "5": {
-        "images": {
-            "load": {
-                "time": 11,
-                "size": 10699607
-            },
-            "new": 1,
-            "convert": 5201,
-            "metadata": 2
-        },
-        "videos": {
-            "load": {
-                "time": 2633,
-                "size": 53335976
-            },
-            "new": 1,
-            "convert": 34717,
-            "metadata": 138
-        }
-    },
-    "6": {
-        "images": {
-            "load": {
-                "time": 9,
-                "size": 10699607
-            },
-            "new": 0,
-            "convert": 5219,
-            "metadata": 2
-        },
-        "videos": {
-            "load": {
-                "time": 2454,
-                "size": 53335976
-            },
-            "new": 2,
-            "convert": 34177,
-            "metadata": 156
-        }
-    },
-    "7": {
-        "images": {
-            "load": {
-                "time": 11,
-                "size": 10699607
-            },
-            "new": 1,
-            "convert": 4982,
-            "metadata": 5
-        },
-        "videos": {
-            "load": {
-                "time": 2566,
-                "size": 53335976
-            },
-            "new": 2,
-            "convert": 34225,
-            "metadata": 145
-        }
-    },
-    "8": {
-        "images": {
-            "load": {
-                "time": 11,
-                "size": 10699607
-            },
-            "new": 1,
-            "convert": 5245,
-            "metadata": 3
-        },
-        "videos": {
-            "load": {
-                "time": 2683,
-                "size": 53335976
-            },
-            "new": 2,
-            "convert": 37686,
-            "metadata": 151
-        }
-    },
-    "9": {
-        "images": {
-            "load": {
-                "time": 10,
-                "size": 10699607
-            },
-            "new": 1,
-            "convert": 6261,
-            "metadata": 3
-        },
-        "videos": {
-            "load": {
-                "time": 3505,
-                "size": 53335976
-            },
-            "new": 1,
-            "convert": 37983,
-            "metadata": 139
-        }
+    "avg": {
+        "images": 0.0003477697825723879,
+        "videos": 0.0006678794065754041,
+        "audios": 0.000015585349987629675,
+        "texts": 0.00004996829237154225,
+        "csvs": 0.0001333269240913901
     }
 }
