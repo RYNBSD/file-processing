@@ -181,12 +181,12 @@ export default class Text extends Core {
      */
     metadata() {
         return __awaiter(this, void 0, void 0, function* () {
-            return Promise.all(this.texts.map((text) => __awaiter(this, void 0, void 0, function* () {
-                return ({
+            return this.custom((text) => {
+                return {
                     size: text.length,
                     charactersMap: this.charactersMap(text),
-                });
-            })));
+                };
+            });
         });
     }
     /**

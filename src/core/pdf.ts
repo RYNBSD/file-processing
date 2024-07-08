@@ -61,9 +61,8 @@ export default class PDF extends Core {
   }
 
   override async metadata(options?: LoadOptions) {
-    const documents = await this.getDocuments(options);
-    return Promise.all(
-      documents.map(async (document) => ({
+    return this.custom((document) => {
+      return {
         title: document.getTitle(),
         author: document.getAuthor(),
         subject: document.getSubject(),
@@ -74,30 +73,21 @@ export default class PDF extends Core {
         pageIndices: document.getPageIndices(),
         creationDate: document.getCreationDate(),
         modificationDate: document.getModificationDate(),
-      })),
-    );
+      };
+    }, options);
   }
 
   async getPages(options?: LoadOptions) {
-    const documents = await this.getDocuments(options);
-    return Promise.all(documents.map(async (document) => document.getPages()));
+    return this.custom((document) => document.getPages(), options);
   }
 
   async getForm(options?: LoadOptions) {
-    const documents = await this.getDocuments(options);
-    return Promise.all(documents.map(async (document) => document.getForm()));
+    return this.custom((document) => document.getForm(), options);
   }
 
   async merge(options?: PDFMergeOptions) {
     const merge = await PDF.create(options?.create);
-
-    const copies = await Promise.all(
-      this.pdfs.map(async (pdf) => {
-        const p = await PDF.load(pdf.buffer, options?.load);
-        return merge.copyPages(p, p.getPageIndices());
-      }),
-    );
-
+    const copies = await this.custom((document) => merge.copyPages(document, document.getPageIndices()), options?.load);
     copies.forEach((copied) => copied.forEach((page) => merge.addPage(page)));
     return merge;
   }

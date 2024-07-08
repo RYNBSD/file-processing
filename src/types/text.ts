@@ -57,4 +57,4 @@ export type TextDecompressFn<R, T extends Buffer | Readable, M extends TextDecom
 
 export type TextSetCallback<T> = (text: Buffer, index: number) => Promise<T> | T;
 
-export type TextCustomCallback<T> = (text: ArrayBuffer, index: number) => Promise<T> | T;
+export type TextCustomCallback<T> = (text: Buffer, index: number) => Promise<T> | T;

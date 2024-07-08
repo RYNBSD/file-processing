@@ -199,12 +199,12 @@ export default class Text extends Core {
    * ```
    */
   override async metadata() {
-    return Promise.all(
-      this.texts.map(async (text) => ({
+    return this.custom((text) => {
+      return {
         size: text.length,
         charactersMap: this.charactersMap(text),
-      })),
-    );
+      };
+    });
   }
 
   /**

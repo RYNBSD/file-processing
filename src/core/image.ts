@@ -171,7 +171,7 @@ export default class Image extends Core {
    * ```
    */
   override async metadata() {
-    return Promise.all(this.images.map((image) => Image.newSharp(image).metadata()));
+    return this.custom((sharp) => sharp.metadata());
   }
 
   /**
@@ -207,13 +207,9 @@ export default class Image extends Core {
       ])
       .toBuffer();
 
-    return Promise.all(
-      this.images.map((image) =>
-        Image.newSharp(image)
-          .composite([{ input, gravity, blend, tile, premultiplied }])
-          .toBuffer({ resolveWithObject: true }),
-      ),
-    );
+    return this.custom((sharp) => {
+      return sharp.composite([{ input, gravity, blend, tile, premultiplied }]).toBuffer({ resolveWithObject: true });
+    });
   }
 
   /**
@@ -230,13 +226,11 @@ export default class Image extends Core {
    * ```
    * */
   async convert<F extends ImageFormats>(format: F, options?: ImageOptions<F>) {
-    return Promise.all(
-      this.images.map((image) =>
-        Image.newSharp(image).toFormat(format, options).toBuffer({
-          resolveWithObject: true,
-        }),
-      ),
-    );
+    return this.custom((sharp) => {
+      return sharp.toFormat(format, options).toBuffer({
+        resolveWithObject: true,
+      });
+    });
   }
 
   async ocr(langs: string | string[]) {

@@ -23,25 +23,23 @@ export default class AV extends Core {
     }
     metadata() {
         return __awaiter(this, void 0, void 0, function* () {
-            const tmpFile = yield new TmpFile(...this.avs).init();
-            const result = yield Promise.all(tmpFile.paths.map((av) => new Promise((resolve, reject) => {
-                AV.newFfmpeg(av).ffprobe((err, metadata) => {
-                    if (err)
-                        return reject(err);
-                    resolve(metadata);
+            return this.custom((command) => __awaiter(this, void 0, void 0, function* () {
+                return new Promise((resolve, reject) => {
+                    command.ffprobe((err, metadata) => {
+                        if (err)
+                            return reject(err);
+                        resolve(metadata);
+                    });
                 });
-            })));
-            yield tmpFile.clean();
-            return result;
+            }));
         });
     }
-    convert(format, options) {
+    convert(format) {
         return __awaiter(this, void 0, void 0, function* () {
-            const tmpFile = yield new TmpFile(...this.avs).init();
-            const result = yield Promise.all(tmpFile.paths.map((p) => {
+            return this.custom((command, tmpFile) => __awaiter(this, void 0, void 0, function* () {
                 return new Promise((resolve, reject) => {
                     const output = path.join(tmpFile.tmp.path, TmpFile.generateFileName(format));
-                    AV.newFfmpeg(p, options)
+                    command
                         .on("end", () => {
                         Core.loadFile(output).then(resolve, reject);
                     })
@@ -50,8 +48,6 @@ export default class AV extends Core {
                         .run();
                 });
             }));
-            yield tmpFile.clean();
-            return result;
         });
     }
     // async stream() {

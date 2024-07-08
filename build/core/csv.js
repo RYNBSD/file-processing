@@ -69,7 +69,7 @@ export default class CSV extends Core {
     // Async //
     parseAsync(options) {
         return __awaiter(this, void 0, void 0, function* () {
-            return Promise.all(this.csvs.map((c) => CSV.parseAsync(c, options)));
+            return this.custom((c) => CSV.parseAsync(c, options));
         });
     }
     transformAsync(parsed, handler, options) {

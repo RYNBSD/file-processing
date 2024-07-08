@@ -20,42 +20,29 @@ export default abstract class AV extends Core {
   }
 
   override async metadata() {
-    const tmpFile = await new TmpFile(...this.avs).init();
-    const result = await Promise.all(
-      tmpFile.paths.map(
-        (av) =>
-          new Promise<FfprobeData>((resolve, reject) => {
-            AV.newFfmpeg(av).ffprobe((err, metadata) => {
-              if (err) return reject(err);
-              resolve(metadata);
-            });
-          }),
-      ),
-    );
-    await tmpFile.clean();
-    return result;
+    return this.custom(async (command) => {
+      return new Promise<FfprobeData>((resolve, reject) => {
+        command.ffprobe((err, metadata) => {
+          if (err) return reject(err);
+          resolve(metadata);
+        });
+      });
+    });
   }
 
-  async convert(format: string, options?: ffmpeg.FfmpegCommandOptions) {
-    const tmpFile = await new TmpFile(...this.avs).init();
-
-    const result = await Promise.all(
-      tmpFile.paths.map((p) => {
-        return new Promise<Buffer>((resolve, reject) => {
-          const output = path.join(tmpFile.tmp!.path, TmpFile.generateFileName(format));
-          AV.newFfmpeg(p, options)
-            .on("end", () => {
-              Core.loadFile(output).then(resolve, reject);
-            })
-            .on("error", reject)
-            .output(output, { end: true })
-            .run();
-        });
-      }),
-    );
-
-    await tmpFile.clean();
-    return result;
+  async convert(format: string) {
+    return this.custom(async (command, tmpFile) => {
+      return new Promise<Buffer>((resolve, reject) => {
+        const output = path.join(tmpFile.tmp!.path, TmpFile.generateFileName(format));
+        command
+          .on("end", () => {
+            Core.loadFile(output).then(resolve, reject);
+          })
+          .on("error", reject)
+          .output(output, { end: true })
+          .run();
+      });
+    });
   }
 
   // async stream() {

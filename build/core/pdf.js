@@ -59,9 +59,8 @@ export default class PDF extends Core {
     }
     metadata(options) {
         return __awaiter(this, void 0, void 0, function* () {
-            const documents = yield this.getDocuments(options);
-            return Promise.all(documents.map((document) => __awaiter(this, void 0, void 0, function* () {
-                return ({
+            return this.custom((document) => {
+                return {
                     title: document.getTitle(),
                     author: document.getAuthor(),
                     subject: document.getSubject(),
@@ -72,29 +71,24 @@ export default class PDF extends Core {
                     pageIndices: document.getPageIndices(),
                     creationDate: document.getCreationDate(),
                     modificationDate: document.getModificationDate(),
-                });
-            })));
+                };
+            }, options);
         });
     }
     getPages(options) {
         return __awaiter(this, void 0, void 0, function* () {
-            const documents = yield this.getDocuments(options);
-            return Promise.all(documents.map((document) => __awaiter(this, void 0, void 0, function* () { return document.getPages(); })));
+            return this.custom((document) => document.getPages(), options);
         });
     }
     getForm(options) {
         return __awaiter(this, void 0, void 0, function* () {
-            const documents = yield this.getDocuments(options);
-            return Promise.all(documents.map((document) => __awaiter(this, void 0, void 0, function* () { return document.getForm(); })));
+            return this.custom((document) => document.getForm(), options);
         });
     }
     merge(options) {
         return __awaiter(this, void 0, void 0, function* () {
             const merge = yield PDF.create(options === null || options === void 0 ? void 0 : options.create);
-            const copies = yield Promise.all(this.pdfs.map((pdf) => __awaiter(this, void 0, void 0, function* () {
-                const p = yield PDF.load(pdf.buffer, options === null || options === void 0 ? void 0 : options.load);
-                return merge.copyPages(p, p.getPageIndices());
-            })));
+            const copies = yield this.custom((document) => merge.copyPages(document, document.getPageIndices()), options === null || options === void 0 ? void 0 : options.load);
             copies.forEach((copied) => copied.forEach((page) => merge.addPage(page)));
             return merge;
         });

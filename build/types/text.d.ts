@@ -19,5 +19,5 @@ export type UnzipOptions = Parameters<typeof zlib.unzipSync>[1];
 export type TextDecompressionOptions<T extends TextDecompressionMethods> = T extends "gunzip" ? GunzipOptions : T extends "inflate" ? InflateOptions : T extends "inflate-raw" ? InflateRawOptions : T extends "brotli-decompress" ? BrotliDecompressOptions : T extends "unzip" ? UnzipOptions : never;
 export type TextDecompressFn<R, T extends Buffer | Readable, M extends TextDecompressionMethods> = (text: T, options?: TextDecompressionOptions<M>) => R;
 export type TextSetCallback<T> = (text: Buffer, index: number) => Promise<T> | T;
-export type TextCustomCallback<T> = (text: ArrayBuffer, index: number) => Promise<T> | T;
+export type TextCustomCallback<T> = (text: Buffer, index: number) => Promise<T> | T;
 //# sourceMappingURL=text.d.ts.map
