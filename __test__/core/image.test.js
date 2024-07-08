@@ -68,9 +68,15 @@ describe("Image", () => {
     }).rejects.toThrow();
   });
 
+  it("ocr", async () => {
+    const buffer = await Image.loadFile("asset/rynbsd.png");
+    const ocr = await new Image(buffer).ocr("eng");
+    expect(ocr).toHaveLength(1);
+    expect(ocr[0].text.trim()).toEqual("RYN\nBSD");
+  });
+
   it("custom", async () => {
     const buffer = await imageBuffer();
-
     const custom = await new Image(buffer).custom((sharp) => {
       return sharp.jpeg().resize({ width: 1280, height: 720, fit: "fill" }).blur().toBuffer();
     });

@@ -8,9 +8,9 @@ import type {
   InputFiles,
 } from "../types/index.js";
 import { FilterFile } from "../helper/index.js";
+import { createWorker } from "tesseract.js";
 import sharp from "sharp";
 import Core from "./core.js";
-import { createWorker } from "tesseract.js";
 
 export default class Image extends Core {
   private images: Buffer[];
@@ -233,6 +233,21 @@ export default class Image extends Core {
     });
   }
 
+  /**
+   * supported images format @link https://github.com/naptha/tesseract.js/blob/master/docs/image-format.md
+   *
+   * @param langs - languages @link https://github.com/naptha/tesseract.js/blob/master/src/constants/languages.js
+   *
+   * @example
+   * ```js
+   *  const image1 = await Image.loadFile("image1.png")
+   *  const image2 = await Image.loadFile("image2.png")
+   *
+   *  const image = new Image(image1, image2)
+   *  const ocrs = await image.ocr(["ara", "eng"])
+   *  // => Tesseract.Page[]
+   * ```
+   */
   async ocr(langs: string | string[]) {
     const worker = await createWorker(langs);
     const recs = await Promise.all(this.images.map((image) => worker.recognize(image)));

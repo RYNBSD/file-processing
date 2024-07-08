@@ -159,6 +159,21 @@ export default class Image extends Core {
         data: Buffer;
         info: sharp.OutputInfo;
     }[]>;
+    /**
+     * supported images format @link https://github.com/naptha/tesseract.js/blob/master/docs/image-format.md
+     *
+     * @param langs - languages @link https://github.com/naptha/tesseract.js/blob/master/src/constants/languages.js
+     *
+     * @example
+     * ```js
+     *  const image1 = await Image.loadFile("image1.png")
+     *  const image2 = await Image.loadFile("image2.png")
+     *
+     *  const image = new Image(image1, image2)
+     *  const ocrs = await image.ocr(["ara", "eng"])
+     *  // => Tesseract.Page[]
+     * ```
+     */
     ocr(langs: string | string[]): Promise<import("tesseract.js").Page[]>;
     /**
      * @returns - base on the callback return type

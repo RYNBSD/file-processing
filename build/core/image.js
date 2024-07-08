@@ -8,9 +8,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 import { FilterFile } from "../helper/index.js";
+import { createWorker } from "tesseract.js";
 import sharp from "sharp";
 import Core from "./core.js";
-import { createWorker } from "tesseract.js";
 export default class Image extends Core {
     /**
      * Create unsafe instance
@@ -229,6 +229,21 @@ export default class Image extends Core {
             });
         });
     }
+    /**
+     * supported images format @link https://github.com/naptha/tesseract.js/blob/master/docs/image-format.md
+     *
+     * @param langs - languages @link https://github.com/naptha/tesseract.js/blob/master/src/constants/languages.js
+     *
+     * @example
+     * ```js
+     *  const image1 = await Image.loadFile("image1.png")
+     *  const image2 = await Image.loadFile("image2.png")
+     *
+     *  const image = new Image(image1, image2)
+     *  const ocrs = await image.ocr(["ara", "eng"])
+     *  // => Tesseract.Page[]
+     * ```
+     */
     ocr(langs) {
         return __awaiter(this, void 0, void 0, function* () {
             const worker = yield createWorker(langs);

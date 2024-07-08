@@ -59,8 +59,8 @@ What you think is it safe ? (of course, yes!)
 ### Image
 
 ```js
-import { core } from "../../build/index.js";
-import Image from "../../build/core/image.js";
+import { core } from "@ryn-bsd/file-processing";
+import Image from "@ryn-bsd/file-processing/core/image.js";
 
 const _image = new core.Image(Buffer.alloc(1));
 const image = new Image(Buffer.alloc(1));
@@ -129,8 +129,8 @@ Image.newSharp();
 ### AV
 
 ```js
-import { core } from "../../build/index.js";
-import { Video, Audio } from "../../build/core/av.js";
+import { core } from "@ryn-bsd/file-processing";
+import { Video, Audio } from "@ryn-bsd/file-processing/core/av/index.js";
 
 const _audio = new core.Audio();
 const audio = new Audio();
@@ -142,8 +142,8 @@ const video = new Video();
 ### Text
 
 ```js
-import { core } from "../../build/index.js";
-import Text from "../../build/core/text.js";
+import { core } from "@ryn-bsd/file-processing";
+import Text from "@ryn-bsd/file-processing/core/text.js";
 
 const _text = new core.Text();
 const text = new Text();
@@ -152,8 +152,8 @@ const text = new Text();
 ### CSV
 
 ```js
-import { core } from "../../build/index.js";
-import CSV from "../../build/core/csv.js";
+import { core } from "@ryn-bsd/file-processing";
+import CSV from "@ryn-bsd/file-processing/core/csv.js";
 
 const _csv = new core.CSV(Buffer.alloc(1));
 const csv = new CSV(Buffer.alloc(1));
@@ -162,8 +162,8 @@ const csv = new CSV(Buffer.alloc(1));
 ### PDF
 
 ```js
-import { core } from "../../build/index.js";
-import PDF from "../../build/core/pdf.js";
+import { core } from "@ryn-bsd/file-processing";
+import PDF from "@ryn-bsd/file-processing/core/pdf.js";
 
 const _pdf = new core.PDF(Buffer.alloc(1));
 const pdf = new PDF(Buffer.alloc(1));
@@ -237,9 +237,9 @@ const pdf = new PDF(Buffer.alloc(1));
 - Add dir loader. 🟠
 - Add glob loader. 🟠
 - Extract video frames. 🟠
-- Add OCR. 🟠
 - Get video audio. 🟠
 - Get only video (no audio). 🟠
+- Add OCR. 🟢
 - Add instance check for each processor. 🟢
 - Merge any video in one video. 🔴
 - Merge audio and video in one video. 🔴
