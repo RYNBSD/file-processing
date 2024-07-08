@@ -241,6 +241,8 @@ const pdf = new PDF(Buffer.alloc(1));
 - Get video audio. 🟠
 - Get only video (no audio). 🟠
 - Add instance check for each processor. 🟢
+- Merge any video in one video. 🔴
+- Merge audio and video in one video. 🔴
 - Pdf to image. 🔴
 - Collect images/audios/videos from websites. 🔴
 - PDF/Video/Audio watermark. 🔴
