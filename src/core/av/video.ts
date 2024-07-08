@@ -1,6 +1,6 @@
 import type { AVSetCallback } from "../../types/index.js";
-import { FilterFile } from "../../helper/index.js";
-import Core from "../core.js";
+import { FilterFile, TmpFile } from "../../helper/index.js";
+import path from "node:path";
 import AV from "./av.js";
 
 export default class Video extends AV {
@@ -42,17 +42,45 @@ export default class Video extends AV {
     return this.length;
   }
 
+  /** Extract text fromm videos */
+  // async texts(langs: string | string[]) {
+  //   const scheduler = createScheduler()
+  // }
+
+  /** Extract video frames aka images */
+  async frames(timemarks: number[]) {
+    const tmpFile = await new TmpFile(...this.avs).init();
+
+    const frames = await Promise.all(
+      tmpFile.paths.map((video) => {
+        return new Promise<Buffer[]>((resolve, reject) => {
+          Video.newFfmpeg(video)
+            .takeScreenshots({ filename: "frame.jpg", timemarks }, tmpFile.tmp!.path)
+            .on("filenames", (filenames: string[]) => {
+              const fullPaths = filenames.map((filename) => path.join(tmpFile.tmp!.path, filename));
+              AV.loadFile(fullPaths).then(resolve, reject);
+            })
+            .on("error", reject)
+            .run();
+        });
+      }),
+    );
+
+    await tmpFile.clean();
+    return frames;
+  }
+
   static async filter(...videos: Buffer[]) {
     return new FilterFile(...videos).video();
   }
 
   static async fromFile(...path: string[]) {
-    const buffer = await Core.loadFile(path);
+    const buffer = await AV.loadFile(path);
     return Video.new(buffer);
   }
 
   static async fromUrl<T extends string[] | URL[]>(...url: T) {
-    const buffer = await Core.loadUrl(url);
+    const buffer = await AV.loadUrl(url);
     return Video.new(buffer);
   }
 

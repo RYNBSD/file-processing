@@ -239,12 +239,11 @@ export default class Image extends Core {
     );
   }
 
-  /** Extract texts from images */
-  async texts(langs: string | string[]) {
+  async ocr(langs: string | string[]) {
     const worker = await createWorker(langs);
     const recs = await Promise.all(this.images.map((image) => worker.recognize(image)));
     await worker.terminate();
-    return recs.map((rec) => rec.data.text);
+    return recs.map((rec) => rec);
   }
 
   /**

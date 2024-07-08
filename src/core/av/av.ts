@@ -73,6 +73,17 @@ export default abstract class AV extends Core {
     return result;
   }
 
+  static async generateTimemarks<T extends FfprobeData>(metadata: T, interval: number): Promise<number[]>;
+  static async generateTimemarks<T extends FfprobeData[]>(metadata: T, interval: number): Promise<number[][]>;
+  static async generateTimemarks<T extends FfprobeData | FfprobeData[]>(metadata: T, interval = 1) {
+    if (Array.isArray(metadata)) return Promise.all(metadata.map((mt) => AV.generateTimemarks(mt, interval)));
+
+    const timemarks: number[] = [];
+    const duration = metadata.format.duration ?? 0;
+    for (let i = 0; i < duration; i += interval) timemarks.push(i);
+    return timemarks;
+  }
+
   /**
    * new Instance of ffmpeg
    */
