@@ -10,6 +10,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 import { FilterFile } from "../helper/index.js";
 import sharp from "sharp";
 import Core from "./core.js";
+import { createWorker } from "tesseract.js";
 export default class Image extends Core {
     /**
      * Create unsafe instance
@@ -224,6 +225,14 @@ export default class Image extends Core {
             return Promise.all(this.images.map((image) => Image.newSharp(image).toFormat(format, options).toBuffer({
                 resolveWithObject: true,
             })));
+        });
+    }
+    ocr(langs) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const worker = yield createWorker(langs);
+            const recs = yield Promise.all(this.images.map((image) => worker.recognize(image)));
+            yield worker.terminate();
+            return recs.map((rec) => rec.data);
         });
     }
     /**

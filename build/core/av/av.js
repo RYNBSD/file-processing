@@ -64,9 +64,21 @@ export default class AV extends Core {
     custom(callback) {
         return __awaiter(this, void 0, void 0, function* () {
             const tmpFile = yield new TmpFile(...this.avs).init();
-            const result = yield Promise.all(tmpFile.paths.map((path, index) => __awaiter(this, void 0, void 0, function* () { return callback(AV.newFfmpeg(path), index); })));
+            const result = yield Promise.all(tmpFile.paths.map((path, index) => __awaiter(this, void 0, void 0, function* () { return callback(AV.newFfmpeg(path), tmpFile, index); })));
             yield tmpFile.clean();
             return result;
+        });
+    }
+    static generateTimemarks(metadata_1) {
+        return __awaiter(this, arguments, void 0, function* (metadata, interval = 1) {
+            var _a;
+            if (Array.isArray(metadata))
+                return Promise.all(metadata.map((mt) => AV.generateTimemarks(mt, interval)));
+            const timemarks = [];
+            const duration = (_a = metadata.format.duration) !== null && _a !== void 0 ? _a : 0;
+            for (let i = 0; i < duration; i += interval)
+                timemarks.push(i);
+            return timemarks;
         });
     }
     /**

@@ -7,8 +7,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-import { FilterFile } from "../../helper/index.js";
-import Core from "../core.js";
+import { FilterFile, TmpFile } from "../../helper/index.js";
+import path from "node:path";
 import AV from "./av.js";
 export default class Video extends AV {
     constructor(...videos) {
@@ -48,6 +48,59 @@ export default class Video extends AV {
             return this.length;
         });
     }
+    only(format) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return this.custom((command, tmpFile) => __awaiter(this, void 0, void 0, function* () {
+                const output = path.join(tmpFile.tmp.path, TmpFile.generateFileName(format));
+                return new Promise((resolve, reject) => {
+                    command
+                        .noAudio()
+                        .toFormat(format)
+                        .on("done", () => {
+                        AV.loadFile(output).then(resolve, reject);
+                    })
+                        .on("error", reject)
+                        .output(output)
+                        .run();
+                });
+            }));
+        });
+    }
+    audio(format) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return this.custom((command, tmpFile) => __awaiter(this, void 0, void 0, function* () {
+                const output = path.join(tmpFile.tmp.path, TmpFile.generateFileName(format));
+                return new Promise((resolve, reject) => {
+                    command
+                        .noVideo()
+                        .toFormat(format)
+                        .on("done", () => {
+                        AV.loadFile(output).then(resolve, reject);
+                    })
+                        .on("error", reject)
+                        .output(output)
+                        .run();
+                });
+            }));
+        });
+    }
+    /** Extract video frames aka images */
+    frame(timemarks) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return this.custom((command, tmpFile) => __awaiter(this, void 0, void 0, function* () {
+                return new Promise((resolve, reject) => {
+                    command
+                        .takeScreenshots({ filename: "frame.jpg", timemarks }, tmpFile.tmp.path)
+                        .on("filenames", (filenames) => {
+                        const fullPaths = filenames.map((filename) => path.join(tmpFile.tmp.path, filename));
+                        AV.loadFile(fullPaths).then(resolve, reject);
+                    })
+                        .on("error", reject)
+                        .run();
+                });
+            }));
+        });
+    }
     static filter(...videos) {
         return __awaiter(this, void 0, void 0, function* () {
             return new FilterFile(...videos).video();
@@ -55,13 +108,13 @@ export default class Video extends AV {
     }
     static fromFile(...path) {
         return __awaiter(this, void 0, void 0, function* () {
-            const buffer = yield Core.loadFile(path);
+            const buffer = yield AV.loadFile(path);
             return Video.new(buffer);
         });
     }
     static fromUrl(...url) {
         return __awaiter(this, void 0, void 0, function* () {
-            const buffer = yield Core.loadUrl(url);
+            const buffer = yield AV.loadUrl(url);
             return Video.new(buffer);
         });
     }

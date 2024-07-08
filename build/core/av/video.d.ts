@@ -9,6 +9,10 @@ export default class Video extends AV {
     extend(...videos: Video[]): number;
     clone(): Video;
     filter(): Promise<number>;
+    only(format: string): Promise<Buffer[]>;
+    audio(format: string): Promise<Buffer[]>;
+    /** Extract video frames aka images */
+    frame(timemarks: number[]): Promise<Buffer[][]>;
     static filter(...videos: Buffer[]): Promise<Buffer[]>;
     static fromFile(...path: string[]): Promise<Video>;
     static fromUrl<T extends string[] | URL[]>(...url: T): Promise<Video>;

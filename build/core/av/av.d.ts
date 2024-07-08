@@ -2,7 +2,7 @@
 /// <reference types="node" resolution-mode="require"/>
 import type { AVCustomCallback } from "../../types/index.js";
 import type { Readable } from "node:stream";
-import ffmpeg from "fluent-ffmpeg";
+import ffmpeg, { type FfprobeData } from "fluent-ffmpeg";
 import Core from "../core.js";
 export default abstract class AV extends Core {
     protected avs: Buffer[];
@@ -14,6 +14,8 @@ export default abstract class AV extends Core {
      * In case of invalid method, buffer will be default
      */
     custom<T>(callback: AVCustomCallback<T>): Promise<Awaited<T>[]>;
+    static generateTimemarks<T extends FfprobeData>(metadata: T, interval: number): Promise<number[]>;
+    static generateTimemarks<T extends FfprobeData[]>(metadata: T, interval: number): Promise<number[][]>;
     /**
      * new Instance of ffmpeg
      */

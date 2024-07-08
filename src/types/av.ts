@@ -5,7 +5,7 @@ export type AVSetCallback<T> = (av: Buffer, indeX: number) => Promise<T> | T;
 
 export type AVCustomCallback<T> = (
   command: FfmpegCommand,
-  tmpFile: Omit<TmpFile, "init">,
+  tmpFile: Omit<TmpFile, "init" | "clean">,
   index: number,
 ) => Promise<T> | T;
 

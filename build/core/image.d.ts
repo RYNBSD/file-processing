@@ -159,6 +159,7 @@ export default class Image extends Core {
         data: Buffer;
         info: sharp.OutputInfo;
     }[]>;
+    ocr(langs: string | string[]): Promise<import("tesseract.js").Page[]>;
     /**
      * @returns - base on the callback return type
      *

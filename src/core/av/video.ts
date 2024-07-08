@@ -45,6 +45,7 @@ export default class Video extends AV {
   async only(format: string) {
     return this.custom(async (command, tmpFile) => {
       const output = path.join(tmpFile.tmp!.path, TmpFile.generateFileName(format));
+
       return new Promise<Buffer>((resolve, reject) => {
         command
           .noAudio()
@@ -60,51 +61,37 @@ export default class Video extends AV {
   }
 
   async audio(format: string) {
-    const tmpFile = await new TmpFile(...this.avs).init();
+    return this.custom(async (command, tmpFile) => {
+      const output = path.join(tmpFile.tmp!.path, TmpFile.generateFileName(format));
 
-    const audios = await Promise.all(
-      tmpFile.paths.map((video) => {
-        return new Promise<Buffer>((resolve, reject) => {
-          const output = path.join(tmpFile.tmp!.path, TmpFile.generateFileName(format));
-
-          AV.newFfmpeg(video)
-            .noVideo()
-            .toFormat(format)
-            .on("done", () => {
-              AV.loadFile(output).then(resolve, reject);
-            })
-            .on("error", reject)
-            .output(output)
-            .run();
-        });
-      }),
-    );
-
-    await tmpFile.clean();
-    return audios;
+      return new Promise<Buffer>((resolve, reject) => {
+        command
+          .noVideo()
+          .toFormat(format)
+          .on("done", () => {
+            AV.loadFile(output).then(resolve, reject);
+          })
+          .on("error", reject)
+          .output(output)
+          .run();
+      });
+    });
   }
 
   /** Extract video frames aka images */
   async frame(timemarks: number[]) {
-    const tmpFile = await new TmpFile(...this.avs).init();
-
-    const frames = await Promise.all(
-      tmpFile.paths.map((video) => {
-        return new Promise<Buffer[]>((resolve, reject) => {
-          Video.newFfmpeg(video)
-            .takeScreenshots({ filename: "frame.jpg", timemarks }, tmpFile.tmp!.path)
-            .on("filenames", (filenames: string[]) => {
-              const fullPaths = filenames.map((filename) => path.join(tmpFile.tmp!.path, filename));
-              AV.loadFile(fullPaths).then(resolve, reject);
-            })
-            .on("error", reject)
-            .run();
-        });
-      }),
-    );
-
-    await tmpFile.clean();
-    return frames;
+    return this.custom(async (command, tmpFile) => {
+      return new Promise<Buffer[]>((resolve, reject) => {
+        command
+          .takeScreenshots({ filename: "frame.jpg", timemarks }, tmpFile.tmp!.path)
+          .on("filenames", (filenames: string[]) => {
+            const fullPaths = filenames.map((filename) => path.join(tmpFile.tmp!.path, filename));
+            AV.loadFile(fullPaths).then(resolve, reject);
+          })
+          .on("error", reject)
+          .run();
+      });
+    });
   }
 
   static async filter(...videos: Buffer[]) {
