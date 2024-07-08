@@ -9,11 +9,11 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 import { Readable } from "node:stream";
 import { isAnyArrayBuffer, isUint8Array } from "node:util/types";
-import { readFile, writeFile, stat as fsStat, readdir } from "node:fs/promises";
+import fs from "node:fs";
 import path from "node:path";
 import { any2buffer, array2buffer, buffer2readable, isReadable, isReadableStream, isStream, readable2buffer, readablestream2buffer, stream2buffer, string2buffer, uint8array2buffer, url2buffer, } from "@ryn-bsd/from-buffer-to";
 import isBase64 from "is-base64";
-import { default as fastGlob } from "fast-glob";
+import fastGlob from "fast-glob";
 import puppeteer from "puppeteer";
 import { isUrl } from "../helper/index.js";
 export default class Core {
@@ -41,14 +41,14 @@ export default class Core {
         return __awaiter(this, void 0, void 0, function* () {
             if (Array.isArray(paths))
                 return Promise.all(paths.map((path) => Core.loadFile(path)));
-            return readFile(paths);
+            return fs.promises.readFile(paths);
         });
     }
     static loadDir(paths) {
         return __awaiter(this, void 0, void 0, function* () {
             if (Array.isArray(paths))
                 return Promise.all(paths.map((path) => Core.loadDir(path)));
-            const files = yield readdir(paths);
+            const files = yield fs.promises.readdir(paths);
             return Core.loadFile(files.map((file) => path.join(paths, file)));
         });
     }
@@ -69,7 +69,7 @@ export default class Core {
             const cwd = (_a = options === null || options === void 0 ? void 0 : options.cwd) !== null && _a !== void 0 ? _a : process.cwd();
             const results = yield Promise.all(entries.map((entry) => __awaiter(this, void 0, void 0, function* () {
                 const fullPath = path.join(cwd, entry);
-                const stat = yield fsStat(fullPath);
+                const stat = yield fs.promises.stat(fullPath);
                 if (stat.isFile())
                     return Core.loadFile(fullPath);
                 else if (stat.isDirectory())
@@ -105,7 +105,7 @@ export default class Core {
             else if (isReadable(input) && Readable.isReadable(input))
                 return readable2buffer(input);
             else if (typeof input === "string") {
-                const fileStat = yield fsStat(input);
+                const fileStat = yield fs.promises.stat(input);
                 if (fileStat.isFile())
                     return Core.loadFile(input);
                 else if (isBase64(input, { allowEmpty: false }))
@@ -154,7 +154,7 @@ export default class Core {
         return __awaiter(this, void 0, void 0, function* () {
             yield Promise.all(file.map((f) => __awaiter(this, void 0, void 0, function* () {
                 const buffer = yield Core.toBuffer(f.input);
-                return writeFile(f.path, buffer);
+                return fs.promises.writeFile(f.path, buffer);
             })));
         });
     }

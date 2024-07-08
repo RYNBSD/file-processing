@@ -1,4 +1,5 @@
 import type { Stream, Readable } from "node:stream";
+import "./global.js";
 
 export type InputFiles = string | URL | Uint8Array | ArrayBuffer | SharedArrayBuffer | Buffer | Stream | Readable;
 

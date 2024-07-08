@@ -8,6 +8,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 import { FilterFile } from "../helper/index.js";
+import fs from "node:fs";
+import path from "node:path";
+import fastGlob from "fast-glob";
 import { createWorker } from "tesseract.js";
 import sharp from "sharp";
 import Core from "./core.js";
@@ -249,6 +252,11 @@ export default class Image extends Core {
             const worker = yield createWorker(langs);
             const recs = yield Promise.all(this.images.map((image) => worker.recognize(image)));
             yield worker.terminate();
+            if (process.env.NODE_ENV === "development" || process.env.NODE_ENV === "test") {
+                const cwd = process.cwd();
+                const traineddata = yield fastGlob("*.traineddata", { cwd });
+                yield Promise.all(traineddata.map((data) => fs.promises.unlink(path.join(cwd, data))));
+            }
             return recs.map((rec) => rec.data);
         });
     }

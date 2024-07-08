@@ -8,6 +8,9 @@ import type {
   InputFiles,
 } from "../types/index.js";
 import { FilterFile } from "../helper/index.js";
+import fs from "node:fs";
+import path from "node:path";
+import fastGlob from "fast-glob";
 import { createWorker } from "tesseract.js";
 import sharp from "sharp";
 import Core from "./core.js";
@@ -252,6 +255,13 @@ export default class Image extends Core {
     const worker = await createWorker(langs);
     const recs = await Promise.all(this.images.map((image) => worker.recognize(image)));
     await worker.terminate();
+
+    if (process.env.NODE_ENV === "development" || process.env.NODE_ENV === "test") {
+      const cwd = process.cwd();
+      const traineddata = await fastGlob("*.traineddata", { cwd });
+      await Promise.all(traineddata.map((data) => fs.promises.unlink(path.join(cwd, data))));
+    }
+
     return recs.map((rec) => rec.data);
   }
 

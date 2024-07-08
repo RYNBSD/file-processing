@@ -1,6 +1,6 @@
 import { PDFDocument, PageSizes } from "pdf-lib";
 import { imageBuffer } from "../index.js";
-import PDF from "../../build/core/pdf.js";
+import PDF from "../../build/core/pdf/pdf.js";
 
 describe("PDF", () => {
   it("set/get/append/extend/clone", async () => {

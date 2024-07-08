@@ -1,7 +1,7 @@
 import type { InputFiles } from "../types/index.js";
 import { Readable, type Writable } from "node:stream";
 import { isAnyArrayBuffer, isUint8Array } from "node:util/types";
-import { readFile, writeFile, stat as fsStat, readdir } from "node:fs/promises";
+import fs from "node:fs";
 import path from "node:path";
 import {
   any2buffer,
@@ -18,7 +18,7 @@ import {
   url2buffer,
 } from "@ryn-bsd/from-buffer-to";
 import isBase64 from "is-base64";
-import { default as fastGlob } from "fast-glob";
+import fastGlob from "fast-glob";
 import puppeteer from "puppeteer";
 import { isUrl } from "../helper/index.js";
 
@@ -72,7 +72,7 @@ export default abstract class Core {
   static async loadFile<T extends string[]>(paths: T): Promise<Buffer[]>;
   static async loadFile<T extends string | string>(paths: T) {
     if (Array.isArray(paths)) return Promise.all(paths.map((path) => Core.loadFile(path)));
-    return readFile(paths);
+    return fs.promises.readFile(paths);
   }
 
   /**
@@ -91,7 +91,7 @@ export default abstract class Core {
   static async loadDir<T extends string[]>(paths: T): Promise<Buffer[][]>;
   static async loadDir<T extends string | string[]>(paths: T) {
     if (Array.isArray(paths)) return Promise.all(paths.map((path) => Core.loadDir(path)));
-    const files = await readdir(paths);
+    const files = await fs.promises.readdir(paths);
     return Core.loadFile(files.map((file) => path.join(paths, file)));
   }
 
@@ -115,7 +115,7 @@ export default abstract class Core {
     const results = await Promise.all(
       entries.map(async (entry) => {
         const fullPath = path.join(cwd, entry);
-        const stat = await fsStat(fullPath);
+        const stat = await fs.promises.stat(fullPath);
 
         if (stat.isFile()) return Core.loadFile(fullPath);
         else if (stat.isDirectory()) return Core.loadDir(fullPath);
@@ -168,7 +168,7 @@ export default abstract class Core {
     else if (isReadableStream(input)) return readablestream2buffer(input);
     else if (isReadable(input) && Readable.isReadable(input)) return readable2buffer(input);
     else if (typeof input === "string") {
-      const fileStat = await fsStat(input);
+      const fileStat = await fs.promises.stat(input);
       if (fileStat.isFile()) return Core.loadFile(input);
       else if (isBase64(input, { allowEmpty: false })) return Buffer.from(input, "base64");
       return string2buffer(input, false);
@@ -233,7 +233,7 @@ export default abstract class Core {
     await Promise.all(
       file.map(async (f) => {
         const buffer = await Core.toBuffer(f.input);
-        return writeFile(f.path, buffer);
+        return fs.promises.writeFile(f.path, buffer);
       }),
     );
   }

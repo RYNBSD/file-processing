@@ -2,7 +2,7 @@
 /// <reference types="node" resolution-mode="require"/>
 import type { InputFiles } from "../types/index.js";
 import { Readable, type Writable } from "node:stream";
-import { default as fastGlob } from "fast-glob";
+import fastGlob from "fast-glob";
 import puppeteer from "puppeteer";
 export default abstract class Core {
     constructor();
