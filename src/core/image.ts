@@ -10,6 +10,7 @@ import type {
 import { FilterFile } from "../helper/index.js";
 import sharp from "sharp";
 import Core from "./core.js";
+import { createWorker } from "tesseract.js";
 
 export default class Image extends Core {
   private images: Buffer[];
@@ -236,6 +237,14 @@ export default class Image extends Core {
         }),
       ),
     );
+  }
+
+  /** Extract texts from images */
+  async texts(langs: string | string[]) {
+    const worker = await createWorker(langs);
+    const recs = await Promise.all(this.images.map((image) => worker.recognize(image)));
+    await worker.terminate();
+    return recs.map((rec) => rec.data.text);
   }
 
   /**
