@@ -238,8 +238,8 @@ const pdf = new PDF(Buffer.alloc(1));
 - Add glob loader. 🟠
 - Extract video frames. 🟠
 - Add OCR. 🟠
+- Get video audio. 🟠
 - Add instance check for each processor. 🟢
-- Get video audio. 🔴
 - Get only video (no audio). 🔴
 - Pdf to image. 🔴
 - Collect images/audios/videos from websites. 🔴

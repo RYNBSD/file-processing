@@ -42,13 +42,33 @@ export default class Video extends AV {
     return this.length;
   }
 
-  /** Extract text fromm videos */
-  // async texts(langs: string | string[]) {
-  //   const scheduler = createScheduler()
-  // }
+  async audio(format: string) {
+    const tmpFile = await new TmpFile(...this.avs).init();
+
+    const audios = await Promise.all(
+      tmpFile.paths.map((video) => {
+        return new Promise<Buffer>((resolve, reject) => {
+          const output = path.join(tmpFile.tmp!.path, TmpFile.generateFileName(format));
+
+          AV.newFfmpeg(video)
+            .noVideo()
+            .toFormat(format)
+            .on("done", () => {
+              AV.loadFile(output).then(resolve, reject);
+            })
+            .on("error", reject)
+            .output(output)
+            .run();
+        });
+      }),
+    );
+
+    await tmpFile.clean();
+    return audios;
+  }
 
   /** Extract video frames aka images */
-  async frames(timemarks: number[]) {
+  async frame(timemarks: number[]) {
     const tmpFile = await new TmpFile(...this.avs).init();
 
     const frames = await Promise.all(
