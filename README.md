@@ -244,7 +244,7 @@ const pdf = new PDF(Buffer.alloc(1));
 - Merge any video in one video. 🔴
 - Merge audio and video in one video. 🔴
 - Pdf to image. 🔴
-- Collect images/audios/videos from websites. 🔴
+- File scanner (antivirus). 🔴
 - PDF/Video/Audio watermark. 🔴
 - PDF remove page. 🔴
 - PDF split. 🔴
