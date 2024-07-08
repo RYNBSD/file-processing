@@ -1,10 +1,12 @@
-import type { CalculateArr, FinalResult, Result } from "./types.js";
-import fs from "fs/promises";
+import type { Benchmark, BenchmarkSchema, CalculateArr, FinalResult, Result } from "./types.js";
+import os from "node:os";
+import fs from "node:fs";
 import { image } from "./image.js";
 import { video } from "./video.js";
 import { audio } from "./audio";
 import { text } from "./text.js";
 import { csv } from "./csv.js";
+import { pdf } from "./pdf.js";
 
 //? How min/max/avg are sorted (time in millisecond and size in byte)
 function calculate({ load, new: newTimer, convert, metadata, size }: Result) {
@@ -80,12 +82,60 @@ async function main() {
     const images = await image();
     const videos = await video();
     const audios = await audio();
+    const pdfs = await pdf();
     const texts = await text();
     const csvs = await csv();
-    results.push({ images, videos, audios, texts, csvs });
+    results.push({ images, videos, audios, pdfs, texts, csvs });
   }
 
-  await fs.writeFile(process.cwd() + "/benchmark.json", JSON.stringify({ results, ...avg(results) }, null, 4));
+  const benchmarkPath = process.cwd() + "/benchmark.json";
+
+  const oldBenchmark = fs.existsSync(benchmarkPath)
+    ? (JSON.parse(fs.readFileSync(benchmarkPath).toString()) as Benchmark)
+    : ({} as Benchmark);
+
+  const benchmark: Benchmark = {
+    last: oldBenchmark.last,
+    new: oldBenchmark.new,
+    difference: oldBenchmark?.difference ?? {},
+  };
+
+  const newBenchmark: BenchmarkSchema = {
+    results,
+    calculate: avg(results),
+    architecture: {
+      platform: os.platform(),
+      memory: os.freemem(),
+      cpus: os.cpus()[0].model,
+      cores: os.cpus().length,
+      hostname: os.hostname(),
+      arch: os.arch(),
+    },
+  };
+
+  if (typeof benchmark.new === "object" && typeof benchmark.last === "object") {
+    benchmark.last = benchmark.new;
+    benchmark.new = newBenchmark;
+  } else if (typeof benchmark.new === "undefined" && typeof benchmark.last === "undefined")
+    benchmark.last = newBenchmark;
+  else if (typeof benchmark.new === "undefined" && typeof benchmark.last === "object") benchmark.new = newBenchmark;
+  else if (typeof benchmark.new === "object" && typeof benchmark.last === "undefined") {
+    benchmark.last = benchmark.new;
+    benchmark.new = newBenchmark;
+  } else {
+    benchmark.last = newBenchmark;
+    benchmark.new = undefined;
+  }
+
+  Object.entries(benchmark.last.calculate.avg).forEach(([key]) => {
+    const lastAvg = benchmark.last?.calculate.avg[key] ?? 0;
+    const newAvg = benchmark.new?.calculate.avg[key] ?? 0;
+
+    benchmark.difference![key] = lastAvg === 0 ? 0 : 100 - (newAvg * 100) / lastAvg;
+    benchmark.difference![key] = Number.parseFloat(benchmark.difference![key].toFixed(2));
+  });
+
+  fs.writeFileSync(benchmarkPath, JSON.stringify(benchmark, null, 4));
 }
 
 main();

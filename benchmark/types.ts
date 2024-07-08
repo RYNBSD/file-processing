@@ -10,3 +10,24 @@ export type Result = {
 export type FinalResult = Record<string, Result>;
 
 export type CalculateArr = Record<string, number>;
+
+export type ArchitectureSchema = {
+  platform: string;
+  memory: number;
+  cpus: string;
+  cores: number;
+  hostname: string;
+  arch: string;
+};
+
+export type BenchmarkSchema = {
+  results: FinalResult[];
+  calculate: { min: CalculateArr; max: CalculateArr; avg: CalculateArr };
+  architecture: ArchitectureSchema;
+};
+
+export type Benchmark = {
+  last?: BenchmarkSchema;
+  new?: BenchmarkSchema;
+  difference?: CalculateArr;
+};

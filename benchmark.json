@@ -1,395 +1,966 @@
 {
-    "results": [
-        {
-            "images": {
-                "load": 7,
-                "new": 3,
-                "convert": 3379,
-                "metadata": 1,
-                "size": 10699607
+    "last": {
+        "results": [
+            {
+                "images": {
+                    "load": 5,
+                    "new": 2,
+                    "convert": 3472,
+                    "metadata": 2,
+                    "size": 10699607
+                },
+                "videos": {
+                    "load": 19,
+                    "new": 2,
+                    "convert": 33445,
+                    "metadata": 144,
+                    "size": 53335976
+                },
+                "audios": {
+                    "load": 15,
+                    "new": 2,
+                    "convert": 817,
+                    "metadata": 81,
+                    "size": 62783319
+                },
+                "pdfs": {
+                    "load": 30,
+                    "new": 7,
+                    "convert": 231,
+                    "metadata": 200,
+                    "size": 10033058
+                },
+                "texts": {
+                    "load": 1,
+                    "new": 0,
+                    "convert": 31,
+                    "metadata": 42,
+                    "size": 1911212
+                },
+                "csvs": {
+                    "load": 4,
+                    "new": 0,
+                    "convert": 469,
+                    "metadata": 409,
+                    "size": 7260349
+                }
             },
-            "videos": {
-                "load": 18,
-                "new": 1,
-                "convert": 31984,
-                "metadata": 149,
-                "size": 53335976
+            {
+                "images": {
+                    "load": 5,
+                    "new": 1,
+                    "convert": 3501,
+                    "metadata": 2,
+                    "size": 10699607
+                },
+                "videos": {
+                    "load": 17,
+                    "new": 1,
+                    "convert": 33154,
+                    "metadata": 145,
+                    "size": 53335976
+                },
+                "audios": {
+                    "load": 18,
+                    "new": 2,
+                    "convert": 875,
+                    "metadata": 75,
+                    "size": 62783319
+                },
+                "pdfs": {
+                    "load": 3,
+                    "new": 7,
+                    "convert": 247,
+                    "metadata": 188,
+                    "size": 10033058
+                },
+                "texts": {
+                    "load": 6,
+                    "new": 0,
+                    "convert": 30,
+                    "metadata": 39,
+                    "size": 1911212
+                },
+                "csvs": {
+                    "load": 5,
+                    "new": 0,
+                    "convert": 475,
+                    "metadata": 423,
+                    "size": 7260349
+                }
             },
-            "audios": {
-                "load": 26,
-                "new": 2,
-                "convert": 756,
-                "metadata": 74,
-                "size": 62783319
+            {
+                "images": {
+                    "load": 5,
+                    "new": 1,
+                    "convert": 3682,
+                    "metadata": 1,
+                    "size": 10699607
+                },
+                "videos": {
+                    "load": 18,
+                    "new": 1,
+                    "convert": 33584,
+                    "metadata": 140,
+                    "size": 53335976
+                },
+                "audios": {
+                    "load": 16,
+                    "new": 1,
+                    "convert": 804,
+                    "metadata": 77,
+                    "size": 62783319
+                },
+                "pdfs": {
+                    "load": 3,
+                    "new": 7,
+                    "convert": 238,
+                    "metadata": 191,
+                    "size": 10033058
+                },
+                "texts": {
+                    "load": 4,
+                    "new": 0,
+                    "convert": 32,
+                    "metadata": 41,
+                    "size": 1911212
+                },
+                "csvs": {
+                    "load": 5,
+                    "new": 0,
+                    "convert": 446,
+                    "metadata": 414,
+                    "size": 7260349
+                }
             },
-            "texts": {
-                "load": 1,
-                "new": 0,
-                "convert": 31,
-                "metadata": 43,
-                "size": 1911212
+            {
+                "images": {
+                    "load": 4,
+                    "new": 1,
+                    "convert": 3453,
+                    "metadata": 1,
+                    "size": 10699607
+                },
+                "videos": {
+                    "load": 18,
+                    "new": 1,
+                    "convert": 33548,
+                    "metadata": 151,
+                    "size": 53335976
+                },
+                "audios": {
+                    "load": 15,
+                    "new": 0,
+                    "convert": 815,
+                    "metadata": 82,
+                    "size": 62783319
+                },
+                "pdfs": {
+                    "load": 4,
+                    "new": 7,
+                    "convert": 243,
+                    "metadata": 193,
+                    "size": 10033058
+                },
+                "texts": {
+                    "load": 1,
+                    "new": 0,
+                    "convert": 34,
+                    "metadata": 40,
+                    "size": 1911212
+                },
+                "csvs": {
+                    "load": 4,
+                    "new": 0,
+                    "convert": 453,
+                    "metadata": 429,
+                    "size": 7260349
+                }
             },
-            "csvs": {
-                "load": 5,
-                "new": 1,
-                "convert": 465,
-                "metadata": 400,
-                "size": 7260349
+            {
+                "images": {
+                    "load": 4,
+                    "new": 0,
+                    "convert": 3532,
+                    "metadata": 1,
+                    "size": 10699607
+                },
+                "videos": {
+                    "load": 20,
+                    "new": 1,
+                    "convert": 33889,
+                    "metadata": 150,
+                    "size": 53335976
+                },
+                "audios": {
+                    "load": 24,
+                    "new": 2,
+                    "convert": 901,
+                    "metadata": 86,
+                    "size": 62783319
+                },
+                "pdfs": {
+                    "load": 3,
+                    "new": 9,
+                    "convert": 237,
+                    "metadata": 201,
+                    "size": 10033058
+                },
+                "texts": {
+                    "load": 2,
+                    "new": 0,
+                    "convert": 33,
+                    "metadata": 45,
+                    "size": 1911212
+                },
+                "csvs": {
+                    "load": 4,
+                    "new": 0,
+                    "convert": 492,
+                    "metadata": 442,
+                    "size": 7260349
+                }
+            },
+            {
+                "images": {
+                    "load": 5,
+                    "new": 1,
+                    "convert": 3624,
+                    "metadata": 1,
+                    "size": 10699607
+                },
+                "videos": {
+                    "load": 19,
+                    "new": 1,
+                    "convert": 33901,
+                    "metadata": 149,
+                    "size": 53335976
+                },
+                "audios": {
+                    "load": 16,
+                    "new": 0,
+                    "convert": 822,
+                    "metadata": 83,
+                    "size": 62783319
+                },
+                "pdfs": {
+                    "load": 4,
+                    "new": 7,
+                    "convert": 239,
+                    "metadata": 209,
+                    "size": 10033058
+                },
+                "texts": {
+                    "load": 2,
+                    "new": 0,
+                    "convert": 31,
+                    "metadata": 40,
+                    "size": 1911212
+                },
+                "csvs": {
+                    "load": 3,
+                    "new": 0,
+                    "convert": 472,
+                    "metadata": 433,
+                    "size": 7260349
+                }
+            },
+            {
+                "images": {
+                    "load": 5,
+                    "new": 1,
+                    "convert": 3605,
+                    "metadata": 1,
+                    "size": 10699607
+                },
+                "videos": {
+                    "load": 20,
+                    "new": 1,
+                    "convert": 34331,
+                    "metadata": 140,
+                    "size": 53335976
+                },
+                "audios": {
+                    "load": 15,
+                    "new": 1,
+                    "convert": 800,
+                    "metadata": 74,
+                    "size": 62783319
+                },
+                "pdfs": {
+                    "load": 4,
+                    "new": 7,
+                    "convert": 216,
+                    "metadata": 189,
+                    "size": 10033058
+                },
+                "texts": {
+                    "load": 2,
+                    "new": 0,
+                    "convert": 32,
+                    "metadata": 42,
+                    "size": 1911212
+                },
+                "csvs": {
+                    "load": 5,
+                    "new": 0,
+                    "convert": 463,
+                    "metadata": 446,
+                    "size": 7260349
+                }
+            },
+            {
+                "images": {
+                    "load": 4,
+                    "new": 0,
+                    "convert": 3511,
+                    "metadata": 2,
+                    "size": 10699607
+                },
+                "videos": {
+                    "load": 15,
+                    "new": 1,
+                    "convert": 33976,
+                    "metadata": 140,
+                    "size": 53335976
+                },
+                "audios": {
+                    "load": 15,
+                    "new": 1,
+                    "convert": 839,
+                    "metadata": 82,
+                    "size": 62783319
+                },
+                "pdfs": {
+                    "load": 4,
+                    "new": 8,
+                    "convert": 219,
+                    "metadata": 194,
+                    "size": 10033058
+                },
+                "texts": {
+                    "load": 2,
+                    "new": 0,
+                    "convert": 30,
+                    "metadata": 40,
+                    "size": 1911212
+                },
+                "csvs": {
+                    "load": 4,
+                    "new": 0,
+                    "convert": 461,
+                    "metadata": 413,
+                    "size": 7260349
+                }
+            },
+            {
+                "images": {
+                    "load": 9,
+                    "new": 0,
+                    "convert": 3543,
+                    "metadata": 1,
+                    "size": 10699607
+                },
+                "videos": {
+                    "load": 18,
+                    "new": 1,
+                    "convert": 33742,
+                    "metadata": 148,
+                    "size": 53335976
+                },
+                "audios": {
+                    "load": 18,
+                    "new": 1,
+                    "convert": 845,
+                    "metadata": 74,
+                    "size": 62783319
+                },
+                "pdfs": {
+                    "load": 3,
+                    "new": 7,
+                    "convert": 243,
+                    "metadata": 190,
+                    "size": 10033058
+                },
+                "texts": {
+                    "load": 3,
+                    "new": 0,
+                    "convert": 31,
+                    "metadata": 40,
+                    "size": 1911212
+                },
+                "csvs": {
+                    "load": 4,
+                    "new": 0,
+                    "convert": 455,
+                    "metadata": 416,
+                    "size": 7260349
+                }
+            },
+            {
+                "images": {
+                    "load": 5,
+                    "new": 1,
+                    "convert": 3618,
+                    "metadata": 1,
+                    "size": 10699607
+                },
+                "videos": {
+                    "load": 19,
+                    "new": 1,
+                    "convert": 33997,
+                    "metadata": 160,
+                    "size": 53335976
+                },
+                "audios": {
+                    "load": 17,
+                    "new": 1,
+                    "convert": 887,
+                    "metadata": 89,
+                    "size": 62783319
+                },
+                "pdfs": {
+                    "load": 3,
+                    "new": 8,
+                    "convert": 228,
+                    "metadata": 215,
+                    "size": 10033058
+                },
+                "texts": {
+                    "load": 1,
+                    "new": 0,
+                    "convert": 33,
+                    "metadata": 42,
+                    "size": 1911212
+                },
+                "csvs": {
+                    "load": 7,
+                    "new": 0,
+                    "convert": 436,
+                    "metadata": 424,
+                    "size": 7260349
+                }
+            }
+        ],
+        "calculate": {
+            "min": {
+                "images": 0.00032328290188602256,
+                "videos": 0.0006246627979583612,
+                "audios": 0.000014175739896770988,
+                "pdfs": 0.00004146293183992358,
+                "texts": 0.00003767242985079625,
+                "csvs": 0.00011914027824282276
+            },
+            "max": {
+                "images": 0.0003447790185190914,
+                "videos": 0.0006466929563640122,
+                "audios": 0.00001613485900610001,
+                "pdfs": 0.000046645798319914025,
+                "texts": 0.00004185825538977361,
+                "csvs": 0.00012919489131996273
+            },
+            "avg": {
+                "images": 0.000334030960202557,
+                "videos": 0.0006356778771611866,
+                "audios": 0.0000151552994514355,
+                "pdfs": 0.000044054365079918806,
+                "texts": 0.00003976534262028493,
+                "csvs": 0.00012416758478139275
             }
         },
-        {
-            "images": {
-                "load": 7,
-                "new": 1,
-                "convert": 3376,
-                "metadata": 1,
-                "size": 10699607
-            },
-            "videos": {
-                "load": 13,
-                "new": 0,
-                "convert": 31870,
-                "metadata": 136,
-                "size": 53335976
-            },
-            "audios": {
-                "load": 14,
-                "new": 2,
-                "convert": 760,
-                "metadata": 75,
-                "size": 62783319
-            },
-            "texts": {
-                "load": 1,
-                "new": 0,
-                "convert": 32,
-                "metadata": 40,
-                "size": 1911212
-            },
-            "csvs": {
-                "load": 5,
-                "new": 0,
-                "convert": 451,
-                "metadata": 415,
-                "size": 7260349
-            }
-        },
-        {
-            "images": {
-                "load": 4,
-                "new": 1,
-                "convert": 3557,
-                "metadata": 1,
-                "size": 10699607
-            },
-            "videos": {
-                "load": 14,
-                "new": 1,
-                "convert": 32665,
-                "metadata": 133,
-                "size": 53335976
-            },
-            "audios": {
-                "load": 16,
-                "new": 1,
-                "convert": 790,
-                "metadata": 81,
-                "size": 62783319
-            },
-            "texts": {
-                "load": 1,
-                "new": 0,
-                "convert": 32,
-                "metadata": 41,
-                "size": 1911212
-            },
-            "csvs": {
-                "load": 4,
-                "new": 0,
-                "convert": 485,
-                "metadata": 415,
-                "size": 7260349
-            }
-        },
-        {
-            "images": {
-                "load": 5,
-                "new": 0,
-                "convert": 3473,
-                "metadata": 1,
-                "size": 10699607
-            },
-            "videos": {
-                "load": 16,
-                "new": 1,
-                "convert": 32858,
-                "metadata": 141,
-                "size": 53335976
-            },
-            "audios": {
-                "load": 15,
-                "new": 1,
-                "convert": 781,
-                "metadata": 77,
-                "size": 62783319
-            },
-            "texts": {
-                "load": 2,
-                "new": 0,
-                "convert": 39,
-                "metadata": 46,
-                "size": 1911212
-            },
-            "csvs": {
-                "load": 5,
-                "new": 0,
-                "convert": 472,
-                "metadata": 428,
-                "size": 7260349
-            }
-        },
-        {
-            "images": {
-                "load": 4,
-                "new": 1,
-                "convert": 3451,
-                "metadata": 1,
-                "size": 10699607
-            },
-            "videos": {
-                "load": 15,
-                "new": 1,
-                "convert": 33294,
-                "metadata": 150,
-                "size": 53335976
-            },
-            "audios": {
-                "load": 25,
-                "new": 2,
-                "convert": 859,
-                "metadata": 80,
-                "size": 62783319
-            },
-            "texts": {
-                "load": 2,
-                "new": 0,
-                "convert": 36,
-                "metadata": 44,
-                "size": 1911212
-            },
-            "csvs": {
-                "load": 4,
-                "new": 0,
-                "convert": 485,
-                "metadata": 446,
-                "size": 7260349
-            }
-        },
-        {
-            "images": {
-                "load": 7,
-                "new": 0,
-                "convert": 3577,
-                "metadata": 1,
-                "size": 10699607
-            },
-            "videos": {
-                "load": 13,
-                "new": 1,
-                "convert": 33133,
-                "metadata": 145,
-                "size": 53335976
-            },
-            "audios": {
-                "load": 14,
-                "new": 1,
-                "convert": 796,
-                "metadata": 79,
-                "size": 62783319
-            },
-            "texts": {
-                "load": 1,
-                "new": 0,
-                "convert": 33,
-                "metadata": 42,
-                "size": 1911212
-            },
-            "csvs": {
-                "load": 5,
-                "new": 0,
-                "convert": 467,
-                "metadata": 424,
-                "size": 7260349
-            }
-        },
-        {
-            "images": {
-                "load": 4,
-                "new": 0,
-                "convert": 3594,
-                "metadata": 1,
-                "size": 10699607
-            },
-            "videos": {
-                "load": 17,
-                "new": 1,
-                "convert": 35172,
-                "metadata": 178,
-                "size": 53335976
-            },
-            "audios": {
-                "load": 19,
-                "new": 1,
-                "convert": 976,
-                "metadata": 92,
-                "size": 62783319
-            },
-            "texts": {
-                "load": 2,
-                "new": 0,
-                "convert": 36,
-                "metadata": 46,
-                "size": 1911212
-            },
-            "csvs": {
-                "load": 5,
-                "new": 0,
-                "convert": 533,
-                "metadata": 491,
-                "size": 7260349
-            }
-        },
-        {
-            "images": {
-                "load": 14,
-                "new": 1,
-                "convert": 3850,
-                "metadata": 1,
-                "size": 10699607
-            },
-            "videos": {
-                "load": 20,
-                "new": 1,
-                "convert": 38705,
-                "metadata": 171,
-                "size": 53335976
-            },
-            "audios": {
-                "load": 27,
-                "new": 1,
-                "convert": 972,
-                "metadata": 106,
-                "size": 62783319
-            },
-            "texts": {
-                "load": 20,
-                "new": 0,
-                "convert": 48,
-                "metadata": 50,
-                "size": 1911212
-            },
-            "csvs": {
-                "load": 21,
-                "new": 0,
-                "convert": 573,
-                "metadata": 471,
-                "size": 7260349
-            }
-        },
-        {
-            "images": {
-                "load": 15,
-                "new": 1,
-                "convert": 4040,
-                "metadata": 1,
-                "size": 10699607
-            },
-            "videos": {
-                "load": 19,
-                "new": 1,
-                "convert": 39046,
-                "metadata": 159,
-                "size": 53335976
-            },
-            "audios": {
-                "load": 32,
-                "new": 1,
-                "convert": 860,
-                "metadata": 81,
-                "size": 62783319
-            },
-            "texts": {
-                "load": 16,
-                "new": 0,
-                "convert": 34,
-                "metadata": 43,
-                "size": 1911212
-            },
-            "csvs": {
-                "load": 16,
-                "new": 0,
-                "convert": 468,
-                "metadata": 431,
-                "size": 7260349
-            }
-        },
-        {
-            "images": {
-                "load": 13,
-                "new": 1,
-                "convert": 3771,
-                "metadata": 1,
-                "size": 10699607
-            },
-            "videos": {
-                "load": 22,
-                "new": 0,
-                "convert": 38511,
-                "metadata": 146,
-                "size": 53335976
-            },
-            "audios": {
-                "load": 17,
-                "new": 1,
-                "convert": 824,
-                "metadata": 88,
-                "size": 62783319
-            },
-            "texts": {
-                "load": 1,
-                "new": 0,
-                "convert": 33,
-                "metadata": 42,
-                "size": 1911212
-            },
-            "csvs": {
-                "load": 3,
-                "new": 1,
-                "convert": 469,
-                "metadata": 430,
-                "size": 7260349
-            }
+        "architecture": {
+            "platform": "win32",
+            "memory": 7766155264,
+            "cpus": "11th Gen Intel(R) Core(TM) i7-11800H @ 2.30GHz",
+            "cores": 16,
+            "hostname": "Acer-Nitro5",
+            "arch": "x64"
         }
-    ],
-    "min": {
-        "images": 0.0003163667600127743,
-        "videos": 0.0006003265038217356,
-        "audios": 0.000013554555788934957,
-        "texts": 0.00003819565804316842,
-        "csvs": 0.00011996668479710824
     },
-    "max": {
-        "images": 0.0003791728051320016,
-        "videos": 0.0007354323093290727,
-        "audios": 0.000017616144186324395,
-        "texts": 0.00006174092669991608,
-        "csvs": 0.00014668716338567196
+    "new": {
+        "results": [
+            {
+                "images": {
+                    "load": 4,
+                    "new": 4,
+                    "convert": 3632,
+                    "metadata": 1,
+                    "size": 10699607
+                },
+                "videos": {
+                    "load": 19,
+                    "new": 2,
+                    "convert": 33698,
+                    "metadata": 139,
+                    "size": 53335976
+                },
+                "audios": {
+                    "load": 16,
+                    "new": 2,
+                    "convert": 835,
+                    "metadata": 76,
+                    "size": 62783319
+                },
+                "pdfs": {
+                    "load": 3,
+                    "new": 7,
+                    "convert": 248,
+                    "metadata": 201,
+                    "size": 10033058
+                },
+                "texts": {
+                    "load": 2,
+                    "new": 0,
+                    "convert": 31,
+                    "metadata": 43,
+                    "size": 1911212
+                },
+                "csvs": {
+                    "load": 5,
+                    "new": 0,
+                    "convert": 479,
+                    "metadata": 422,
+                    "size": 7260349
+                }
+            },
+            {
+                "images": {
+                    "load": 5,
+                    "new": 1,
+                    "convert": 3507,
+                    "metadata": 1,
+                    "size": 10699607
+                },
+                "videos": {
+                    "load": 19,
+                    "new": 1,
+                    "convert": 34125,
+                    "metadata": 150,
+                    "size": 53335976
+                },
+                "audios": {
+                    "load": 16,
+                    "new": 1,
+                    "convert": 917,
+                    "metadata": 80,
+                    "size": 62783319
+                },
+                "pdfs": {
+                    "load": 4,
+                    "new": 7,
+                    "convert": 240,
+                    "metadata": 203,
+                    "size": 10033058
+                },
+                "texts": {
+                    "load": 1,
+                    "new": 0,
+                    "convert": 31,
+                    "metadata": 40,
+                    "size": 1911212
+                },
+                "csvs": {
+                    "load": 4,
+                    "new": 0,
+                    "convert": 463,
+                    "metadata": 435,
+                    "size": 7260349
+                }
+            },
+            {
+                "images": {
+                    "load": 5,
+                    "new": 0,
+                    "convert": 3525,
+                    "metadata": 1,
+                    "size": 10699607
+                },
+                "videos": {
+                    "load": 14,
+                    "new": 1,
+                    "convert": 36636,
+                    "metadata": 214,
+                    "size": 53335976
+                },
+                "audios": {
+                    "load": 15,
+                    "new": 1,
+                    "convert": 3589,
+                    "metadata": 66,
+                    "size": 62783319
+                },
+                "pdfs": {
+                    "load": 3,
+                    "new": 7,
+                    "convert": 236,
+                    "metadata": 185,
+                    "size": 10033058
+                },
+                "texts": {
+                    "load": 1,
+                    "new": 0,
+                    "convert": 30,
+                    "metadata": 39,
+                    "size": 1911212
+                },
+                "csvs": {
+                    "load": 4,
+                    "new": 0,
+                    "convert": 444,
+                    "metadata": 409,
+                    "size": 7260349
+                }
+            },
+            {
+                "images": {
+                    "load": 5,
+                    "new": 1,
+                    "convert": 3485,
+                    "metadata": 2,
+                    "size": 10699607
+                },
+                "videos": {
+                    "load": 19,
+                    "new": 2,
+                    "convert": 33698,
+                    "metadata": 140,
+                    "size": 53335976
+                },
+                "audios": {
+                    "load": 16,
+                    "new": 1,
+                    "convert": 845,
+                    "metadata": 81,
+                    "size": 62783319
+                },
+                "pdfs": {
+                    "load": 3,
+                    "new": 8,
+                    "convert": 243,
+                    "metadata": 192,
+                    "size": 10033058
+                },
+                "texts": {
+                    "load": 3,
+                    "new": 0,
+                    "convert": 29,
+                    "metadata": 40,
+                    "size": 1911212
+                },
+                "csvs": {
+                    "load": 4,
+                    "new": 0,
+                    "convert": 436,
+                    "metadata": 413,
+                    "size": 7260349
+                }
+            },
+            {
+                "images": {
+                    "load": 5,
+                    "new": 0,
+                    "convert": 3491,
+                    "metadata": 1,
+                    "size": 10699607
+                },
+                "videos": {
+                    "load": 17,
+                    "new": 1,
+                    "convert": 33654,
+                    "metadata": 141,
+                    "size": 53335976
+                },
+                "audios": {
+                    "load": 16,
+                    "new": 0,
+                    "convert": 830,
+                    "metadata": 76,
+                    "size": 62783319
+                },
+                "pdfs": {
+                    "load": 3,
+                    "new": 7,
+                    "convert": 213,
+                    "metadata": 194,
+                    "size": 10033058
+                },
+                "texts": {
+                    "load": 2,
+                    "new": 0,
+                    "convert": 31,
+                    "metadata": 40,
+                    "size": 1911212
+                },
+                "csvs": {
+                    "load": 4,
+                    "new": 0,
+                    "convert": 455,
+                    "metadata": 428,
+                    "size": 7260349
+                }
+            },
+            {
+                "images": {
+                    "load": 4,
+                    "new": 1,
+                    "convert": 3432,
+                    "metadata": 1,
+                    "size": 10699607
+                },
+                "videos": {
+                    "load": 13,
+                    "new": 0,
+                    "convert": 33664,
+                    "metadata": 142,
+                    "size": 53335976
+                },
+                "audios": {
+                    "load": 15,
+                    "new": 1,
+                    "convert": 822,
+                    "metadata": 77,
+                    "size": 62783319
+                },
+                "pdfs": {
+                    "load": 3,
+                    "new": 7,
+                    "convert": 227,
+                    "metadata": 196,
+                    "size": 10033058
+                },
+                "texts": {
+                    "load": 2,
+                    "new": 0,
+                    "convert": 33,
+                    "metadata": 43,
+                    "size": 1911212
+                },
+                "csvs": {
+                    "load": 4,
+                    "new": 0,
+                    "convert": 446,
+                    "metadata": 415,
+                    "size": 7260349
+                }
+            },
+            {
+                "images": {
+                    "load": 5,
+                    "new": 2,
+                    "convert": 3616,
+                    "metadata": 1,
+                    "size": 10699607
+                },
+                "videos": {
+                    "load": 17,
+                    "new": 1,
+                    "convert": 33779,
+                    "metadata": 137,
+                    "size": 53335976
+                },
+                "audios": {
+                    "load": 15,
+                    "new": 1,
+                    "convert": 820,
+                    "metadata": 74,
+                    "size": 62783319
+                },
+                "pdfs": {
+                    "load": 3,
+                    "new": 8,
+                    "convert": 229,
+                    "metadata": 202,
+                    "size": 10033058
+                },
+                "texts": {
+                    "load": 2,
+                    "new": 0,
+                    "convert": 30,
+                    "metadata": 40,
+                    "size": 1911212
+                },
+                "csvs": {
+                    "load": 5,
+                    "new": 0,
+                    "convert": 449,
+                    "metadata": 422,
+                    "size": 7260349
+                }
+            },
+            {
+                "images": {
+                    "load": 4,
+                    "new": 0,
+                    "convert": 3531,
+                    "metadata": 1,
+                    "size": 10699607
+                },
+                "videos": {
+                    "load": 14,
+                    "new": 0,
+                    "convert": 33875,
+                    "metadata": 149,
+                    "size": 53335976
+                },
+                "audios": {
+                    "load": 15,
+                    "new": 1,
+                    "convert": 856,
+                    "metadata": 76,
+                    "size": 62783319
+                },
+                "pdfs": {
+                    "load": 3,
+                    "new": 7,
+                    "convert": 234,
+                    "metadata": 194,
+                    "size": 10033058
+                },
+                "texts": {
+                    "load": 2,
+                    "new": 0,
+                    "convert": 30,
+                    "metadata": 40,
+                    "size": 1911212
+                },
+                "csvs": {
+                    "load": 5,
+                    "new": 0,
+                    "convert": 443,
+                    "metadata": 413,
+                    "size": 7260349
+                }
+            },
+            {
+                "images": {
+                    "load": 4,
+                    "new": 0,
+                    "convert": 3550,
+                    "metadata": 2,
+                    "size": 10699607
+                },
+                "videos": {
+                    "load": 19,
+                    "new": 1,
+                    "convert": 33626,
+                    "metadata": 137,
+                    "size": 53335976
+                },
+                "audios": {
+                    "load": 20,
+                    "new": 1,
+                    "convert": 828,
+                    "metadata": 75,
+                    "size": 62783319
+                },
+                "pdfs": {
+                    "load": 4,
+                    "new": 7,
+                    "convert": 219,
+                    "metadata": 192,
+                    "size": 10033058
+                },
+                "texts": {
+                    "load": 1,
+                    "new": 0,
+                    "convert": 33,
+                    "metadata": 40,
+                    "size": 1911212
+                },
+                "csvs": {
+                    "load": 5,
+                    "new": 0,
+                    "convert": 447,
+                    "metadata": 433,
+                    "size": 7260349
+                }
+            },
+            {
+                "images": {
+                    "load": 3,
+                    "new": 1,
+                    "convert": 3558,
+                    "metadata": 1,
+                    "size": 10699607
+                },
+                "videos": {
+                    "load": 19,
+                    "new": 1,
+                    "convert": 33906,
+                    "metadata": 171,
+                    "size": 53335976
+                },
+                "audios": {
+                    "load": 23,
+                    "new": 0,
+                    "convert": 884,
+                    "metadata": 77,
+                    "size": 62783319
+                },
+                "pdfs": {
+                    "load": 4,
+                    "new": 7,
+                    "convert": 236,
+                    "metadata": 191,
+                    "size": 10033058
+                },
+                "texts": {
+                    "load": 3,
+                    "new": 0,
+                    "convert": 30,
+                    "metadata": 40,
+                    "size": 1911212
+                },
+                "csvs": {
+                    "load": 5,
+                    "new": 0,
+                    "convert": 474,
+                    "metadata": 422,
+                    "size": 7260349
+                }
+            }
+        ],
+        "calculate": {
+            "min": {
+                "images": 0.0003213202129760467,
+                "videos": 0.0006333998650366874,
+                "audios": 0.000014494295849507414,
+                "pdfs": 0.00004156260234915416,
+                "texts": 0.00003662597346605191,
+                "csvs": 0.00011748746513425182
+            },
+            "max": {
+                "images": 0.0003402928724391466,
+                "videos": 0.0006911845018079354,
+                "audios": 0.00005847094512477112,
+                "pdfs": 0.000045748763736838755,
+                "texts": 0.00004081179900502927,
+                "csvs": 0.00012478738969710684
+            },
+            "avg": {
+                "images": 0.00033080654270759664,
+                "videos": 0.0006622921834223115,
+                "audios": 0.00003648262048713926,
+                "pdfs": 0.00004365568304299646,
+                "texts": 0.00003871888623554059,
+                "csvs": 0.00012113742741567932
+            }
+        },
+        "architecture": {
+            "platform": "win32",
+            "memory": 7839641600,
+            "cpus": "11th Gen Intel(R) Core(TM) i7-11800H @ 2.30GHz",
+            "cores": 16,
+            "hostname": "Acer-Nitro5",
+            "arch": "x64"
+        }
     },
-    "avg": {
-        "images": 0.0003477697825723879,
-        "videos": 0.0006678794065754041,
-        "audios": 0.000015585349987629675,
-        "texts": 0.00004996829237154225,
-        "csvs": 0.0001333269240913901
+    "difference": {
+        "images": 0.97,
+        "videos": -4.19,
+        "audios": -140.73,
+        "pdfs": 0.9,
+        "texts": 2.63,
+        "csvs": 2.44
     }
 }
