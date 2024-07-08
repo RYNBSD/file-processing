@@ -68,7 +68,9 @@ export default abstract class AV extends Core {
    */
   async custom<T>(callback: AVCustomCallback<T>): Promise<Awaited<T>[]> {
     const tmpFile = await new TmpFile(...this.avs).init();
-    const result = await Promise.all(tmpFile.paths.map(async (path, index) => callback(AV.newFfmpeg(path), index)));
+    const result = await Promise.all(
+      tmpFile.paths.map(async (path, index) => callback(AV.newFfmpeg(path), tmpFile, index)),
+    );
     await tmpFile.clean();
     return result;
   }

@@ -42,6 +42,23 @@ export default class Video extends AV {
     return this.length;
   }
 
+  async only(format: string) {
+    return this.custom(async (command, tmpFile) => {
+      const output = path.join(tmpFile.tmp!.path, TmpFile.generateFileName(format));
+      return new Promise<Buffer>((resolve, reject) => {
+        command
+          .noAudio()
+          .toFormat(format)
+          .on("done", () => {
+            AV.loadFile(output).then(resolve, reject);
+          })
+          .on("error", reject)
+          .output(output)
+          .run();
+      });
+    });
+  }
+
   async audio(format: string) {
     const tmpFile = await new TmpFile(...this.avs).init();
 
