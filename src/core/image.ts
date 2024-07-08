@@ -243,7 +243,7 @@ export default class Image extends Core {
     const worker = await createWorker(langs);
     const recs = await Promise.all(this.images.map((image) => worker.recognize(image)));
     await worker.terminate();
-    return recs.map((rec) => rec);
+    return recs.map((rec) => rec.data);
   }
 
   /**

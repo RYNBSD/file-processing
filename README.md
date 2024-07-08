@@ -239,6 +239,8 @@ const pdf = new PDF(Buffer.alloc(1));
 - Extract video frames. 🟠
 - Add OCR. 🟠
 - Add instance check for each processor. 🟢
+- Get video audio. 🔴
+- Get only video (no audio). 🔴
 - Pdf to image. 🔴
 - Collect images/audios/videos from websites. 🔴
 - PDF/Video/Audio watermark. 🔴
