@@ -14,7 +14,7 @@ export default class CSV extends Core {
     extend(...csvs: CSV[]): number;
     clone(): CSV;
     filter(): Promise<number>;
-    metadata(): Promise<{
+    metadata(options?: ParseOptions): Promise<{
         size: number;
         rows: any;
         columns: any;

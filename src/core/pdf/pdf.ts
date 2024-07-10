@@ -177,11 +177,13 @@ export default class PDF extends Core {
     return new FilterFile(...pdfs).custom("pdf");
   }
 
-  static async save<T extends PDFDocument>(pdfs: T, options?: SaveOptions): Promise<Uint8Array>;
-  static async save<T extends PDFDocument[]>(pdfs: T, options?: SaveOptions): Promise<Uint8Array[]>;
+  static async save<T extends PDFDocument>(pdfs: T, options?: SaveOptions): Promise<Buffer>;
+  static async save<T extends PDFDocument[]>(pdfs: T, options?: SaveOptions): Promise<Buffer[]>;
   static async save<T extends PDFDocument | PDFDocument[]>(pdfs: T, options?: SaveOptions) {
-    if (!Array.isArray(pdfs)) return pdfs.save(options);
-    return Promise.all(pdfs.map((pdf) => PDF.save(pdf, options)));
+    if (Array.isArray(pdfs)) return Promise.all(pdfs.map((pdf) => PDF.save(pdf, options)));
+
+    const save = await pdfs.save(options);
+    return Core.toBuffer(save);
   }
 
   static async load<T extends string | Uint8Array | ArrayBuffer>(pdf: T, options?: LoadOptions) {

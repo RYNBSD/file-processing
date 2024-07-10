@@ -40,7 +40,6 @@
     "mupdf": "^0.2.2",
     "node-fetch": "^3.3.2",
     "pdf-lib": "^1.17.1",
-    "pdfjs-dist": "^4.4.168",
     "puppeteer": "^22.12.1",
     "sharp": "0.32.6",
     "tesseract.js": "^5.1.0",

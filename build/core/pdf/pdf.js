@@ -171,9 +171,10 @@ export default class PDF extends Core {
     }
     static save(pdfs, options) {
         return __awaiter(this, void 0, void 0, function* () {
-            if (!Array.isArray(pdfs))
-                return pdfs.save(options);
-            return Promise.all(pdfs.map((pdf) => PDF.save(pdf, options)));
+            if (Array.isArray(pdfs))
+                return Promise.all(pdfs.map((pdf) => PDF.save(pdf, options)));
+            const save = yield pdfs.save(options);
+            return Core.toBuffer(save);
         });
     }
     static load(pdf, options) {

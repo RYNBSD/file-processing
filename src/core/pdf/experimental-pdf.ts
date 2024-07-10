@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 //! New PDF processor focused on performance, still under development
 
 //? Why new PDF processor? pdf-lib is a great library designed for JS

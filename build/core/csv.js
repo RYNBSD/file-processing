@@ -53,17 +53,17 @@ export default class CSV extends Core {
             return this.length;
         });
     }
-    metadata() {
+    metadata(options) {
         return __awaiter(this, void 0, void 0, function* () {
-            return Promise.all(this.csvs.map((csv) => __awaiter(this, void 0, void 0, function* () {
+            return this.custom((csv) => __awaiter(this, void 0, void 0, function* () {
                 var _a, _b;
-                const parse = yield CSV.parseAsync(csv);
+                const parse = yield CSV.parseAsync(csv, options);
                 return {
                     size: csv.length,
                     rows: parse.length,
                     columns: (_b = (_a = parse === null || parse === void 0 ? void 0 : parse[0]) === null || _a === void 0 ? void 0 : _a.length) !== null && _b !== void 0 ? _b : 0,
                 };
-            })));
+            }));
         });
     }
     // Async //

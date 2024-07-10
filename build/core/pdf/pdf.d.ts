@@ -45,8 +45,8 @@ export default class PDF extends Core {
     static generate<T extends string>(htmls: T, options?: PDFOptions): Promise<Buffer>;
     static generate<T extends string[]>(htmls: T, options?: PDFOptions): Promise<Buffer[]>;
     static filter(...pdfs: Buffer[]): Promise<Buffer[]>;
-    static save<T extends PDFDocument>(pdfs: T, options?: SaveOptions): Promise<Uint8Array>;
-    static save<T extends PDFDocument[]>(pdfs: T, options?: SaveOptions): Promise<Uint8Array[]>;
+    static save<T extends PDFDocument>(pdfs: T, options?: SaveOptions): Promise<Buffer>;
+    static save<T extends PDFDocument[]>(pdfs: T, options?: SaveOptions): Promise<Buffer[]>;
     static load<T extends string | Uint8Array | ArrayBuffer>(pdf: T, options?: LoadOptions): Promise<PDFDocument>;
     static create(options?: CreateOptions): Promise<PDFDocument>;
     static document(): typeof PDFDocument;
