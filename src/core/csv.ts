@@ -60,17 +60,15 @@ export default class CSV extends Core {
     return this.length;
   }
 
-  override async metadata() {
-    return Promise.all(
-      this.csvs.map(async (csv) => {
-        const parse = await CSV.parseAsync(csv);
-        return {
-          size: csv.length,
-          rows: parse.length,
-          columns: parse?.[0]?.length ?? 0,
-        };
-      }),
-    );
+  override async metadata(options?: ParseOptions) {
+    return this.custom(async (csv) => {
+      const parse = await CSV.parseAsync(csv, options);
+      return {
+        size: csv.length,
+        rows: parse.length,
+        columns: parse?.[0]?.length ?? 0,
+      };
+    });
   }
 
   // Async //
