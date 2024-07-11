@@ -109,10 +109,8 @@ export default abstract class AV extends Core {
         });
 
         chunks.push(chunk);
-
         i += validDuration;
       }
-
       return chunks;
     });
   }

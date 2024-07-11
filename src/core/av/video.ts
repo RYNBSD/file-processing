@@ -42,14 +42,16 @@ export default class Video extends AV {
     return this.length;
   }
 
-  async only(format: string) {
-    return this.custom(async (command, tmpFile) => {
+  async only() {
+    return this.custom(async (command, tmpFile, index) => {
+      const format = (await FilterFile.extension(this.avs[index]!)) ?? "";
+      if (format.length === 0) throw new Error(`${Video.name}: Unknown video format`);
+
       const output = path.join(tmpFile.tmp!.path, TmpFile.generateFileName(format));
 
       return new Promise<Buffer>((resolve, reject) => {
         command
           .noAudio()
-          .toFormat(format)
           .on("done", () => {
             AV.loadFile(output).then(resolve, reject);
           })

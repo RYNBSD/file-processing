@@ -48,14 +48,17 @@ export default class Video extends AV {
             return this.length;
         });
     }
-    only(format) {
+    only() {
         return __awaiter(this, void 0, void 0, function* () {
-            return this.custom((command, tmpFile) => __awaiter(this, void 0, void 0, function* () {
+            return this.custom((command, tmpFile, index) => __awaiter(this, void 0, void 0, function* () {
+                var _a;
+                const format = (_a = (yield FilterFile.extension(this.avs[index]))) !== null && _a !== void 0 ? _a : "";
+                if (format.length === 0)
+                    throw new Error(`${Video.name}: Unknown video format`);
                 const output = path.join(tmpFile.tmp.path, TmpFile.generateFileName(format));
                 return new Promise((resolve, reject) => {
                     command
                         .noAudio()
-                        .toFormat(format)
                         .on("done", () => {
                         AV.loadFile(output).then(resolve, reject);
                     })
