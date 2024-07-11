@@ -64,55 +64,56 @@ export default class AV extends Core {
                 const avDuration = (_a = metadata.format.duration) !== null && _a !== void 0 ? _a : 0;
                 if (avDuration === 0)
                     throw new Error(`${AV.name}: Empty av duration`);
+                if (start >= avDuration)
+                    throw new Error(`${AV.name}: start time is bigger then the av duration`);
                 const format = (_b = (yield FilterFile.extension(this.avs[index]))) !== null && _b !== void 0 ? _b : "";
                 if (format.length === 0)
                     throw new Error(`${AV.name}: Unknown av format`);
-                // TODO: fix
-                const splitMap = [];
-                for (let i = start; i < avDuration; i += duration) {
+                //? High performance and High memory consumption
+                // const splitMap: { start: number; duration: number }[] = [];
+                // for (let start = 0; start < avDuration; start += duration) {
+                //   const validDuration = Math.min(duration, avDuration - start);
+                //   splitMap.push({ start, duration: validDuration });
+                // }
+                // return Promise.all(
+                //   splitMap.map(({ start, duration }) => {
+                //     return new Promise<Buffer>((resolve, reject) => {
+                //       const output = path.join(tmpFile.tmp!.path, TmpFile.generateFileName(format));
+                //       command
+                //         .setStartTime(start)
+                //         .setDuration(duration)
+                //         .on("end", () => {
+                //           Core.loadFile(output).then(resolve, reject);
+                //         })
+                //         .on("error", reject)
+                //         .output(output)
+                //         .run();
+                //     });
+                //   }),
+                // );
+                const chunks = [];
+                let i = start;
+                while (i < avDuration) {
                     const validDuration = Math.min(duration, avDuration - i);
-                    splitMap.push({ start: i, duration: validDuration });
-                }
-                return Promise.all(splitMap.map(({ start, duration }, index) => {
-                    return new Promise((resolve, reject) => {
-                        const output = path.join(tmpFile.tmp.path, TmpFile.generateFileName(format));
+                    const output = path.join(tmpFile.tmp.path, TmpFile.generateFileName(format));
+                    const chunk = yield new Promise((resolve, reject) => {
                         AV.newFfmpeg(avPath)
-                            .setStartTime(start)
-                            .setDuration(duration)
+                            .setStartTime(i)
+                            .setDuration(validDuration)
+                            .on("start", (command) => {
+                            console.log(command);
+                        })
                             .on("end", () => {
                             Core.loadFile(output).then(resolve, reject);
                         })
-                            .on("error", (err) => {
-                            console.log(index);
-                            resolve(err);
-                        })
+                            .on("error", reject)
                             .output(output)
                             .run();
                     });
-                }));
-                // const chunks: Buffer[] = [];
-                // let i = start;
-                // while (i < avDuration) {
-                //   const validDuration = Math.min(duration, avDuration - start);
-                //   const output = path.join(tmpFile.tmp!.path, TmpFile.generateFileName(format));
-                //   const chunk = await new Promise<Buffer>((resolve, reject) => {
-                //     AV.newFfmpeg(avPath)
-                //       .setStartTime(i)
-                //       .setDuration(validDuration)
-                //       .on("start", (command) => {
-                //         console.log(command);
-                //       })
-                //       .on("end", () => {
-                //         Core.loadFile(output).then(resolve, reject);
-                //       })
-                //       .on("error", reject)
-                //       .output(output)
-                //       .run();
-                //   });
-                //   chunks.push(chunk);
-                //   i += validDuration;
-                // }
-                // return chunks;
+                    chunks.push(chunk);
+                    i += validDuration;
+                }
+                return chunks;
             }));
         });
     }

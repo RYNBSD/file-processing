@@ -57,10 +57,12 @@ export default abstract class AV extends Core {
       const avDuration = metadata.format.duration ?? 0;
       if (avDuration === 0) throw new Error(`${AV.name}: Empty av duration`);
 
+      if (start >= avDuration) throw new Error(`${AV.name}: start time is bigger then the av duration`);
+
       const format = (await FilterFile.extension(this.avs[index]!)) ?? "";
       if (format.length === 0) throw new Error(`${AV.name}: Unknown av format`);
 
-      // TODO: fix
+      //? High performance and High memory consumption
       // const splitMap: { start: number; duration: number }[] = [];
       // for (let start = 0; start < avDuration; start += duration) {
       //   const validDuration = Math.min(duration, avDuration - start);
@@ -88,7 +90,7 @@ export default abstract class AV extends Core {
       let i = start;
 
       while (i < avDuration) {
-        const validDuration = Math.min(duration, avDuration - start);
+        const validDuration = Math.min(duration, avDuration - i);
         const output = path.join(tmpFile.tmp!.path, TmpFile.generateFileName(format));
 
         const chunk = await new Promise<Buffer>((resolve, reject) => {
