@@ -8,7 +8,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 import { Mutex } from "async-mutex";
-import isFile from "@ryn-bsd/is-file";
+import isFile, { Node as isFileNode } from "@ryn-bsd/is-file";
 import Core from "../core/core.js";
 /**
  * Easy and fast way to filter bunche of files
@@ -129,6 +129,30 @@ export default class FilterFile {
                 }
             })));
             return files;
+        });
+    }
+    static type(files) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (Array.isArray(files))
+                return Promise.all(files.map((file) => FilterFile.type(file)));
+            const buffer = yield Core.toBuffer(files);
+            return isFileNode.type(buffer);
+        });
+    }
+    static mime(files) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (Array.isArray(files))
+                return Promise.all(files.map((file) => FilterFile.mime(file)));
+            const type = yield FilterFile.type(files);
+            return type === null || type === void 0 ? void 0 : type.mime;
+        });
+    }
+    static extension(files) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (Array.isArray(files))
+                return Promise.all(files.map((file) => FilterFile.extension(file)));
+            const type = yield FilterFile.type(files);
+            return type === null || type === void 0 ? void 0 : type.ext;
         });
     }
 }

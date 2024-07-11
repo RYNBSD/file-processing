@@ -11,7 +11,7 @@ import { writeFile } from "node:fs/promises";
 import { randomUUID } from "node:crypto";
 import path from "node:path";
 import { dir } from "tmp-promise";
-import { Node as isFileNode } from "@ryn-bsd/is-file";
+import FilterFile from "./filter.js";
 /**
  * Create a tmp dir store your files manipulate them and then clean.
  */
@@ -22,8 +22,8 @@ export default class TmpFile {
     }
     createFn(file) {
         return __awaiter(this, void 0, void 0, function* () {
-            var _a, _b;
-            const ext = (_b = (_a = (yield isFileNode.type(file))) === null || _a === void 0 ? void 0 : _a.ext) !== null && _b !== void 0 ? _b : "";
+            var _a;
+            const ext = (_a = (yield FilterFile.extension(file))) !== null && _a !== void 0 ? _a : "";
             if (ext.length === 0)
                 throw new Error(`${TmpFile.name}: Unknown file when create`);
             const fileName = TmpFile.generateFileName(ext);

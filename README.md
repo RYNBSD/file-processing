@@ -239,6 +239,7 @@ const pdf = new PDF(Buffer.alloc(1));
 - Extract video frames. 🟠
 - Get video audio. 🟠
 - Get only video (no audio). 🟠
+- Video/Audio split. 🟢
 - Add OCR. 🟢
 - Add instance check for each processor. 🟢
 - Merge any video in one video. 🔴
@@ -249,7 +250,6 @@ const pdf = new PDF(Buffer.alloc(1));
 - PDF remove page. 🔴
 - PDF split. 🔴
 - Extract image from pdf. 🔴
-- Video/Audio split. 🔴
 
 # Support
 

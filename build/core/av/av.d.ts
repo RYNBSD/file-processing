@@ -10,6 +10,7 @@ export default abstract class AV extends Core {
     get length(): number;
     metadata(): Promise<ffmpeg.FfprobeData[]>;
     convert(format: string): Promise<Buffer[]>;
+    spilt(duration: number): Promise<Buffer[][]>;
     /**
      * In case of invalid method, buffer will be default
      */

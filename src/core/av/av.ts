@@ -4,7 +4,7 @@ import ffmpeg, { type FfprobeData } from "fluent-ffmpeg";
 import { path as ffmpegPath } from "@ffmpeg-installer/ffmpeg";
 import { path as ffprobePath } from "@ffprobe-installer/ffprobe";
 import path from "node:path";
-import { TmpFile } from "../../helper/index.js";
+import { FilterFile, TmpFile } from "../../helper/index.js";
 import Core from "../core.js";
 
 export default abstract class AV extends Core {
@@ -39,16 +39,75 @@ export default abstract class AV extends Core {
             Core.loadFile(output).then(resolve, reject);
           })
           .on("error", reject)
-          .output(output, { end: true })
+          .output(output)
           .run();
       });
     });
   }
 
-  // async stream() {
-  //   const reads = await Core.toReadable(this.avs);
-  //   return reads.map((av) => AV.newFfmpeg(av).pipe());
-  // }
+  async spilt(duration: number) {
+    return this.custom(async (command, tmpFile, index) => {
+      const metadata = await new Promise<FfprobeData>((resolve, reject) => {
+        command.ffprobe((error, metadata) => {
+          if (error) return reject(error);
+          resolve(metadata);
+        });
+      });
+
+      const avDuration = metadata.format.duration ?? 0;
+      if (avDuration === 0) throw new Error(`${AV.name}: Empty av duration`);
+
+      const format = (await FilterFile.extension(this.avs[index]!)) ?? "";
+      if (format.length === 0) throw new Error(`${AV.name}: Unknown av format`);
+
+      // TODO: fix
+      // const splitMap: { start: number; duration: number }[] = [];
+      // for (let start = 0; start < avDuration; start += duration) {
+      //   const validDuration = Math.min(duration, avDuration - start);
+      //   splitMap.push({ start, duration: validDuration });
+      // }
+
+      // return Promise.all(
+      //   splitMap.map(({ start, duration }) => {
+      //     return new Promise<Buffer>((resolve, reject) => {
+      //       const output = path.join(tmpFile.tmp!.path, TmpFile.generateFileName(format));
+      //       command
+      //         .setStartTime(start)
+      //         .setDuration(duration)
+      //         .on("end", () => {
+      //           Core.loadFile(output).then(resolve, reject);
+      //         })
+      //         .on("error", reject)
+      //         .output(output)
+      //         .run();
+      //     });
+      //   }),
+      // );
+
+      async function next(start = 0): Promise<Buffer[]> {
+        const validDuration = Math.min(duration, avDuration - start);
+        if (validDuration <= 0) return [];
+
+        const output = path.join(tmpFile.tmp!.path, TmpFile.generateFileName(format));
+
+        const chunk = await new Promise<Buffer>((resolve, reject) => {
+          command
+            .setStartTime(start)
+            .setDuration(validDuration)
+            .on("end", () => {
+              Core.loadFile(output).then(resolve, reject);
+            })
+            .on("error", reject)
+            .output(output)
+            .run();
+        });
+
+        return [chunk].concat(await next(start + validDuration));
+      }
+
+      return next();
+    });
+  }
 
   /**
    * In case of invalid method, buffer will be default

@@ -1,6 +1,7 @@
+import type { FileTypeResult, MimeType, FileExtension } from "file-type";
 import type { InputFiles } from "../types/index.js";
 import { Mutex } from "async-mutex";
-import isFile from "@ryn-bsd/is-file";
+import isFile, { Node as isFileNode } from "@ryn-bsd/is-file";
 import Core from "../core/core.js";
 
 /**
@@ -116,5 +117,29 @@ export default class FilterFile {
     );
 
     return files;
+  }
+
+  static async type<T extends InputFiles>(files: T): Promise<FileTypeResult | undefined>;
+  static async type<T extends InputFiles[]>(files: T): Promise<(FileTypeResult | undefined)[]>;
+  static async type<T extends InputFiles | InputFiles[]>(files: T) {
+    if (Array.isArray(files)) return Promise.all(files.map((file) => FilterFile.type(file)));
+    const buffer = await Core.toBuffer(files);
+    return isFileNode.type(buffer);
+  }
+
+  static async mime<T extends InputFiles>(files: T): Promise<MimeType | undefined>;
+  static async mime<T extends InputFiles[]>(files: T): Promise<(MimeType | undefined)[]>;
+  static async mime<T extends InputFiles | InputFiles[]>(files: T) {
+    if (Array.isArray(files)) return Promise.all(files.map((file) => FilterFile.mime(file)));
+    const type = await FilterFile.type(files);
+    return type?.mime;
+  }
+
+  static async extension<T extends InputFiles>(files: T): Promise<FileExtension | undefined>;
+  static async extension<T extends InputFiles[]>(files: T): Promise<(FileExtension | undefined)[]>;
+  static async extension<T extends InputFiles | InputFiles[]>(files: T) {
+    if (Array.isArray(files)) return Promise.all(files.map((file) => FilterFile.extension(file)));
+    const type = await FilterFile.type(files);
+    return type?.ext;
   }
 }

@@ -5,9 +5,9 @@ import path from "node:path";
 
 describe("AV", () => {
   it("metadata", async () => {
-    const videoStream = await fs.promises.readFile("asset/video.webm");
+    const video = await fs.promises.readFile("asset/video.webm");
 
-    const videoMetadata = await new Video(videoStream).metadata();
+    const videoMetadata = await new Video(video).metadata();
     expect(videoMetadata).toHaveLength(1);
   });
 
@@ -32,6 +32,17 @@ describe("AV", () => {
     await tmpFile.clean();
     expect(buffer).toHaveLength(1);
     expect(buffer[0]).toBeInstanceOf(Buffer);
+  });
+
+  it("split", async () => {
+    const buffer = await Video.loadFile("asset/video.webm");
+    const video = await Video.new([buffer]);
+
+    const splits = await video.spilt(10);
+    expect(splits).toHaveLength(1);
+    expect(splits[0]).toHaveLength(2);
+    expect(splits[0][0]).toBeInstanceOf(Buffer);
+    expect(splits[0][1]).toBeInstanceOf(Buffer);
   });
 
   it("convert", async () => {
