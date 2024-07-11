@@ -45,8 +45,8 @@ export default abstract class AV extends Core {
     });
   }
 
-  async spilt(duration: number) {
-    return this.custom(async (command, tmpFile, index) => {
+  async spilt(duration: number, start: number = 0) {
+    return this.custom(async (command, tmpFile, index, avPath) => {
       const metadata = await new Promise<FfprobeData>((resolve, reject) => {
         command.ffprobe((error, metadata) => {
           if (error) return reject(error);
@@ -84,16 +84,20 @@ export default abstract class AV extends Core {
       //   }),
       // );
 
-      async function next(start = 0): Promise<Buffer[]> {
-        const validDuration = Math.min(duration, avDuration - start);
-        if (validDuration <= 0) return [];
+      const chunks: Buffer[] = [];
+      let i = start;
 
+      while (i < avDuration) {
+        const validDuration = Math.min(duration, avDuration - start);
         const output = path.join(tmpFile.tmp!.path, TmpFile.generateFileName(format));
 
         const chunk = await new Promise<Buffer>((resolve, reject) => {
-          command
-            .setStartTime(start)
+          AV.newFfmpeg(avPath)
+            .setStartTime(i)
             .setDuration(validDuration)
+            .on("start", (command) => {
+              console.log(command);
+            })
             .on("end", () => {
               Core.loadFile(output).then(resolve, reject);
             })
@@ -102,10 +106,12 @@ export default abstract class AV extends Core {
             .run();
         });
 
-        return [chunk].concat(await next(start + validDuration));
+        chunks.push(chunk);
+
+        i += validDuration;
       }
 
-      return next();
+      return chunks;
     });
   }
 
@@ -115,7 +121,7 @@ export default abstract class AV extends Core {
   async custom<T>(callback: AVCustomCallback<T>): Promise<Awaited<T>[]> {
     const tmpFile = await new TmpFile(...this.avs).init();
     const result = await Promise.all(
-      tmpFile.paths.map(async (path, index) => callback(AV.newFfmpeg(path), tmpFile, index)),
+      tmpFile.paths.map(async (path, index) => callback(AV.newFfmpeg(path), tmpFile, index, path)),
     );
     await tmpFile.clean();
     return result;

@@ -50,9 +50,9 @@ export default class AV extends Core {
             }));
         });
     }
-    spilt(duration) {
-        return __awaiter(this, void 0, void 0, function* () {
-            return this.custom((command, tmpFile, index) => __awaiter(this, void 0, void 0, function* () {
+    spilt(duration_1) {
+        return __awaiter(this, arguments, void 0, function* (duration, start = 0) {
+            return this.custom((command, tmpFile, index, avPath) => __awaiter(this, void 0, void 0, function* () {
                 var _a, _b;
                 const metadata = yield new Promise((resolve, reject) => {
                     command.ffprobe((error, metadata) => {
@@ -68,48 +68,51 @@ export default class AV extends Core {
                 if (format.length === 0)
                     throw new Error(`${AV.name}: Unknown av format`);
                 // TODO: fix
-                // const splitMap: { start: number; duration: number }[] = [];
-                // for (let start = 0; start < avDuration; start += duration) {
-                //   const validDuration = Math.min(duration, avDuration - start);
-                //   splitMap.push({ start, duration: validDuration });
-                // }
-                // return Promise.all(
-                //   splitMap.map(({ start, duration }) => {
-                //     return new Promise<Buffer>((resolve, reject) => {
-                //       const output = path.join(tmpFile.tmp!.path, TmpFile.generateFileName(format));
-                //       command
-                //         .setStartTime(start)
-                //         .setDuration(duration)
-                //         .on("end", () => {
-                //           Core.loadFile(output).then(resolve, reject);
-                //         })
-                //         .on("error", reject)
-                //         .output(output)
-                //         .run();
-                //     });
-                //   }),
-                // );
-                function next() {
-                    return __awaiter(this, arguments, void 0, function* (start = 0) {
-                        const validDuration = Math.min(duration, avDuration - start);
-                        if (validDuration <= 0)
-                            return [];
-                        const output = path.join(tmpFile.tmp.path, TmpFile.generateFileName(format));
-                        const chunk = yield new Promise((resolve, reject) => {
-                            command
-                                .setStartTime(start)
-                                .setDuration(validDuration)
-                                .on("end", () => {
-                                Core.loadFile(output).then(resolve, reject);
-                            })
-                                .on("error", reject)
-                                .output(output)
-                                .run();
-                        });
-                        return [chunk].concat(yield next(start + validDuration));
-                    });
+                const splitMap = [];
+                for (let i = start; i < avDuration; i += duration) {
+                    const validDuration = Math.min(duration, avDuration - i);
+                    splitMap.push({ start: i, duration: validDuration });
                 }
-                return next();
+                return Promise.all(splitMap.map(({ start, duration }, index) => {
+                    return new Promise((resolve, reject) => {
+                        const output = path.join(tmpFile.tmp.path, TmpFile.generateFileName(format));
+                        AV.newFfmpeg(avPath)
+                            .setStartTime(start)
+                            .setDuration(duration)
+                            .on("end", () => {
+                            Core.loadFile(output).then(resolve, reject);
+                        })
+                            .on("error", (err) => {
+                            console.log(index);
+                            resolve(err);
+                        })
+                            .output(output)
+                            .run();
+                    });
+                }));
+                // const chunks: Buffer[] = [];
+                // let i = start;
+                // while (i < avDuration) {
+                //   const validDuration = Math.min(duration, avDuration - start);
+                //   const output = path.join(tmpFile.tmp!.path, TmpFile.generateFileName(format));
+                //   const chunk = await new Promise<Buffer>((resolve, reject) => {
+                //     AV.newFfmpeg(avPath)
+                //       .setStartTime(i)
+                //       .setDuration(validDuration)
+                //       .on("start", (command) => {
+                //         console.log(command);
+                //       })
+                //       .on("end", () => {
+                //         Core.loadFile(output).then(resolve, reject);
+                //       })
+                //       .on("error", reject)
+                //       .output(output)
+                //       .run();
+                //   });
+                //   chunks.push(chunk);
+                //   i += validDuration;
+                // }
+                // return chunks;
             }));
         });
     }
@@ -119,7 +122,7 @@ export default class AV extends Core {
     custom(callback) {
         return __awaiter(this, void 0, void 0, function* () {
             const tmpFile = yield new TmpFile(...this.avs).init();
-            const result = yield Promise.all(tmpFile.paths.map((path, index) => __awaiter(this, void 0, void 0, function* () { return callback(AV.newFfmpeg(path), tmpFile, index); })));
+            const result = yield Promise.all(tmpFile.paths.map((path, index) => __awaiter(this, void 0, void 0, function* () { return callback(AV.newFfmpeg(path), tmpFile, index, path); })));
             yield tmpFile.clean();
             return result;
         });
