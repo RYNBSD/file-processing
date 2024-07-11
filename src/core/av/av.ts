@@ -46,7 +46,7 @@ export default abstract class AV extends Core {
   }
 
   async spilt(duration: number, start: number = 0) {
-    return this.custom(async (command, tmpFile, index, avPath) => {
+    return this.custom(async (command, tmpFile, index) => {
       const metadata = await new Promise<FfprobeData>((resolve, reject) => {
         command.ffprobe((error, metadata) => {
           if (error) return reject(error);
@@ -86,6 +86,7 @@ export default abstract class AV extends Core {
       //   }),
       // );
 
+      const avPath = tmpFile.paths[index]!;
       const chunks: Buffer[] = [];
       let i = start;
 
@@ -97,9 +98,6 @@ export default abstract class AV extends Core {
           AV.newFfmpeg(avPath)
             .setStartTime(i)
             .setDuration(validDuration)
-            .on("start", (command) => {
-              console.log(command);
-            })
             .on("end", () => {
               Core.loadFile(output).then(resolve, reject);
             })
@@ -121,7 +119,7 @@ export default abstract class AV extends Core {
   async custom<T>(callback: AVCustomCallback<T>): Promise<Awaited<T>[]> {
     const tmpFile = await new TmpFile(...this.avs).init();
     const result = await Promise.all(
-      tmpFile.paths.map(async (path, index) => callback(AV.newFfmpeg(path), tmpFile, index, path)),
+      tmpFile.paths.map(async (path, index) => callback(AV.newFfmpeg(path), tmpFile, index)),
     );
     await tmpFile.clean();
     return result;

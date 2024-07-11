@@ -52,7 +52,7 @@ export default class Video extends AV {
       return new Promise<Buffer>((resolve, reject) => {
         command
           .noAudio()
-          .on("done", () => {
+          .on("end", () => {
             AV.loadFile(output).then(resolve, reject);
           })
           .on("error", reject)
@@ -63,14 +63,19 @@ export default class Video extends AV {
   }
 
   async audio(format: string) {
-    return this.custom(async (command, tmpFile) => {
+    const metadatas = await this.metadata();
+    return this.custom(async (command, tmpFile, index) => {
+      const metadata = metadatas[index]!;
+      const audioStream = metadata.streams.find((stream) => stream.codec_type === "audio") ?? null;
+      if (audioStream === null) return null;
+
       const output = path.join(tmpFile.tmp!.path, TmpFile.generateFileName(format));
 
       return new Promise<Buffer>((resolve, reject) => {
         command
           .noVideo()
           .toFormat(format)
-          .on("done", () => {
+          .on("end", () => {
             AV.loadFile(output).then(resolve, reject);
           })
           .on("error", reject)

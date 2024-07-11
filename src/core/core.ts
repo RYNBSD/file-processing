@@ -70,7 +70,7 @@ export default abstract class Core {
    */
   static async loadFile<T extends string>(paths: T): Promise<Buffer>;
   static async loadFile<T extends string[]>(paths: T): Promise<Buffer[]>;
-  static async loadFile<T extends string | string>(paths: T) {
+  static async loadFile<T extends string | string[]>(paths: T) {
     if (Array.isArray(paths)) return Promise.all(paths.map((path) => Core.loadFile(path)));
     return fs.promises.readFile(paths);
   }

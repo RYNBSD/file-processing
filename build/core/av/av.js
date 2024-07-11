@@ -52,7 +52,7 @@ export default class AV extends Core {
     }
     spilt(duration_1) {
         return __awaiter(this, arguments, void 0, function* (duration, start = 0) {
-            return this.custom((command, tmpFile, index, avPath) => __awaiter(this, void 0, void 0, function* () {
+            return this.custom((command, tmpFile, index) => __awaiter(this, void 0, void 0, function* () {
                 var _a, _b;
                 const metadata = yield new Promise((resolve, reject) => {
                     command.ffprobe((error, metadata) => {
@@ -91,6 +91,7 @@ export default class AV extends Core {
                 //     });
                 //   }),
                 // );
+                const avPath = tmpFile.paths[index];
                 const chunks = [];
                 let i = start;
                 while (i < avDuration) {
@@ -100,9 +101,6 @@ export default class AV extends Core {
                         AV.newFfmpeg(avPath)
                             .setStartTime(i)
                             .setDuration(validDuration)
-                            .on("start", (command) => {
-                            console.log(command);
-                        })
                             .on("end", () => {
                             Core.loadFile(output).then(resolve, reject);
                         })
@@ -123,7 +121,7 @@ export default class AV extends Core {
     custom(callback) {
         return __awaiter(this, void 0, void 0, function* () {
             const tmpFile = yield new TmpFile(...this.avs).init();
-            const result = yield Promise.all(tmpFile.paths.map((path, index) => __awaiter(this, void 0, void 0, function* () { return callback(AV.newFfmpeg(path), tmpFile, index, path); })));
+            const result = yield Promise.all(tmpFile.paths.map((path, index) => __awaiter(this, void 0, void 0, function* () { return callback(AV.newFfmpeg(path), tmpFile, index); })));
             yield tmpFile.clean();
             return result;
         });

@@ -88,6 +88,27 @@ describe("Video", () => {
     expect(length).toBe(1);
   });
 
+  it("only", async () => {
+    const buffer = await Video.loadFile("asset/video.webm");
+    const video = await Video.new([buffer]);
+
+    const muted = await video.only();
+    expect(muted).toHaveLength(1);
+    expect(muted[0]).toBeInstanceOf(Buffer);
+  });
+
+  it("audio", async () => {
+    const buffer = await Video.loadFile(["asset/video.webm"]);
+    const video = await Video.new(buffer);
+
+    const audios = await video.audio("mp3");
+    expect(audios).toHaveLength(2);
+    expect(audios[0]).toBe(null);
+    expect(audios[1]).toBeInstanceOf(Buffer);
+  });
+
+  it("audio", async () => {});
+
   it("(static) fromFile", async () => {
     const video = await Video.fromFile("asset/video.webm");
     expect(video).toBeInstanceOf(Video);
