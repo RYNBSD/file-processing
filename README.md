@@ -242,7 +242,7 @@ const pdf = new PDF(Buffer.alloc(1));
 - Video/Audio split. 🟢
 - Add OCR. 🟢
 - Add instance check for each processor. 🟢
-- Merge any video in one video. 🔴
+- Merge videos in one video. 🔴
 - Merge audio and video in one video. 🔴
 - Pdf to image. 🔴
 - File scanner (antivirus). 🔴

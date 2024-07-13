@@ -154,6 +154,10 @@ export default class Text extends Core {
     return new Text(...this.texts);
   }
 
+  override clean() {
+    this.texts = [];
+  }
+
   /**
    * filter texts
    * @returns - new length

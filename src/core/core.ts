@@ -30,6 +30,7 @@ export default abstract class Core {
   abstract append(...buffers: Buffer[]): Promise<number>;
   abstract extend(...cors: unknown[]): number;
   abstract clone(): Core;
+  abstract clean(): void;
 
   abstract filter(): Promise<number>;
   abstract metadata(): Promise<unknown>;

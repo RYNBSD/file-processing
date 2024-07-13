@@ -51,6 +51,10 @@ export default class PDF extends Core {
     return new PDF(...this.pdfs);
   }
 
+  override clean() {
+    this.pdfs = [];
+  }
+
   override async filter() {
     this.pdfs = await PDF.filter(...this.pdfs);
     return this.length;

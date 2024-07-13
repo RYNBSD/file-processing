@@ -19,6 +19,10 @@ export default abstract class AV extends Core {
     return this.avs.length;
   }
 
+  override clean() {
+    this.avs = [];
+  }
+
   override async metadata() {
     return this.custom(async (command) => {
       return new Promise<FfprobeData>((resolve, reject) => {

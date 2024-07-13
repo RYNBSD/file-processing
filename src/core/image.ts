@@ -144,6 +144,10 @@ export default class Image extends Core {
     return new Image(...this.images);
   }
 
+  override clean() {
+    this.images = [];
+  }
+
   /**
    * filter images
    * @returns - new length

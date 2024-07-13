@@ -55,6 +55,10 @@ export default class CSV extends Core {
     return new CSV(...this.csvs);
   }
 
+  override clean() {
+    this.csvs = [];
+  }
+
   override async filter() {
     this.csvs = await CSV.filter(...this.csvs);
     return this.length;
