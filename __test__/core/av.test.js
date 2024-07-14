@@ -45,6 +45,14 @@ describe("AV", () => {
     expect(splits[0][1]).toBeInstanceOf(Buffer);
   });
 
+  it("merge", async () => {
+    const video = await Video.fromFile("asset/video.webm", "asset/videos/video1.mp4");
+    const merged = await video.merge("mov");
+    expect(merged).toBeInstanceOf(Buffer);
+
+    await Video.toFile([{ path: "tmp/merged.mov", input: merged }]);
+  });
+
   it("convert", async () => {
     const read = await fs.promises.readFile("asset/video.webm");
     const buffer = await new Video(read).convert("mp4");
@@ -98,13 +106,14 @@ describe("Video", () => {
   });
 
   it("audio", async () => {
-    const buffer = await Video.loadFile(["asset/video.webm"]);
-    const video = await Video.new(buffer);
+    const video = await Video.fromFile("asset/video.webm", "asset/NodeJS - Part 1.mp4");
 
     const audios = await video.audio("mp3");
     expect(audios).toHaveLength(2);
     expect(audios[0]).toBe(null);
     expect(audios[1]).toBeInstanceOf(Buffer);
+
+    await Video.toFile([{ path: "tmp/video-audio.mp3", input: audios[1] }]);
   });
 
   it("audio", async () => {});

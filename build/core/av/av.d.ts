@@ -8,9 +8,11 @@ export default abstract class AV extends Core {
     protected avs: Buffer[];
     constructor(...avs: Buffer[]);
     get length(): number;
+    clean(): void;
     metadata(): Promise<ffmpeg.FfprobeData[]>;
     convert(format: string): Promise<Buffer[]>;
     spilt(duration: number, start?: number): Promise<Buffer[][]>;
+    merge(format: string, fps?: number): Promise<Buffer>;
     /**
      * In case of invalid method, buffer will be default
      */

@@ -13,6 +13,7 @@ export default class CSV extends Core {
     append(...csvs: Buffer[]): Promise<number>;
     extend(...csvs: CSV[]): number;
     clone(): CSV;
+    clean(): void;
     filter(): Promise<number>;
     metadata(options?: ParseOptions): Promise<{
         size: number;

@@ -103,6 +103,7 @@ export default class Text extends Core {
      * ```
      */
     clone(): Text;
+    clean(): void;
     /**
      * filter texts
      * @returns - new length

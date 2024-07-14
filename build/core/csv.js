@@ -47,6 +47,9 @@ export default class CSV extends Core {
     clone() {
         return new CSV(...this.csvs);
     }
+    clean() {
+        this.csvs = [];
+    }
     filter() {
         return __awaiter(this, void 0, void 0, function* () {
             this.csvs = yield CSV.filter(...this.csvs);

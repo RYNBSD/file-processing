@@ -24,7 +24,7 @@ export default abstract class AV extends Core {
   }
 
   override async metadata() {
-    return this.custom(async (command) => {
+    return this.custom((command) => {
       return new Promise<FfprobeData>((resolve, reject) => {
         command.ffprobe((err, metadata) => {
           if (err) return reject(err);
@@ -35,10 +35,11 @@ export default abstract class AV extends Core {
   }
 
   async convert(format: string) {
-    return this.custom(async (command, tmpFile) => {
+    return this.custom((command, tmpFile) => {
       return new Promise<Buffer>((resolve, reject) => {
         const output = path.join(tmpFile.tmp!.path, TmpFile.generateFileName(format));
         command
+          .toFormat(format)
           .on("end", () => {
             Core.loadFile(output).then(resolve, reject);
           })
@@ -117,27 +118,30 @@ export default abstract class AV extends Core {
     });
   }
 
-  async merge(format: string) {
+  async merge(format: string, fps: number = 30) {
     const converted = await this.convert(format);
     const tmpFile = await new TmpFile(...converted).init();
-    const output = TmpFile.generateFileName(format);
+    const output = path.join(tmpFile.tmp!.path, TmpFile.generateFileName(format));
 
+    console.log("Merge start");
     const merged = await new Promise<Buffer>((resolve, reject) => {
       const command = AV.newFfmpeg(tmpFile.paths[0]!);
 
       tmpFile.paths.forEach((av, index) => {
         if (index === 0) return;
-        command.addInput(av);
+        command.input(av);
       });
 
       command
-        .mergeToFile(output, tmpFile.tmp!.path)
+        .fps(fps)
+        .on("start", (commandLine) => {
+          console.log("Spawned FFmpeg with command: " + commandLine);
+        })
         .on("end", () => {
-          const outputPath = path.join(tmpFile.tmp!.path, output);
-          Core.loadFile(outputPath).then(resolve, reject);
+          Core.loadFile(output).then(resolve, reject);
         })
         .on("error", reject)
-        .run();
+        .mergeToFile(output, tmpFile.tmp!.path);
     });
 
     await tmpFile.clean();

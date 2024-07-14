@@ -138,6 +138,9 @@ export default class Image extends Core {
     clone() {
         return new Image(...this.images);
     }
+    clean() {
+        this.images = [];
+    }
     /**
      * filter images
      * @returns - new length

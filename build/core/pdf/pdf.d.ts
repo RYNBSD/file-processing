@@ -13,6 +13,7 @@ export default class PDF extends Core {
     append(...pdfs: Buffer[]): Promise<number>;
     extend(...pdfs: PDF[]): number;
     clone(): PDF;
+    clean(): void;
     filter(): Promise<number>;
     getDocuments(options?: LoadOptions): Promise<PDFDocument[]>;
     metadata(options?: LoadOptions): Promise<{

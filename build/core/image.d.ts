@@ -100,6 +100,7 @@ export default class Image extends Core {
      * ```
      */
     clone(): Image;
+    clean(): void;
     /**
      * filter images
      * @returns - new length

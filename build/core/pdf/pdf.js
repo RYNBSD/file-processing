@@ -46,6 +46,9 @@ export default class PDF extends Core {
     clone() {
         return new PDF(...this.pdfs);
     }
+    clean() {
+        this.pdfs = [];
+    }
     filter() {
         return __awaiter(this, void 0, void 0, function* () {
             this.pdfs = yield PDF.filter(...this.pdfs);

@@ -21,9 +21,12 @@ export default class AV extends Core {
     get length() {
         return this.avs.length;
     }
+    clean() {
+        this.avs = [];
+    }
     metadata() {
         return __awaiter(this, void 0, void 0, function* () {
-            return this.custom((command) => __awaiter(this, void 0, void 0, function* () {
+            return this.custom((command) => {
                 return new Promise((resolve, reject) => {
                     command.ffprobe((err, metadata) => {
                         if (err)
@@ -31,15 +34,16 @@ export default class AV extends Core {
                         resolve(metadata);
                     });
                 });
-            }));
+            });
         });
     }
     convert(format) {
         return __awaiter(this, void 0, void 0, function* () {
-            return this.custom((command, tmpFile) => __awaiter(this, void 0, void 0, function* () {
+            return this.custom((command, tmpFile) => {
                 return new Promise((resolve, reject) => {
                     const output = path.join(tmpFile.tmp.path, TmpFile.generateFileName(format));
                     command
+                        .toFormat(format)
                         .on("end", () => {
                         Core.loadFile(output).then(resolve, reject);
                     })
@@ -47,7 +51,7 @@ export default class AV extends Core {
                         .output(output)
                         .run();
                 });
-            }));
+            });
         });
     }
     spilt(duration_1) {
@@ -113,6 +117,34 @@ export default class AV extends Core {
                 }
                 return chunks;
             }));
+        });
+    }
+    merge(format_1) {
+        return __awaiter(this, arguments, void 0, function* (format, fps = 30) {
+            const converted = yield this.convert(format);
+            const tmpFile = yield new TmpFile(...converted).init();
+            const output = path.join(tmpFile.tmp.path, TmpFile.generateFileName(format));
+            console.log("Merge start");
+            const merged = yield new Promise((resolve, reject) => {
+                const command = AV.newFfmpeg(tmpFile.paths[0]);
+                tmpFile.paths.forEach((av, index) => {
+                    if (index === 0)
+                        return;
+                    command.input(av);
+                });
+                command
+                    .fps(fps)
+                    .on("start", (commandLine) => {
+                    console.log("Spawned FFmpeg with command: " + commandLine);
+                })
+                    .on("end", () => {
+                    Core.loadFile(output).then(resolve, reject);
+                })
+                    .on("error", reject)
+                    .mergeToFile(output, tmpFile.tmp.path);
+            });
+            yield tmpFile.clean();
+            return merged;
         });
     }
     /**
