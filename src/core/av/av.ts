@@ -117,6 +117,33 @@ export default abstract class AV extends Core {
     });
   }
 
+  async merge(format: string) {
+    const converted = await this.convert(format);
+    const tmpFile = await new TmpFile(...converted).init();
+    const output = TmpFile.generateFileName(format);
+
+    const merged = await new Promise<Buffer>((resolve, reject) => {
+      const command = AV.newFfmpeg(tmpFile.paths[0]!);
+
+      tmpFile.paths.forEach((av, index) => {
+        if (index === 0) return;
+        command.addInput(av);
+      });
+
+      command
+        .mergeToFile(output, tmpFile.tmp!.path)
+        .on("end", () => {
+          const outputPath = path.join(tmpFile.tmp!.path, output);
+          Core.loadFile(outputPath).then(resolve, reject);
+        })
+        .on("error", reject)
+        .run();
+    });
+
+    await tmpFile.clean();
+    return merged;
+  }
+
   /**
    * In case of invalid method, buffer will be default
    */
