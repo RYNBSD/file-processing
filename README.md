@@ -238,7 +238,7 @@ const pdf = new PDF(Buffer.alloc(1));
 - Add glob loader. 🟠
 - Extract video frames. 🟠
 - Get video audio. 🟢
-- Merge av in one video or audio. 🟠
+- Merge videos/audios in one video/audio. 🟠
 - Get only video (no audio). 🟢
 - Video/Audio split. 🟢
 - Add OCR. 🟢

@@ -144,6 +144,22 @@ export default class Image extends Core {
     return new Image(...this.images);
   }
 
+  /**
+   * Clean images array, to free memory
+   *
+   * @example
+   * ```js
+   *  const image = await Image.fromFile("image1.png", "image2.webp")
+   *
+   *  // Some operations
+   *
+   *  image.clean()
+   *
+   *  // Some operations
+   *
+   *  image.append(Buffer.alloc(1))
+   * ```
+   */
   override clean() {
     this.images = [];
   }

@@ -106,7 +106,7 @@ describe("Video", () => {
   });
 
   it("audio", async () => {
-    const video = await Video.fromFile("asset/video.webm", "asset/NodeJS - Part 1.mp4");
+    const video = await Video.fromFile("asset/video.webm", "asset/NodeJS-Part1.mp4");
 
     const audios = await video.audio("mp3");
     expect(audios).toHaveLength(2);
