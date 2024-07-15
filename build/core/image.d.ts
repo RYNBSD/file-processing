@@ -29,7 +29,7 @@ export default class Image extends Core {
      *
      *  // not the same reference
      *  const images = new Image(buffer).getImages()
-     *  // => 1
+     *  // => Buffer[]
      * ```
      */
     getImages(): Buffer[];
@@ -42,7 +42,7 @@ export default class Image extends Core {
      * ```js
      *  const image = await Image.fromFile("image.png")
      *
-     *  // this method filter invalid images after set
+     *  // this method filter invalid images before set
      *  const newLength = await image.setImages(\* async *\(image, index) => {
      *    return index % 2 ? image : image.toString()
      *  })

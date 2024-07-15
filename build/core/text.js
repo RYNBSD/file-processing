@@ -43,7 +43,7 @@ export default class Text extends Core {
      *
      *  // not the same reference
      *  const texts = new Text(buffer).getTexts()
-     *  // => 1
+     *  // => Buffer[]
      * ```
      */
     getTexts() {
@@ -58,7 +58,7 @@ export default class Text extends Core {
      * ```js
      *  const text = await Text.fromFile("text.txt")
      *
-     *  // this method filter invalid texts after set
+     *  // this method filter invalid texts before set
      *  const newLength = await text.setTexts(\* async *\(text, index) => {
      *    return index % 2 ? text : text.toString()
      *  })
@@ -81,8 +81,8 @@ export default class Text extends Core {
      * @example
      * ```js
      *  const text = new Text()
-     *  const buffer1 = await Text.loadFile("text1.png")
-     *  const buffer2 = await Text.loadFile("text2.png")
+     *  const buffer1 = await Text.loadFile("text1.txt")
+     *  const buffer2 = await Text.loadFile("text2.txt")
      *
      *  // filter invalid texts
      *  await text.append(buffer1, Buffer.alloc(0), buffer2)
@@ -333,7 +333,7 @@ export default class Text extends Core {
      *  await text.custom(\* async *\(text, _index) => {
      *    return text.toString();
      *  })
-     *  // => Buffer[]
+     *  // => string[]
      *
      *  await text.custom(\* async *\(_text, index) => {
      *    return index
