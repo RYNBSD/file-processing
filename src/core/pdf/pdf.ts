@@ -51,6 +51,22 @@ export default class PDF extends Core {
     return new PDF(...this.pdfs);
   }
 
+  /**
+   * Clean pdfs array, to free memory
+   *
+   * @example
+   * ```js
+   *  const pdf = await PDF.fromFile("pdf1.pdf", "pdf2.pdf")
+   *
+   *  // Some operations
+   *
+   *  pdf.clean()
+   *
+   *  // Some operations
+   *
+   *  pdf.append(Buffer.alloc(1))
+   * ```
+   */
   override clean() {
     this.pdfs = [];
   }

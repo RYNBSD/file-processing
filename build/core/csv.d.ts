@@ -13,6 +13,22 @@ export default class CSV extends Core {
     append(...csvs: Buffer[]): Promise<number>;
     extend(...csvs: CSV[]): number;
     clone(): CSV;
+    /**
+     * Clean csvs array, to free memory
+     *
+     * @example
+     * ```js
+     *  const csv = await CSV.fromFile("csv1.csv", "csv2.csv")
+     *
+     *  // Some operations
+     *
+     *  csv.clean()
+     *
+     *  // Some operations
+     *
+     *  csv.append(Buffer.alloc(1))
+     * ```
+     */
     clean(): void;
     filter(): Promise<number>;
     metadata(options?: ParseOptions): Promise<{

@@ -55,6 +55,22 @@ export default class CSV extends Core {
     return new CSV(...this.csvs);
   }
 
+  /**
+   * Clean csvs array, to free memory
+   *
+   * @example
+   * ```js
+   *  const csv = await CSV.fromFile("csv1.csv", "csv2.csv")
+   *
+   *  // Some operations
+   *
+   *  csv.clean()
+   *
+   *  // Some operations
+   *
+   *  csv.append(Buffer.alloc(1))
+   * ```
+   */
   override clean() {
     this.csvs = [];
   }

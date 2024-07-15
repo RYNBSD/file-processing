@@ -13,6 +13,22 @@ export default class PDF extends Core {
     append(...pdfs: Buffer[]): Promise<number>;
     extend(...pdfs: PDF[]): number;
     clone(): PDF;
+    /**
+     * Clean pdfs array, to free memory
+     *
+     * @example
+     * ```js
+     *  const pdf = await PDF.fromFile("pdf1.pdf", "pdf2.pdf")
+     *
+     *  // Some operations
+     *
+     *  pdf.clean()
+     *
+     *  // Some operations
+     *
+     *  pdf.append(Buffer.alloc(1))
+     * ```
+     */
     clean(): void;
     filter(): Promise<number>;
     getDocuments(options?: LoadOptions): Promise<PDFDocument[]>;

@@ -8,6 +8,25 @@ export default abstract class AV extends Core {
     protected avs: Buffer[];
     constructor(...avs: Buffer[]);
     get length(): number;
+    /**
+     * Clean avs array, to free memory
+     *
+     * @example
+     * ```js
+     *  const audio = await Audio.fromFile("audio1.wav", "audio2.mp3")
+     *  const video = await Video.fromFile("video1.mov", "video2.mkv")
+     *
+     *  // Some operations
+     *
+     *  audio.clean()
+     *  video.clean()
+     *
+     *  // Some operations
+     *
+     *  audio.append(Buffer.alloc(1))
+     *  video.append(Buffer.alloc(1))
+     * ```
+     */
     clean(): void;
     metadata(): Promise<ffmpeg.FfprobeData[]>;
     convert(format: string): Promise<Buffer[]>;

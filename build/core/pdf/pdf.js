@@ -46,6 +46,22 @@ export default class PDF extends Core {
     clone() {
         return new PDF(...this.pdfs);
     }
+    /**
+     * Clean pdfs array, to free memory
+     *
+     * @example
+     * ```js
+     *  const pdf = await PDF.fromFile("pdf1.pdf", "pdf2.pdf")
+     *
+     *  // Some operations
+     *
+     *  pdf.clean()
+     *
+     *  // Some operations
+     *
+     *  pdf.append(Buffer.alloc(1))
+     * ```
+     */
     clean() {
         this.pdfs = [];
     }

@@ -137,6 +137,22 @@ export default class Text extends Core {
     clone() {
         return new Text(...this.texts);
     }
+    /**
+     * Clean texts array, to free memory
+     *
+     * @example
+     * ```js
+     *  const text = await Text.fromFile("text.txt", "image.webp")
+     *
+     *  // Some operations
+     *
+     *  text.clean()
+     *
+     *  // Some operations
+     *
+     *  text.append(Buffer.alloc(1))
+     * ```
+     */
     clean() {
         this.texts = [];
     }

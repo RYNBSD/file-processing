@@ -19,6 +19,25 @@ export default abstract class AV extends Core {
     return this.avs.length;
   }
 
+  /**
+   * Clean avs array, to free memory
+   *
+   * @example
+   * ```js
+   *  const audio = await Audio.fromFile("audio1.wav", "audio2.mp3")
+   *  const video = await Video.fromFile("video1.mov", "video2.mkv")
+   *
+   *  // Some operations
+   *
+   *  audio.clean()
+   *  video.clean()
+   *
+   *  // Some operations
+   *
+   *  audio.append(Buffer.alloc(1))
+   *  video.append(Buffer.alloc(1))
+   * ```
+   */
   override clean() {
     this.avs = [];
   }
