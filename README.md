@@ -236,9 +236,9 @@ const pdf = new PDF(Buffer.alloc(1));
 - add streaming. 🟠
 - Add dir loader. 🟠
 - Add glob loader. 🟠
+- Merge videos/audios in one video/audio. 🟠
 - Take screenshots from video. 🟢
 - Get video audio. 🟢
-- Merge videos/audios in one video/audio. 🟠
 - Get only video (no audio). 🟢
 - Video/Audio split. 🟢
 - Add OCR. 🟢
@@ -250,6 +250,8 @@ const pdf = new PDF(Buffer.alloc(1));
 - PDF remove page. 🔴
 - PDF split. 🔴
 - Extract image from pdf. 🔴
+- Generate hash. 🔴
+- Encryption/Decryption. 🔴
 
 # Support
 
