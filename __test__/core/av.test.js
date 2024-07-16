@@ -116,7 +116,16 @@ describe("Video", () => {
     await Video.toFile([{ path: "tmp/video-audio.mp3", input: audios[1] }]);
   });
 
-  it("audio", async () => {});
+  it("screenshot", async () => {
+    const video = await Video.fromFile("asset/video.webm");
+
+    const screenshots = await video.screenshot([0, 1, 2]);
+    expect(screenshots).toHaveLength(1);
+    expect(screenshots[0]).toHaveLength(3);
+    expect(screenshots[0][0]).toBeInstanceOf(Buffer);
+    expect(screenshots[0][1]).toBeInstanceOf(Buffer);
+    expect(screenshots[0][2]).toBeInstanceOf(Buffer);
+  });
 
   it("(static) fromFile", async () => {
     const video = await Video.fromFile("asset/video.webm");

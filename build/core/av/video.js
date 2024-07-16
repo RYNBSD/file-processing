@@ -94,18 +94,20 @@ export default class Video extends AV {
         });
     }
     /** Extract video frames aka images */
-    frame(timemarks) {
+    screenshot(timemarks) {
         return __awaiter(this, void 0, void 0, function* () {
             return this.custom((command, tmpFile) => __awaiter(this, void 0, void 0, function* () {
+                let imagesPath = [];
                 return new Promise((resolve, reject) => {
                     command
-                        .takeScreenshots({ filename: "frame.jpg", timemarks }, tmpFile.tmp.path)
+                        .screenshot({ filename: "frame.png", timemarks }, tmpFile.tmp.path)
                         .on("filenames", (filenames) => {
-                        const fullPaths = filenames.map((filename) => path.join(tmpFile.tmp.path, filename));
-                        AV.loadFile(fullPaths).then(resolve, reject);
+                        imagesPath = filenames.map((filename) => path.join(tmpFile.tmp.path, filename));
                     })
-                        .on("error", reject)
-                        .run();
+                        .on("end", () => {
+                        AV.loadFile(imagesPath).then(resolve, reject);
+                    })
+                        .on("error", reject);
                 });
             }));
         });

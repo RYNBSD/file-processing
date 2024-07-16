@@ -236,7 +236,7 @@ const pdf = new PDF(Buffer.alloc(1));
 - add streaming. 🟠
 - Add dir loader. 🟠
 - Add glob loader. 🟠
-- Extract video frames. 🟠
+- Take screenshots from video. 🟢
 - Get video audio. 🟢
 - Merge videos/audios in one video/audio. 🟠
 - Get only video (no audio). 🟢

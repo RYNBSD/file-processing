@@ -86,17 +86,20 @@ export default class Video extends AV {
   }
 
   /** Extract video frames aka images */
-  async frame(timemarks: number[]) {
+  async screenshot(timemarks: number[] | string[]) {
     return this.custom(async (command, tmpFile) => {
+      let imagesPath: string[] = [];
+
       return new Promise<Buffer[]>((resolve, reject) => {
         command
-          .takeScreenshots({ filename: "frame.jpg", timemarks }, tmpFile.tmp!.path)
+          .screenshot({ filename: "frame.png", timemarks }, tmpFile.tmp!.path)
           .on("filenames", (filenames: string[]) => {
-            const fullPaths = filenames.map((filename) => path.join(tmpFile.tmp!.path, filename));
-            AV.loadFile(fullPaths).then(resolve, reject);
+            imagesPath = filenames.map((filename) => path.join(tmpFile.tmp!.path, filename));
           })
-          .on("error", reject)
-          .run();
+          .on("end", () => {
+            AV.loadFile(imagesPath).then(resolve, reject);
+          })
+          .on("error", reject);
       });
     });
   }

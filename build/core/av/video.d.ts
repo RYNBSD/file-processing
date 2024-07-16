@@ -12,7 +12,7 @@ export default class Video extends AV {
     only(): Promise<Buffer[]>;
     audio(format: string): Promise<(Buffer | null)[]>;
     /** Extract video frames aka images */
-    frame(timemarks: number[]): Promise<Buffer[][]>;
+    screenshot(timemarks: number[] | string[]): Promise<Buffer[][]>;
     static filter(...videos: Buffer[]): Promise<Buffer[]>;
     static fromFile(...path: string[]): Promise<Video>;
     static fromUrl<T extends string[] | URL[]>(...url: T): Promise<Video>;
