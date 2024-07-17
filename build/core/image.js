@@ -230,7 +230,7 @@ export default class Image extends Core {
         });
     }
     /**
-     * @returns - converted images
+     * @returns converted images
      *
      * @example
      * ```js
@@ -241,7 +241,7 @@ export default class Image extends Core {
      *  const buffers = await image.convert("webp")
      *  // => { data: Buffer; info: sharp.OutputInfo; }[]
      * ```
-     * */
+     */
     convert(format, options) {
         return __awaiter(this, void 0, void 0, function* () {
             return this.custom((sharp) => {

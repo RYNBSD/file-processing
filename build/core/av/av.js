@@ -18,6 +18,7 @@ export default class AV extends Core {
         super();
         this.avs = avs;
     }
+    /** get current length of avs */
     get length() {
         return this.avs.length;
     }
@@ -43,6 +44,19 @@ export default class AV extends Core {
     clean() {
         this.avs = [];
     }
+    /**
+     * @returns - avs metadata
+     *
+     * @example
+     * ```js
+     *  const av1 = await Audio.loadFile("av1.wav")
+     *  const av2 = await Audio.loadFile("av2.wav")
+     *
+     *  const av = new Audio(av1, av2)
+     *  const metadata = await av.metadata()
+     *  // => FfprobeData[]
+     * ```
+     */
     metadata() {
         return __awaiter(this, void 0, void 0, function* () {
             return this.custom((command) => {
@@ -56,6 +70,19 @@ export default class AV extends Core {
             });
         });
     }
+    /**
+     * @returns converted avs
+     *
+     * @example
+     * ```js
+     *  const av1 = await Audio.loadFile("av1.wav")
+     *  const av2 = await Audio.loadFile("av2.wav")
+     *
+     *  const av = new Audio(av1, av2)
+     *  const buffers = await av.convert("mp3")
+     *  // => Buffer[]
+     * ```
+     */
     convert(format) {
         return __awaiter(this, void 0, void 0, function* () {
             return this.custom((command, tmpFile) => {
@@ -73,6 +100,20 @@ export default class AV extends Core {
             });
         });
     }
+    /**
+     * @throws
+     *
+     * @param duration av chunk duration (seconds)
+     * @param start start point @default 0
+     * @returns all av chunks
+     *
+     * @example
+     * ```js
+     *  const video = await Video.fromFile("video1.mp3", "video2.mkv")
+     *  const chunks = await video.split(60)
+     *  // => Buffer[][]
+     * ```
+     */
     spilt(duration_1) {
         return __awaiter(this, arguments, void 0, function* (duration, start = 0) {
             return this.custom((command, tmpFile, index) => __awaiter(this, void 0, void 0, function* () {
@@ -138,6 +179,16 @@ export default class AV extends Core {
             }));
         });
     }
+    /**
+     * merge all videos/audios in one video/audio
+     *
+     * @param format new format
+     * @returns new video/audio
+     *
+     * @example
+     * ```js
+     * ```
+     */
     merge(format_1) {
         return __awaiter(this, arguments, void 0, function* (format, fps = 30) {
             const converted = yield this.convert(format);
@@ -167,7 +218,29 @@ export default class AV extends Core {
         });
     }
     /**
-     * In case of invalid method, buffer will be default
+     * @returns base on the callback return type
+     *
+     * @example
+     * ```js
+     *  const av1 = await Audio.loadFile("av1.wav")
+     *  const av2 = await Audio.loadFile("av2.wav")
+     *
+     *  const av = new Audio(av1, av2)
+     *
+     *  await av.custom(\* async *\(command, _index) => {
+     *    return new Promise<Buffer>((resolve, reject) => {
+     *      command.on("error", reject).on("end", () => {
+     *        resolve(\* Some operations *\)
+     *      })
+     *    })
+     *  })
+     *  // => Buffer[]
+     *
+     *  await av.custom(\* async *\(_command, index) => {
+     *    return index
+     *  })
+     *  // => number[]
+     * ```
      */
     custom(callback) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -177,20 +250,14 @@ export default class AV extends Core {
             return result;
         });
     }
-    static generateTimemarks(metadata_1) {
-        return __awaiter(this, arguments, void 0, function* (metadata, interval = 1) {
-            var _a;
-            if (Array.isArray(metadata))
-                return Promise.all(metadata.map((mt) => AV.generateTimemarks(mt, interval)));
-            const timemarks = [];
-            const duration = (_a = metadata.format.duration) !== null && _a !== void 0 ? _a : 0;
-            for (let i = 0; i < duration; i += interval)
-                timemarks.push(i);
-            return timemarks;
-        });
-    }
     /**
-     * new Instance of ffmpeg
+     * @returns new instance of ffmpeg
+     *
+     * @example
+     * ```js
+     *  const command = Video.newFfmpeg("video.mp4")
+     *  // => FfmpegCommand
+     * ```
      */
     static newFfmpeg(av, options) {
         return ffmpeg(options).clone().setFfmpegPath(ffmpegPath).setFfprobePath(ffprobePath).input(av);

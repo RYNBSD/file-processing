@@ -128,6 +128,18 @@ export default class Video extends AV {
             return Video.new(buffer);
         });
     }
+    static generateTimemarks(metadata_1) {
+        return __awaiter(this, arguments, void 0, function* (metadata, interval = 1) {
+            var _a;
+            if (Array.isArray(metadata))
+                return Promise.all(metadata.map((mt) => Video.generateTimemarks(mt, interval)));
+            const timemarks = [];
+            const duration = (_a = metadata.format.duration) !== null && _a !== void 0 ? _a : 0;
+            for (let i = 0; i < duration; i += interval)
+                timemarks.push(i);
+            return timemarks;
+        });
+    }
     static new(videos) {
         return __awaiter(this, void 0, void 0, function* () {
             const filtered = yield Video.filter(...videos);

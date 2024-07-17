@@ -15,6 +15,7 @@ export default abstract class AV extends Core {
     this.avs = avs;
   }
 
+  /** get current length of avs */
   get length() {
     return this.avs.length;
   }
@@ -42,6 +43,19 @@ export default abstract class AV extends Core {
     this.avs = [];
   }
 
+  /**
+   * @returns - avs metadata
+   *
+   * @example
+   * ```js
+   *  const av1 = await Audio.loadFile("av1.wav")
+   *  const av2 = await Audio.loadFile("av2.wav")
+   *
+   *  const av = new Audio(av1, av2)
+   *  const metadata = await av.metadata()
+   *  // => FfprobeData[]
+   * ```
+   */
   override async metadata() {
     return this.custom((command) => {
       return new Promise<FfprobeData>((resolve, reject) => {
@@ -53,6 +67,19 @@ export default abstract class AV extends Core {
     });
   }
 
+  /**
+   * @returns converted avs
+   *
+   * @example
+   * ```js
+   *  const av1 = await Audio.loadFile("av1.wav")
+   *  const av2 = await Audio.loadFile("av2.wav")
+   *
+   *  const av = new Audio(av1, av2)
+   *  const buffers = await av.convert("mp3")
+   *  // => Buffer[]
+   * ```
+   */
   async convert(format: string) {
     return this.custom((command, tmpFile) => {
       return new Promise<Buffer>((resolve, reject) => {
@@ -69,6 +96,20 @@ export default abstract class AV extends Core {
     });
   }
 
+  /**
+   * @throws
+   *
+   * @param duration av chunk duration (seconds)
+   * @param start start point @default 0
+   * @returns all av chunks
+   *
+   * @example
+   * ```js
+   *  const video = await Video.fromFile("video1.mp3", "video2.mkv")
+   *  const chunks = await video.split(60)
+   *  // => Buffer[][]
+   * ```
+   */
   async spilt(duration: number, start: number = 0) {
     return this.custom(async (command, tmpFile, index) => {
       const metadata = await new Promise<FfprobeData>((resolve, reject) => {
@@ -137,6 +178,16 @@ export default abstract class AV extends Core {
     });
   }
 
+  /**
+   * merge all videos/audios in one video/audio
+   *
+   * @param format new format
+   * @returns new video/audio
+   *
+   * @example
+   * ```js
+   * ```
+   */
   async merge(format: string, fps: number = 30) {
     const converted = await this.convert(format);
     const tmpFile = await new TmpFile(...converted).init();
@@ -168,7 +219,29 @@ export default abstract class AV extends Core {
   }
 
   /**
-   * In case of invalid method, buffer will be default
+   * @returns base on the callback return type
+   *
+   * @example
+   * ```js
+   *  const av1 = await Audio.loadFile("av1.wav")
+   *  const av2 = await Audio.loadFile("av2.wav")
+   *
+   *  const av = new Audio(av1, av2)
+   *
+   *  await av.custom(\* async *\(command, _index) => {
+   *    return new Promise<Buffer>((resolve, reject) => {
+   *      command.on("error", reject).on("end", () => {
+   *        resolve(\* Some operations *\)
+   *      })
+   *    })
+   *  })
+   *  // => Buffer[]
+   *
+   *  await av.custom(\* async *\(_command, index) => {
+   *    return index
+   *  })
+   *  // => number[]
+   * ```
    */
   async custom<T>(callback: AVCustomCallback<T>): Promise<Awaited<T>[]> {
     const tmpFile = await new TmpFile(...this.avs).init();
@@ -179,19 +252,14 @@ export default abstract class AV extends Core {
     return result;
   }
 
-  static async generateTimemarks<T extends FfprobeData>(metadata: T, interval: number): Promise<number[]>;
-  static async generateTimemarks<T extends FfprobeData[]>(metadata: T, interval: number): Promise<number[][]>;
-  static async generateTimemarks<T extends FfprobeData | FfprobeData[]>(metadata: T, interval = 1) {
-    if (Array.isArray(metadata)) return Promise.all(metadata.map((mt) => AV.generateTimemarks(mt, interval)));
-
-    const timemarks: number[] = [];
-    const duration = metadata.format.duration ?? 0;
-    for (let i = 0; i < duration; i += interval) timemarks.push(i);
-    return timemarks;
-  }
-
   /**
-   * new Instance of ffmpeg
+   * @returns new instance of ffmpeg
+   *
+   * @example
+   * ```js
+   *  const command = Video.newFfmpeg("video.mp4")
+   *  // => FfmpegCommand
+   * ```
    */
   static newFfmpeg<T extends Readable | string>(av: T, options?: ffmpeg.FfmpegCommandOptions) {
     return ffmpeg(options).clone().setFfmpegPath(ffmpegPath).setFfprobePath(ffprobePath).input(av);

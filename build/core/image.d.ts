@@ -160,7 +160,7 @@ export default class Image extends Core {
         info: sharp.OutputInfo;
     }[]>;
     /**
-     * @returns - converted images
+     * @returns converted images
      *
      * @example
      * ```js
@@ -171,7 +171,7 @@ export default class Image extends Core {
      *  const buffers = await image.convert("webp")
      *  // => { data: Buffer; info: sharp.OutputInfo; }[]
      * ```
-     * */
+     */
     convert<F extends ImageFormats>(format: F, options?: ImageOptions<F>): Promise<{
         data: Buffer;
         info: sharp.OutputInfo;

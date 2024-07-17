@@ -1,6 +1,7 @@
 import type { AVSetCallback } from "../../types/index.js";
 import { FilterFile, TmpFile } from "../../helper/index.js";
 import path from "node:path";
+import type { FfprobeData } from "fluent-ffmpeg";
 import AV from "./av.js";
 
 export default class Video extends AV {
@@ -116,6 +117,32 @@ export default class Video extends AV {
   static async fromUrl<T extends string[] | URL[]>(...url: T) {
     const buffer = await AV.loadUrl(url);
     return Video.new(buffer);
+  }
+
+  /**
+   * generate timemarks to take video screenshots
+   *
+   * @param metadata video metadata
+   * @param interval interval between each timemark (seconds)
+   *
+   * @example
+   * ```js
+   *  // Video length: 10 seconds
+   *  const video = await Video.fromFile("video.mp4")
+   *  const metadata = await video.metadata()
+   *  const timemarks = Video.generateTimemarks(metadata[0], 2)
+   *  // => [0, 2, 4, 6, 8, 10]
+   * ```
+   */
+  static async generateTimemarks<T extends FfprobeData>(metadata: T, interval: number): Promise<number[]>;
+  static async generateTimemarks<T extends FfprobeData[]>(metadata: T, interval: number): Promise<number[][]>;
+  static async generateTimemarks<T extends FfprobeData | FfprobeData[]>(metadata: T, interval = 1) {
+    if (Array.isArray(metadata)) return Promise.all(metadata.map((mt) => Video.generateTimemarks(mt, interval)));
+
+    const timemarks: number[] = [];
+    const duration = metadata.format.duration ?? 0;
+    for (let i = 0; i < duration; i += interval) timemarks.push(i);
+    return timemarks;
   }
 
   static async new(videos: Buffer[]) {

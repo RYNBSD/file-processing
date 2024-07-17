@@ -1,5 +1,6 @@
 /// <reference types="node" resolution-mode="require"/>
 import type { AVSetCallback } from "../../types/index.js";
+import type { FfprobeData } from "fluent-ffmpeg";
 import AV from "./av.js";
 export default class Video extends AV {
     constructor(...videos: Buffer[]);
@@ -16,6 +17,23 @@ export default class Video extends AV {
     static filter(...videos: Buffer[]): Promise<Buffer[]>;
     static fromFile(...path: string[]): Promise<Video>;
     static fromUrl<T extends string[] | URL[]>(...url: T): Promise<Video>;
+    /**
+     * generate timemarks to take video screenshots
+     *
+     * @param metadata video metadata
+     * @param interval interval between each timemark (seconds)
+     *
+     * @example
+     * ```js
+     *  // Video length: 10 seconds
+     *  const video = await Video.fromFile("video.mp4")
+     *  const metadata = await video.metadata()
+     *  const timemarks = Video.generateTimemarks(metadata[0], 2)
+     *  // => [0, 2, 4, 6, 8, 10]
+     * ```
+     */
+    static generateTimemarks<T extends FfprobeData>(metadata: T, interval: number): Promise<number[]>;
+    static generateTimemarks<T extends FfprobeData[]>(metadata: T, interval: number): Promise<number[][]>;
     static new(videos: Buffer[]): Promise<Video>;
     /**
      * check if an object is instance of Video or not
