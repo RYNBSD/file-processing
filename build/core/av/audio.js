@@ -79,19 +79,19 @@ export default class Audio extends AV {
     }
     /**
      *
-     * @param avs - extend avs from instance to an another
+     * @param audios - extend audios from instance to an another
      * @returns - new length
      *
      * @example
      * ```js
-     *  const buffer1 = await Audio.loadFile("av1.mp3")
-     *  const buffer2 = await Audio.loadFile("av2.mp3")
-     *  const av1 = new Audio(buffer1, buffer2)
+     *  const buffer1 = await Audio.loadFile("audio1.mp3")
+     *  const buffer2 = await Audio.loadFile("audio2.mp3")
+     *  const audio1 = new Audio(buffer1, buffer2)
      *
-     *  const av2 = new Audio()
+     *  const audio2 = new Audio()
      *
      *  // don't apply any filters
-     *  av2.extend(av1)
+     *  audio2.extend(audio1)
      *  // => 2
      * ```
      */
