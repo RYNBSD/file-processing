@@ -180,6 +180,14 @@ const pdf = new PDF(Buffer.alloc(1));
 - Full code documentation.
 - Full organize code to build next versions (scalability).
 - Add benchmarks.
+- Take screenshots from video.
+- Get video audio.
+- Get only video (no audio).
+- Video/Audio split.
+- Add OCR.
+- Add instance check for each processor.
+- Improve code quality.
+- Performance optimizations.
 
 ## 0.7.0 - Current
 
@@ -237,12 +245,6 @@ const pdf = new PDF(Buffer.alloc(1));
 - Add dir loader. 🟠
 - Add glob loader. 🟠
 - Merge videos/audios in one video/audio. 🟠
-- Take screenshots from video. 🟢
-- Get video audio. 🟢
-- Get only video (no audio). 🟢
-- Video/Audio split. 🟢
-- Add OCR. 🟢
-- Add instance check for each processor. 🟢
 - Merge audio and video in one video. 🔴
 - Pdf to image. 🔴
 - File scanner (antivirus). 🔴
