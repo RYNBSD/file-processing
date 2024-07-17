@@ -73,10 +73,9 @@ export default class Video extends AV {
         return __awaiter(this, void 0, void 0, function* () {
             const metadatas = yield this.metadata();
             return this.custom((command, tmpFile, index) => __awaiter(this, void 0, void 0, function* () {
-                var _a;
                 const metadata = metadatas[index];
-                const audioStream = (_a = metadata.streams.find((stream) => stream.codec_type === "audio")) !== null && _a !== void 0 ? _a : null;
-                if (audioStream === null)
+                const audioStream = metadata.streams.find((stream) => stream.codec_type === "audio");
+                if (typeof audioStream === "undefined")
                     return null;
                 const output = path.join(tmpFile.tmp.path, TmpFile.generateFileName(format));
                 return new Promise((resolve, reject) => {

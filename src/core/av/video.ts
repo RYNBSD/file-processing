@@ -66,8 +66,8 @@ export default class Video extends AV {
     const metadatas = await this.metadata();
     return this.custom(async (command, tmpFile, index) => {
       const metadata = metadatas[index]!;
-      const audioStream = metadata.streams.find((stream) => stream.codec_type === "audio") ?? null;
-      if (audioStream === null) return null;
+      const audioStream = metadata.streams.find((stream) => stream.codec_type === "audio");
+      if (typeof audioStream === "undefined") return null;
 
       const output = path.join(tmpFile.tmp!.path, TmpFile.generateFileName(format));
 
