@@ -254,6 +254,8 @@ const pdf = new PDF(Buffer.alloc(1));
 - Extract image from pdf. 🔴
 - Generate hash. 🔴
 - Encryption/Decryption. 🔴
+- Convert images to svg. 🔴
+- Convert scg to image. 🔴
 
 # Support
 
