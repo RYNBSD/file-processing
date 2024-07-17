@@ -280,7 +280,7 @@ export default class Image extends Core {
         });
     }
     /**
-     * @returns - base on the callback return type
+     * @returns base on the callback return type
      *
      * @example
      * ```js

@@ -18,14 +18,43 @@ export default class PDF extends Core {
     this.pdfs = pdfs;
   }
 
+  /** get current length of pdfs */
   get length() {
     return this.pdfs.length;
   }
 
+  /**
+   * get pdfs of this instance
+   *
+   * @example
+   * ```js
+   *  const buffer = await PDF.loadFile("pdf.pdf")
+   *
+   *  // not the same reference
+   *  const pdfs = new PDF(buffer).getPdfs()
+   *  // => Buffer[]
+   * ```
+   */
   getPdfs() {
     return [...this.pdfs];
   }
 
+  /**
+   * set pdfs
+   *
+   * @returns - new length
+   *
+   * @example
+   * ```js
+   *  const pdf = await PDF.fromFile("pdf.pdf")
+   *
+   *  // this method filter invalid pdfs before set
+   *  const newLength = await pdf.setPdfs(\* async *\(pdf, index) => {
+   *    return index % 2 ? pdf : pdf.toString()
+   *  })
+   *  // => 0
+   * ```
+   */
   async setPdfs<T>(callback: PDFSetCallback<T>) {
     const pdfs = await Promise.all(this.pdfs.map(async (pdf, index) => callback(pdf, index)));
     const filteredPdfs = pdfs.filter((pdf) => Buffer.isBuffer(pdf) && pdf.length > 0) as Buffer[];
@@ -34,12 +63,46 @@ export default class PDF extends Core {
     return this.length;
   }
 
+  /**
+   *
+   * @param pdfs - new pdfs (Buffer) to append the exists list
+   * @returns - new length
+   *
+   * @example
+   * ```js
+   *  const pdf = new PDF()
+   *  const buffer1 = await PDF.loadFile("pdf1.pdf")
+   *  const buffer2 = await PDF.loadFile("pdf2.pdf")
+   *
+   *  // filter invalid pdfs
+   *  await pdf.append(buffer1, Buffer.alloc(1), buffer2)
+   *  // => 2
+   * ```
+   */
   override async append(...pdfs: Buffer[]) {
     const filteredPdfs = await PDF.filter(...pdfs);
     this.pdfs.push(...filteredPdfs);
     return this.length;
   }
 
+  /**
+   *
+   * @param pdfs - extend pdfs from instance to an another
+   * @returns - new length
+   *
+   * @example
+   * ```js
+   *  const buffer1 = await PDF.loadFile("pdf1.pdf")
+   *  const buffer2 = await PDF.loadFile("pdf2.pdf")
+   *  const pdf1 = new PDF(buffer1, buffer2)
+   *
+   *  const pdf2 = new PDF()
+   *
+   *  // don't apply any filters
+   *  pdf2.extend(pdf1)
+   *  // => 2
+   * ```
+   */
   override extend(...pdfs: PDF[]) {
     pdfs.forEach((pdf) => {
       this.pdfs.push(...pdf.getPdfs());
@@ -47,6 +110,19 @@ export default class PDF extends Core {
     return this.length;
   }
 
+  /**
+   *
+   * @returns - clone current instance
+   *
+   * @example
+   * ```js
+   *  const pdf = new PDF()
+   *
+   *  // not the same reference
+   *  const clone = pdf.clone()
+   *  // => PDF
+   * ```
+   */
   override clone() {
     return new PDF(...this.pdfs);
   }
@@ -71,15 +147,51 @@ export default class PDF extends Core {
     this.pdfs = [];
   }
 
+  /**
+   * filter pdfs
+   * @returns - new length
+   *
+   * @example
+   * ```js
+   *  const pdf = new PDF(Buffer.alloc(1))
+   *  await pdf.filter()
+   *  // => 0
+   * ```
+   */
   override async filter() {
     this.pdfs = await PDF.filter(...this.pdfs);
     return this.length;
   }
 
+  /**
+   *
+   * @param options load options
+   * @returns pdf document
+   *
+   * @example
+   * ```js
+   *  const pdf = await PDF.fromFile("pdf1.pdf", "pdf2.pdf")
+   *  const documents = await pdf.getDocuments()
+   *  // => PDFDocument[]
+   * ```
+   */
   async getDocuments(options?: LoadOptions) {
     return Promise.all(this.pdfs.map((pdf) => PDF.load(pdf.buffer, options)));
   }
 
+  /**
+   * @returns pdfs metadata
+   *
+   * @example
+   * ```js
+   *  const pdf1 = await PDF.loadFile("pdf1.pdf")
+   *  const pdf2 = await PDF.loadFile("pdf2.pdf")
+   *
+   *  const pdf = new PDF(pdf1, pdf2)
+   *  const metadata = await pdf.metadata()
+   *  // => Metadata[]
+   * ```
+   */
   override async metadata(options?: LoadOptions) {
     return this.custom((document) => {
       return {
@@ -97,39 +209,143 @@ export default class PDF extends Core {
     }, options);
   }
 
+  /**
+   *
+   * @param options load options
+   * @returns pdf pages
+   *
+   * @example
+   * ```js
+   *  const pdf = await PDF.fromFile("pdf1.pdf", "pdf2.pdf")
+   *  const pages = await pdf.getPages()
+   *  // => PDFPage[][]
+   * ```
+   */
   async getPages(options?: LoadOptions) {
     return this.custom((document) => document.getPages(), options);
   }
 
+  /**
+   *
+   * @param options load options
+   * @returns pdf form
+   *
+   * @example
+   * ```js
+   *  const pdf = await PDF.fromFile("pdf1.pdf", "pdf2.pdf")
+   *  const pages = await pdf.getForm()
+   *  // => PDFForm[]
+   * ```
+   */
   async getForm(options?: LoadOptions) {
     return this.custom((document) => document.getForm(), options);
   }
 
+  /**
+   * merge all pdfs in one pdf
+   * @param options merge options
+   * @returns merged pdf
+   *
+   * @example
+   * ```js
+   *  const pdf = await PDF.fromFile("pdf1.pdf", "pdf2.pdf")
+   *  const merge = await pdf.merge()
+   *  // => Buffer
+   * ```
+   */
   async merge(options?: PDFMergeOptions) {
     const merge = await PDF.create(options?.create);
     const copies = await this.custom((document) => merge.copyPages(document, document.getPageIndices()), options?.load);
     copies.forEach((copied) => copied.forEach((page) => merge.addPage(page)));
-    return merge;
+    return PDF.save(merge);
   }
 
+  /**
+   *
+   * @param options load options
+   * @returns base on what your callback return
+   *
+   * @example
+   * ```js
+   *  const pdf = await PDF.fromFile("pdf1.pdf", "pdf2.pdf")
+   *
+   *  await pdf.custom((document, _index) => {
+   *    return PDF.save(document)
+   *  })
+   *  // => Buffer[]
+   *
+   *  await pdf.custom((_document, index) => index)
+   *  // => number[]
+   * ```
+   */
   async custom<T>(callback: PdfCustomDocumentCallback<T>, options?: LoadOptions): Promise<Awaited<T>[]> {
     const documents = await this.getDocuments(options);
     return Promise.all(documents.map(async (document, index) => callback(document, index)));
   }
 
+  /**
+   * @throws
+   *
+   * load pdfs from files
+   * @returns - loaded files
+   *
+   * @example
+   * ```js
+   *  const pdf = await PDF.fromFile("pdf.pdf")
+   *  // => PDF
+   *
+   *  const pdf = await PDF.fromFile("pdf.pdf", "text.txt")
+   *  // => PDF
+   *  const length = pdf.length
+   *  // => 1
+   *
+   *  const text = await PDF.fromFile("text.txt")
+   *  // => Error (throw)
+   * ```
+   */
   static async fromFile(...path: string[]) {
     const buffer = await Core.loadFile(path);
     return PDF.new(buffer);
   }
 
+  /**
+   * @throws
+   *
+   * load pdfs from urls
+   * @returns - loaded urls
+   *
+   * @example
+   * ```js
+   *  const pdf = await PDF.fromUrl("http://example.com/pdf.pdf")
+   *  // => PDF
+   *
+   *  const pdf = await PDF.fromUrl("http://example.com/pdf.pdf", "http://example.com/text.txt")
+   *  // => PDF
+   *  const length = pdf.length
+   *  // => 1
+   *
+   *  const text = await PDF.fromUrl("text.txt")
+   *  // => Error (throw)
+   * ```
+   */
   static async fromUrl<T extends string[] | URL[]>(...url: T) {
     const buffer = await Core.loadUrl(url);
     return PDF.new(buffer);
   }
 
   /**
-   * Convert image to pdf
-   * @param images - must be of format png or jpg
+   * @throws
+   *
+   * @param images - images buffer
+   * @param options - convert options
+   *
+   * @example
+   * ```js
+   *  // image buffer
+   *  const image = Buffer.alloc(1)
+   *  const pdf = await PDF.fromImage(image)
+   *  // => PDFDocument | PDFDocument[]
+   * ```
    */
   static async fromImage<T extends Buffer>(images: T, options?: PDFFromImageOptions): Promise<PDFDocument>;
   static async fromImage<T extends Buffer[]>(images: T, options?: PDFFromImageOptions): Promise<PDFDocument[]>;
@@ -175,6 +391,7 @@ export default class PDF extends Core {
   }
 
   /**
+   * @deprecated
    * Generate pdf from websites
    */
   static async generate<T extends string>(htmls: T, options?: PDFOptions): Promise<Buffer>;
@@ -193,10 +410,35 @@ export default class PDF extends Core {
     return buffer;
   }
 
-  static filter(...pdfs: Buffer[]) {
+  /**
+   *
+   * @returns filter non pdf
+   *
+   * @example
+   * ```js
+   *  const pdf1 = await PDF.loadFile("pdf1.pdf")
+   *  const pdf2 = await PDF.loadFile("pdf2.pdf")
+   *  const buffer = await PDF.filter(pdf1, pdf2)
+   *  // => Buffer[]
+   * ```
+   */
+  static async filter(...pdfs: Buffer[]) {
     return new FilterFile(...pdfs).custom("pdf");
   }
 
+  /**
+   *
+   * @param pdfs - pdf document
+   * @param options - save options
+   *
+   * @example
+   * ```js
+   *  const pdf = await PDF.fromFile("pdf.pdf")
+   *  const documents = await pdf.getDocuments()
+   *  const buffer = await PDF.save(documents)
+   *  // => Buffer | Buffer[]
+   * ```
+   */
   static async save<T extends PDFDocument>(pdfs: T, options?: SaveOptions): Promise<Buffer>;
   static async save<T extends PDFDocument[]>(pdfs: T, options?: SaveOptions): Promise<Buffer[]>;
   static async save<T extends PDFDocument | PDFDocument[]>(pdfs: T, options?: SaveOptions) {
@@ -218,6 +460,26 @@ export default class PDF extends Core {
     return PDFDocument;
   }
 
+  /**
+   * @throws
+   *
+   * @param pdfs - pdfs buffer
+   * @returns - create new safe instance
+   *
+   * @example
+   * ```js
+   *  const pdf = await PDF.new(Buffer.alloc(1))
+   *  // => Error (throw)
+   *
+   *  const pdfFile = await PDF.loadFile("pdf.pdf")
+   *
+   *  // filter non pdf
+   *  const pdf = await PDF.new(pdfFile, Buffer.alloc(1))
+   *  // => PDF
+   *  const length = pdf.length
+   *  // => 1
+   * ```
+   */
   static async new(pdfs: Buffer[]) {
     const filtered = await PDF.filter(...pdfs);
     if (filtered.length === 0) throw new Error(`${PDF.name}: Non valid pdf`);

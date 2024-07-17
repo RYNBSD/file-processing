@@ -286,7 +286,7 @@ export default class Image extends Core {
   }
 
   /**
-   * @returns - base on the callback return type
+   * @returns base on the callback return type
    *
    * @example
    * ```js
@@ -367,7 +367,7 @@ export default class Image extends Core {
   }
 
   /**
-   *
+   * @deprecated
    * @returns - Take screenshot of websites
    *
    * @example

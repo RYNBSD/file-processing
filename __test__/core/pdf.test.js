@@ -47,8 +47,8 @@ describe("PDF", () => {
   it("merge", async () => {
     const buffers = await PDF.loadFile(["asset/pdf.pdf", "asset/pdf.pdf", "asset/pdf.pdf"]);
     const document = await new PDF(...buffers).merge();
-    expect(document).toBeInstanceOf(PDFDocument);
-    await PDF.toFile([{ path: "tmp/merge.pdf", input: await document.save() }]);
+    expect(document).toBeInstanceOf(Buffer);
+    await PDF.toFile([{ path: "tmp/merge.pdf", input: await document}]);
   });
 
   it("custom", async () => {
