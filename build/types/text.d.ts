@@ -22,6 +22,7 @@ export type TextDecompressionOptions<T extends TextDecompressionMethods> = T ext
 export type TextDecompressFn<R, T extends Buffer | Readable, M extends TextDecompressionMethods> = (text: T, options?: TextDecompressionOptions<M>) => R;
 export type HashOptions = Parameters<typeof crypto.createHash>[1];
 export type CipherOptions = Parameters<typeof crypto.createCipheriv>[3];
+export type DecipherOptions = Parameters<typeof crypto.createDecipheriv>[3];
 export type TextSetCallback<T> = (text: Buffer, index: number) => Promise<T> | T;
 export type TextCustomCallback<T> = (text: Buffer, index: number) => Promise<T> | T;
 //# sourceMappingURL=text.d.ts.map

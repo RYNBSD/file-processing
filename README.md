@@ -258,6 +258,7 @@ const pdf = new PDF(Buffer.alloc(1));
 - Add glob loader. 🟠
 - Generate hash. 🟠
 - Merge videos/audios in one video/audio. 🟠
+- Encryption/Decryption. 🟠
 - Merge audio and video in one video. 🔴
 - Pdf to image. 🔴
 - File scanner (antivirus). 🔴
@@ -265,7 +266,6 @@ const pdf = new PDF(Buffer.alloc(1));
 - PDF remove page. 🔴
 - PDF split. 🔴
 - Extract image from pdf. 🔴
-- Encryption/Decryption. 🔴
 - Convert images to svg. 🔴
 - Convert svg to image. 🔴
 - Add archiver. 🔴

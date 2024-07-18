@@ -3,6 +3,7 @@ import type {
   BrotliCompressOptions,
   BrotliDecompressOptions,
   CipherOptions,
+  DecipherOptions,
   DeflateOptions,
   DeflateRawOptions,
   GunzipOptions,
@@ -422,50 +423,59 @@ export default class Text extends Core {
     key: undefined,
     iv: undefined,
     options?: CipherOptions,
-  ): Promise<{ key: string; iv: string; encrypt: Buffer }[]>;
-  async cipher(algorithm: string, key: string, iv: undefined, options?: CipherOptions): Promise<Buffer[]>;
+  ): Promise<{ key: Buffer; iv: Buffer; encrypt: Buffer }[]>;
+  async cipher(
+    algorithm: string,
+    key: Buffer,
+    iv: undefined,
+    options?: CipherOptions,
+  ): Promise<{ iv: Buffer; encrypt: Buffer }[]>;
   async cipher(
     algorithm: string,
     key: undefined,
-    iv: string,
+    iv: Buffer,
     options?: CipherOptions,
-  ): Promise<{ key: string; encrypt: Buffer }[]>;
-  async cipher(
-    algorithm: string,
-    key: string,
-    iv: string,
-    options?: CipherOptions,
-  ): Promise<{ iv: string; encrypt: Buffer }[]>;
-  async cipher(algorithm: string, key: string, iv: false, options?: CipherOptions): Promise<Buffer[]>;
-  async cipher(algorithm: string, key?: string, iv?: string | false, options?: CipherOptions) {
+  ): Promise<{ key: Buffer; encrypt: Buffer }[]>;
+  async cipher(algorithm: string, key: Buffer, iv: Buffer, options?: CipherOptions): Promise<Buffer[]>;
+  async cipher(algorithm: string, key: Buffer, iv: false, options?: CipherOptions): Promise<Buffer[]>;
+  async cipher(algorithm: string, key?: Buffer, iv?: Buffer | false, options?: CipherOptions) {
     return this.custom((text) => {
-      let cipherKey = "";
-      let cipherIv = "";
+      let cipherKey: Buffer;
+      let cipherIv: Buffer;
 
       if (typeof key === "undefined" && typeof iv === "undefined") {
-        cipherKey = crypto.randomBytes(16).toString("hex");
-        cipherIv = crypto.randomBytes(8).toString("hex");
+        cipherKey = crypto.randomBytes(32);
+        cipherIv = crypto.randomBytes(16);
         const cipher = crypto.createCipheriv(algorithm, cipherKey, cipherIv, options);
         return { key: cipherKey, iv: cipherKey, encrypt: Buffer.concat([cipher.update(text), cipher.final()]) };
       } else if (typeof key === "string" && typeof iv === "undefined") {
+        cipherIv = crypto.randomBytes(16);
         const cipher = crypto.createCipheriv(algorithm, key, null, options);
-        return Buffer.concat([cipher.update(text), cipher.final()]);
+        return { iv: cipherIv, encrypt: Buffer.concat([cipher.update(text), cipher.final()]) };
       } else if (typeof key === "undefined" && typeof iv === "string") {
-        cipherKey = crypto.randomBytes(16).toString("hex");
+        cipherKey = crypto.randomBytes(32);
         const cipher = crypto.createCipheriv(algorithm, cipherKey, iv, options);
         return { key: cipherKey, encrypt: Buffer.concat([cipher.update(text), cipher.final()]) };
       } else if (typeof key === "string" && typeof iv === "string") {
         const cipher = crypto.createCipheriv(algorithm, key, iv, options);
         return Buffer.concat([cipher.update(text), cipher.final()]);
       } else if (typeof key === "string" && typeof iv === "boolean" && !iv) {
-        cipherIv = crypto.randomBytes(8).toString("hex");
-        const cipher = crypto.createCipheriv(algorithm, key, cipherIv, options);
-        return { iv: cipherKey, encrypt: Buffer.concat([cipher.update(text), cipher.final()]) };
+        const cipher = crypto.createCipheriv(algorithm, key, null, options);
+        return Buffer.concat([cipher.update(text), cipher.final()]);
       }
     });
   }
 
-  async decipher() {}
+  isDecipherSupported(algorithm: string) {
+    return this.isCipherSupported(algorithm);
+  }
+
+  async decipher(algorithm: string, key: Buffer, iv: Buffer | null = null, options: DecipherOptions = {}) {
+    return this.custom((text) => {
+      const decipher = crypto.createDecipheriv(algorithm, key, iv, options);
+      return Buffer.concat([decipher.update(text), decipher.final()]);
+    });
+  }
 
   /**
    * @returns - base on the callback return type

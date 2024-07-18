@@ -343,20 +343,21 @@ export default class Text extends Core {
     cipher(algorithm, key, iv, options) {
         return __awaiter(this, void 0, void 0, function* () {
             return this.custom((text) => {
-                let cipherKey = "";
-                let cipherIv = "";
+                let cipherKey;
+                let cipherIv;
                 if (typeof key === "undefined" && typeof iv === "undefined") {
-                    cipherKey = crypto.randomBytes(16).toString("hex");
-                    cipherIv = crypto.randomBytes(8).toString("hex");
+                    cipherKey = crypto.randomBytes(32);
+                    cipherIv = crypto.randomBytes(16);
                     const cipher = crypto.createCipheriv(algorithm, cipherKey, cipherIv, options);
                     return { key: cipherKey, iv: cipherKey, encrypt: Buffer.concat([cipher.update(text), cipher.final()]) };
                 }
                 else if (typeof key === "string" && typeof iv === "undefined") {
+                    cipherIv = crypto.randomBytes(16);
                     const cipher = crypto.createCipheriv(algorithm, key, null, options);
-                    return Buffer.concat([cipher.update(text), cipher.final()]);
+                    return { iv: cipherIv, encrypt: Buffer.concat([cipher.update(text), cipher.final()]) };
                 }
                 else if (typeof key === "undefined" && typeof iv === "string") {
-                    cipherKey = crypto.randomBytes(16).toString("hex");
+                    cipherKey = crypto.randomBytes(32);
                     const cipher = crypto.createCipheriv(algorithm, cipherKey, iv, options);
                     return { key: cipherKey, encrypt: Buffer.concat([cipher.update(text), cipher.final()]) };
                 }
@@ -365,15 +366,22 @@ export default class Text extends Core {
                     return Buffer.concat([cipher.update(text), cipher.final()]);
                 }
                 else if (typeof key === "string" && typeof iv === "boolean" && !iv) {
-                    cipherIv = crypto.randomBytes(8).toString("hex");
-                    const cipher = crypto.createCipheriv(algorithm, key, cipherIv, options);
-                    return { iv: cipherKey, encrypt: Buffer.concat([cipher.update(text), cipher.final()]) };
+                    const cipher = crypto.createCipheriv(algorithm, key, null, options);
+                    return Buffer.concat([cipher.update(text), cipher.final()]);
                 }
             });
         });
     }
-    decipher() {
-        return __awaiter(this, void 0, void 0, function* () { });
+    isDecipherSupported(algorithm) {
+        return this.isCipherSupported(algorithm);
+    }
+    decipher(algorithm_1, key_1) {
+        return __awaiter(this, arguments, void 0, function* (algorithm, key, iv = null, options = {}) {
+            return this.custom((text) => {
+                const decipher = crypto.createDecipheriv(algorithm, key, iv, options);
+                return Buffer.concat([decipher.update(text), decipher.final()]);
+            });
+        });
     }
     /**
      * @returns - base on the callback return type
