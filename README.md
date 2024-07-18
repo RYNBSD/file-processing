@@ -259,6 +259,7 @@ const pdf = new PDF(Buffer.alloc(1));
 - Generate hash. 🟠
 - Merge videos/audios in one video/audio. 🟠
 - Encryption/Decryption. 🟠
+- Generate Hmac. 🟠
 - Merge audio and video in one video. 🔴
 - Pdf to image. 🔴
 - File scanner (antivirus). 🔴
@@ -269,7 +270,6 @@ const pdf = new PDF(Buffer.alloc(1));
 - Convert images to svg. 🔴
 - Convert svg to image. 🔴
 - Add archiver. 🔴
-- Generate Hmac. 🔴
 
 # Support
 

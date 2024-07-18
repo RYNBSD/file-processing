@@ -9,6 +9,7 @@ import type {
   GunzipOptions,
   GzipOptions,
   HashOptions,
+  HmacOptions,
   InflateOptions,
   InflateRawOptions,
   TextCompressFn,
@@ -411,6 +412,24 @@ export default class Text extends Core {
   async hash(algorithm: string, options?: HashOptions) {
     return this.custom((text) => {
       return crypto.createHash(algorithm, options).update(text).digest();
+    });
+  }
+
+  async hmac(algorithm: string, key: undefined, options?: HmacOptions): Promise<{ key: Buffer; hash: Buffer }[]>;
+  async hmac(algorithm: string, key: Buffer, options?: HmacOptions): Promise<Buffer[]>;
+  async hmac(algorithm: string, key?: Buffer, options?: HmacOptions) {
+    return this.custom((text) => {
+      switch (Buffer.isBuffer(key)) {
+        case true:
+          return crypto.createHmac(algorithm, key!, options).update(text).digest();
+        default: {
+          const hmacKey = crypto.randomBytes(32);
+          return {
+            key: hmacKey,
+            hash: crypto.createHmac(algorithm, hmacKey, options).update(text).digest(),
+          };
+        }
+      }
     });
   }
 

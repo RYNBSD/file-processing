@@ -58,6 +58,8 @@ export type TextDecompressFn<R, T extends Buffer | Readable, M extends TextDecom
 
 export type HashOptions = Parameters<typeof crypto.createHash>[1];
 
+export type HmacOptions = Parameters<typeof crypto.createHmac>[2];
+
 export type CipherOptions = Parameters<typeof crypto.createCipheriv>[3];
 
 export type DecipherOptions = Parameters<typeof crypto.createDecipheriv>[3];
