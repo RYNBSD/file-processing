@@ -269,6 +269,7 @@ const pdf = new PDF(Buffer.alloc(1));
 - Convert images to svg. 🔴
 - Convert svg to image. 🔴
 - Add archiver. 🔴
+- Generate Hmac. 🔴
 
 # Support
 
