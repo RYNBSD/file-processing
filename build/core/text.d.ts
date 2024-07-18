@@ -1,7 +1,7 @@
 /// <reference types="node" resolution-mode="require"/>
 /// <reference types="node" resolution-mode="require"/>
 import type { Readable } from "node:stream";
-import type { BrotliCompressOptions, BrotliDecompressOptions, DeflateOptions, DeflateRawOptions, GunzipOptions, GzipOptions, HashOptions, InflateOptions, InflateRawOptions, TextCompressFn, TextCompressionMethods, TextCompressionOptions, TextCustomCallback, TextDecompressFn, TextDecompressionMethods, TextDecompressionOptions, TextSetCallback, UnzipOptions } from "../types/index.js";
+import type { BrotliCompressOptions, BrotliDecompressOptions, CipherOptions, DeflateOptions, DeflateRawOptions, GunzipOptions, GzipOptions, HashOptions, InflateOptions, InflateRawOptions, TextCompressFn, TextCompressionMethods, TextCompressionOptions, TextCustomCallback, TextDecompressFn, TextDecompressionMethods, TextDecompressionOptions, TextSetCallback, UnzipOptions } from "../types/index.js";
 import Core from "./core.js";
 /**
  * At the end all files are just texts, so this class is applicable on all files
@@ -24,6 +24,7 @@ export default class Text extends Core {
     /** get current length of texts */
     get length(): number;
     get supportedHashes(): string[];
+    get supportedCiphers(): string[];
     /**
      * get texts of this instance
      *
@@ -246,6 +247,23 @@ export default class Text extends Core {
     decompressSync<T extends TextDecompressionMethods>(method: T, options?: TextDecompressionOptions<T>): Buffer[];
     isHashSupported(algorithm: string): boolean;
     hash(algorithm: string, options?: HashOptions): Promise<Buffer[]>;
+    isCipherSupported(algorithm: string): boolean;
+    cipher(algorithm: string, key: undefined, iv: undefined, options?: CipherOptions): Promise<{
+        key: string;
+        iv: string;
+        encrypt: Buffer;
+    }[]>;
+    cipher(algorithm: string, key: string, iv: undefined, options?: CipherOptions): Promise<Buffer[]>;
+    cipher(algorithm: string, key: undefined, iv: string, options?: CipherOptions): Promise<{
+        key: string;
+        encrypt: Buffer;
+    }[]>;
+    cipher(algorithm: string, key: string, iv: string, options?: CipherOptions): Promise<{
+        iv: string;
+        encrypt: Buffer;
+    }[]>;
+    cipher(algorithm: string, key: string, iv: false, options?: CipherOptions): Promise<Buffer[]>;
+    decipher(): Promise<void>;
     /**
      * @returns - base on the callback return type
      *

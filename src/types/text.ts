@@ -58,6 +58,8 @@ export type TextDecompressFn<R, T extends Buffer | Readable, M extends TextDecom
 
 export type HashOptions = Parameters<typeof crypto.createHash>[1];
 
+export type CipherOptions = Parameters<typeof crypto.createCipheriv>[3];
+
 export type TextSetCallback<T> = (text: Buffer, index: number) => Promise<T> | T;
 
 export type TextCustomCallback<T> = (text: Buffer, index: number) => Promise<T> | T;
