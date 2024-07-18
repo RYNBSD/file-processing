@@ -36,21 +36,23 @@ Did you enjoy the process ? (no) 🫠 <br />
 
 # Intro
 
-This is an async/sync file processor, that handle convert, compression, generate, decompression, metadata, parse, filter, customize... and more!
+This is an async/sync/stream file processor, that handle convert, compression, generate, decompression, metadata, parse, filter, customize... and more!
 
 # How it work ?
 
 This package is build on top:
 
-- [fluent-ffmpeg](https://www.npmjs.com/package/fluent-ffmpeg) and [ffmpeg](https://ffmpeg.org/), that handle avs aka audios and videos.
-- [sharp](https://sharp.pixelplumbing.com/) and [libvips](https://www.libvips.org/), that handle images.
-- [pdf-lib](https://pdf-lib.js.org/), that handle pdfs.
-- [csv](https://csv.js.org/), that handle csvs.
+- [fluent-ffmpeg](https://www.npmjs.com/package/fluent-ffmpeg) and [ffmpeg](https://ffmpeg.org/), to handle avs aka audios and videos.
+- [sharp](https://sharp.pixelplumbing.com/) and [libvips](https://www.libvips.org/), to handle images.
+- [pdf-lib](https://pdf-lib.js.org/), to handle pdfs.
+- [csv](https://csv.js.org/), to handle csvs.
 - [zlib](https://nodejs.org/api/zlib.html), to handle (de)compress.
+- [crypto](https://nodejs.org/api/crypto.html), to handle encryption/decryption and hashing.
 
 What you think is it fast ? (of course, yes!)
 
 - [@ryn-bsd/is-file](https://www.npmjs.com/package/@ryn-bsd/is-file), to handle filtering files.
+- [clamscan](https://www.npmjs.com/package/clamscan) and [clamav](https://www.clamav.net/), to handle file scanning and antivirus.
 
 What you think is it safe ? (of course, yes!)
 
@@ -71,23 +73,27 @@ image.length; // current images length
 image.getImages(); // return stored images
 // => Buffer[]
 
-// This method filter non buffer values
+// filter non images and return the new length of images
 image.setImages(
   /* async */ (image, index) => {
     return Buffer.concat([image, Buffer.alloc(index)]);
   },
 );
-// => Promise<void>
+// => Promise<number>
 
-// This method filter non images
+// This method filter non images and return the new length of images
 image.append(Buffer.alloc(1));
-// => Promise<void>
+// => Promise<number>
 
 image.extend(new Image(Buffer.alloc(1)));
-// => void
+// => number
 
 image.clone();
 // => Image
+
+// Free memory (remove all stored images buffer), you can reuse this instance again.
+image.clean();
+
 
 // this method filter non images and return the new length of images
 image.filter();
@@ -121,6 +127,10 @@ Image.fromFile("image1.png", "image2.png");
 
 Image.fromFile("https://example.com/image1.png", "https://example.com/image2.png");
 // Promise<Image>
+
+// Create a new safe instance
+Image.new([Buffer.alloc(1)])
+// => Promise<Image>
 
 // Create a new sharp instance
 Image.newSharp();
@@ -169,11 +179,13 @@ const _pdf = new core.PDF(Buffer.alloc(1));
 const pdf = new PDF(Buffer.alloc(1));
 ```
 
-**Note:** There are more apis 😉
+**Note:** There are more apis, all tested apis are documented.
 
 # Versions
 
-## 0.8.0 - Working
+## 0.9.0 - Working
+
+## 0.8.0 - Current
 
 - Add examples.
 - Refactor code to optimize performance.
@@ -189,7 +201,7 @@ const pdf = new PDF(Buffer.alloc(1));
 - Improve code quality.
 - Performance optimizations.
 
-## 0.7.0 - Current
+## 0.7.0
 
 - Text unzip.
 - Image watermark.
