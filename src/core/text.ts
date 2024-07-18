@@ -6,6 +6,7 @@ import type {
   DeflateRawOptions,
   GunzipOptions,
   GzipOptions,
+  HashOptions,
   InflateOptions,
   InflateRawOptions,
   TextCompressFn,
@@ -19,6 +20,7 @@ import type {
   UnzipOptions,
 } from "../types/index.js";
 import zlib from "node:zlib";
+import crypto from "node:crypto";
 import { FilterFile } from "../helper/index.js";
 import Core from "./core.js";
 
@@ -48,6 +50,10 @@ export default class Text extends Core {
   /** get current length of texts */
   get length() {
     return this.texts.length;
+  }
+
+  get supportedHashes() {
+    return crypto.getHashes();
   }
 
   /**
@@ -390,6 +396,16 @@ export default class Text extends Core {
       Text.unzipSync,
       options,
     );
+  }
+
+  isHashSupported(algorithm: string) {
+    return this.supportedHashes.includes(algorithm);
+  }
+
+  async hash(algorithm: string, options?: HashOptions) {
+    return this.custom((text) => {
+      return crypto.createHash(algorithm, options).update(text).digest();
+    });
   }
 
   /**

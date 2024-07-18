@@ -8,6 +8,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 import zlib from "node:zlib";
+import crypto from "node:crypto";
 import { FilterFile } from "../helper/index.js";
 import Core from "./core.js";
 /**
@@ -33,6 +34,9 @@ export default class Text extends Core {
     /** get current length of texts */
     get length() {
         return this.texts.length;
+    }
+    get supportedHashes() {
+        return crypto.getHashes();
     }
     /**
      * get texts of this instance
@@ -319,6 +323,16 @@ export default class Text extends Core {
      */
     decompressSync(method, options) {
         return Text.decompress(this.texts, method, Text.gunzipSync, Text.inflateSync, Text.inflateRawSync, Text.brotliDecompressSync, Text.unzipSync, options);
+    }
+    isHashSupported(algorithm) {
+        return this.supportedHashes.includes(algorithm);
+    }
+    hash(algorithm, options) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return this.custom((text) => {
+                return crypto.createHash(algorithm, options).update(text).digest();
+            });
+        });
     }
     /**
      * @returns - base on the callback return type

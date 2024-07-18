@@ -1,7 +1,7 @@
 /// <reference types="node" resolution-mode="require"/>
 /// <reference types="node" resolution-mode="require"/>
 import type { Readable } from "node:stream";
-import type { BrotliCompressOptions, BrotliDecompressOptions, DeflateOptions, DeflateRawOptions, GunzipOptions, GzipOptions, InflateOptions, InflateRawOptions, TextCompressFn, TextCompressionMethods, TextCompressionOptions, TextCustomCallback, TextDecompressFn, TextDecompressionMethods, TextDecompressionOptions, TextSetCallback, UnzipOptions } from "../types/index.js";
+import type { BrotliCompressOptions, BrotliDecompressOptions, DeflateOptions, DeflateRawOptions, GunzipOptions, GzipOptions, HashOptions, InflateOptions, InflateRawOptions, TextCompressFn, TextCompressionMethods, TextCompressionOptions, TextCustomCallback, TextDecompressFn, TextDecompressionMethods, TextDecompressionOptions, TextSetCallback, UnzipOptions } from "../types/index.js";
 import Core from "./core.js";
 /**
  * At the end all files are just texts, so this class is applicable on all files
@@ -23,6 +23,7 @@ export default class Text extends Core {
     constructor(...texts: Buffer[]);
     /** get current length of texts */
     get length(): number;
+    get supportedHashes(): string[];
     /**
      * get texts of this instance
      *
@@ -243,6 +244,8 @@ export default class Text extends Core {
      * ```
      */
     decompressSync<T extends TextDecompressionMethods>(method: T, options?: TextDecompressionOptions<T>): Buffer[];
+    isHashSupported(algorithm: string): boolean;
+    hash(algorithm: string, options?: HashOptions): Promise<Buffer[]>;
     /**
      * @returns - base on the callback return type
      *

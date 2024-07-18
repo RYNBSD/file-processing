@@ -1,8 +1,10 @@
 /// <reference types="node" resolution-mode="require"/>
 /// <reference types="node" resolution-mode="require"/>
 /// <reference types="node" resolution-mode="require"/>
+/// <reference types="node" resolution-mode="require"/>
 import type { Readable } from "node:stream";
 import type zlib from "node:zlib";
+import type crypto from "node:crypto";
 export type TextCompressionMethods = "gzip" | "deflate" | "deflate-raw" | "brotli-compress";
 export type GzipOptions = Parameters<typeof zlib.gzipSync>[1];
 export type DeflateOptions = Parameters<typeof zlib.deflateSync>[1];
@@ -18,6 +20,7 @@ export type BrotliDecompressOptions = Parameters<typeof zlib.brotliDecompressSyn
 export type UnzipOptions = Parameters<typeof zlib.unzipSync>[1];
 export type TextDecompressionOptions<T extends TextDecompressionMethods> = T extends "gunzip" ? GunzipOptions : T extends "inflate" ? InflateOptions : T extends "inflate-raw" ? InflateRawOptions : T extends "brotli-decompress" ? BrotliDecompressOptions : T extends "unzip" ? UnzipOptions : never;
 export type TextDecompressFn<R, T extends Buffer | Readable, M extends TextDecompressionMethods> = (text: T, options?: TextDecompressionOptions<M>) => R;
+export type HashOptions = Parameters<typeof crypto.createHash>[1];
 export type TextSetCallback<T> = (text: Buffer, index: number) => Promise<T> | T;
 export type TextCustomCallback<T> = (text: Buffer, index: number) => Promise<T> | T;
 //# sourceMappingURL=text.d.ts.map

@@ -256,6 +256,7 @@ const pdf = new PDF(Buffer.alloc(1));
 - add streaming. 🟠
 - Add dir loader. 🟠
 - Add glob loader. 🟠
+- Generate hash. 🟠
 - Merge videos/audios in one video/audio. 🟠
 - Merge audio and video in one video. 🔴
 - Pdf to image. 🔴
@@ -264,7 +265,6 @@ const pdf = new PDF(Buffer.alloc(1));
 - PDF remove page. 🔴
 - PDF split. 🔴
 - Extract image from pdf. 🔴
-- Generate hash. 🔴
 - Encryption/Decryption. 🔴
 - Convert images to svg. 🔴
 - Convert svg to image. 🔴

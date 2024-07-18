@@ -1,5 +1,6 @@
 import type { Readable } from "node:stream";
 import type zlib from "node:zlib";
+import type crypto from "node:crypto";
 
 export type TextCompressionMethods = "gzip" | "deflate" | "deflate-raw" | "brotli-compress";
 
@@ -54,6 +55,8 @@ export type TextDecompressFn<R, T extends Buffer | Readable, M extends TextDecom
   text: T,
   options?: TextDecompressionOptions<M>,
 ) => R;
+
+export type HashOptions = Parameters<typeof crypto.createHash>[1];
 
 export type TextSetCallback<T> = (text: Buffer, index: number) => Promise<T> | T;
 
