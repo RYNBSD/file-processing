@@ -28,7 +28,9 @@ export default abstract class Core {
     static stream(readable: Readable, writable: Writable): Writable;
     static initBrowser(options?: puppeteer.PuppeteerLaunchOptions): Promise<puppeteer.Browser>;
     /**
-     *  @param paths - file/files path
+     * @deprecated use loader.loadFile() from helper
+     *
+     * @param paths - file/files path
      *
      * @example
      * ```js
@@ -42,7 +44,9 @@ export default abstract class Core {
     static loadFile<T extends string>(paths: T): Promise<Buffer>;
     static loadFile<T extends string[]>(paths: T): Promise<Buffer[]>;
     /**
-     *  @param paths - directory/directories path
+     * @deprecated use loader.loadDir() from helper
+     *
+     * @param paths - directory/directories path
      *
      * @example
      * ```js
@@ -56,6 +60,8 @@ export default abstract class Core {
     static loadDir<T extends string>(paths: T): Promise<Buffer[]>;
     static loadDir<T extends string[]>(paths: T): Promise<Buffer[][]>;
     /**
+     * @deprecated  use loader.loadGlob() from helper
+     *
      * @example
      * ```js
      *  Core.loadGlob("/*.txt")
@@ -67,6 +73,8 @@ export default abstract class Core {
      */
     static loadGlob<T extends fastGlob.Pattern | fastGlob.Pattern[]>(globs: T, options?: fastGlob.Options): Promise<(Buffer | Buffer[])[]>;
     /**
+     * @deprecated  use loader.loadUrl() from helper
+     *
      *  @param urls - file/files url
      *
      * @example
@@ -81,6 +89,8 @@ export default abstract class Core {
     static loadUrl<T extends string | URL>(urls: T): Promise<Buffer>;
     static loadUrl<T extends string[] | URL[]>(urls: T): Promise<Buffer[]>;
     /**
+     * @deprecated use parser.toBuffer() from helper
+     *
      * @param input - any type of supported inputs
      *
      * @example
@@ -93,6 +103,8 @@ export default abstract class Core {
     static toBuffer<T extends InputFiles>(input: T): Promise<Buffer>;
     static toBuffer<T extends InputFiles[]>(input: T): Promise<Buffer[]>;
     /**
+     * @deprecated use parser.toReadable() from helper
+     *
      * Convert any type of inputs to Readable
      *
      * @example
@@ -105,6 +117,8 @@ export default abstract class Core {
     static toReadable<T extends InputFiles>(input: T): Promise<Readable>;
     static toReadable<T extends InputFiles[]>(input: T): Promise<Readable[]>;
     /**
+     * @deprecated use parser.toBase64() from helper
+     *
      * Convert any type of inputs into base64 | base64url
      *
      * @example
@@ -117,6 +131,8 @@ export default abstract class Core {
     static toBase64<T extends InputFiles>(input: T, encoding?: "base64" | "base64url"): Promise<string>;
     static toBase64<T extends InputFiles[]>(input: T, encoding?: "base64" | "base64url"): Promise<string[]>;
     /**
+     * @deprecated use parser.toFile() from helper
+     *
      * Save any type of inputs into file
      *
      * @example

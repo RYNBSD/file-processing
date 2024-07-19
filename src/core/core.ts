@@ -58,7 +58,9 @@ export default abstract class Core {
   }
 
   /**
-   *  @param paths - file/files path
+   * @deprecated use loader.loadFile() from helper
+   *
+   * @param paths - file/files path
    *
    * @example
    * ```js
@@ -77,7 +79,9 @@ export default abstract class Core {
   }
 
   /**
-   *  @param paths - directory/directories path
+   * @deprecated use loader.loadDir() from helper
+   *
+   * @param paths - directory/directories path
    *
    * @example
    * ```js
@@ -97,6 +101,8 @@ export default abstract class Core {
   }
 
   /**
+   * @deprecated  use loader.loadGlob() from helper
+   *
    * @example
    * ```js
    *  Core.loadGlob("/*.txt")
@@ -128,6 +134,8 @@ export default abstract class Core {
   }
 
   /**
+   * @deprecated  use loader.loadUrl() from helper
+   *
    *  @param urls - file/files url
    *
    * @example
@@ -147,6 +155,8 @@ export default abstract class Core {
   }
 
   /**
+   * @deprecated use parser.toBuffer() from helper
+   *
    * @param input - any type of supported inputs
    *
    * @example
@@ -178,6 +188,8 @@ export default abstract class Core {
   }
 
   /**
+   * @deprecated use parser.toReadable() from helper
+   *
    * Convert any type of inputs to Readable
    *
    * @example
@@ -197,6 +209,8 @@ export default abstract class Core {
   }
 
   /**
+   * @deprecated use parser.toBase64() from helper
+   *
    * Convert any type of inputs into base64 | base64url
    *
    * @example
@@ -216,6 +230,8 @@ export default abstract class Core {
   }
 
   /**
+   * @deprecated use parser.toFile() from helper
+   *
    * Save any type of inputs into file
    *
    * @example

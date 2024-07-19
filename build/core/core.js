@@ -53,6 +53,8 @@ export default class Core {
         });
     }
     /**
+     * @deprecated  use loader.loadGlob() from helper
+     *
      * @example
      * ```js
      *  Core.loadGlob("/*.txt")
@@ -136,6 +138,8 @@ export default class Core {
         });
     }
     /**
+     * @deprecated use parser.toFile() from helper
+     *
      * Save any type of inputs into file
      *
      * @example
