@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 import { Mutex } from "async-mutex";
 import isFile, { Node as isFileNode } from "@ryn-bsd/is-file";
-import Core from "../core/core.js";
+import { toBuffer } from "./parser.js";
 /**
  * Easy and fast way to filter bunche of files
  */
@@ -65,14 +65,14 @@ export default class FilterFile {
      */
     custom(me) {
         return __awaiter(this, void 0, void 0, function* () {
-            const buffer = yield Core.toBuffer(this.input);
+            const buffer = yield toBuffer(this.input);
             const result = yield isFile.isCustom(buffer, me);
             return result.filter((file) => file.valid).map((file) => file.value);
         });
     }
     static filter(...input) {
         return __awaiter(this, void 0, void 0, function* () {
-            const buffer = yield Core.toBuffer(input);
+            const buffer = yield toBuffer(input);
             const mutexes = {
                 applications: new Mutex(),
                 audios: new Mutex(),
@@ -135,7 +135,7 @@ export default class FilterFile {
         return __awaiter(this, void 0, void 0, function* () {
             if (Array.isArray(files))
                 return Promise.all(files.map((file) => FilterFile.type(file)));
-            const buffer = yield Core.toBuffer(files);
+            const buffer = yield toBuffer(files);
             return isFileNode.type(buffer);
         });
     }

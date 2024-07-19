@@ -7,7 +7,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-import { FilterFile, TmpFile } from "../../helper/index.js";
+import { FilterFile, loader, TmpFile } from "../../helper/index.js";
 import path from "node:path";
 import AV from "./av.js";
 export default class Video extends AV {
@@ -157,7 +157,7 @@ export default class Video extends AV {
                     command
                         .noAudio()
                         .on("end", () => {
-                        AV.loadFile(output).then(resolve, reject);
+                        loader.loadFile(output).then(resolve, reject);
                     })
                         .on("error", reject)
                         .output(output)
@@ -192,7 +192,7 @@ export default class Video extends AV {
                         .noVideo()
                         .toFormat(format)
                         .on("end", () => {
-                        AV.loadFile(output).then(resolve, reject);
+                        loader.loadFile(output).then(resolve, reject);
                     })
                         .on("error", reject)
                         .output(output)
@@ -225,7 +225,7 @@ export default class Video extends AV {
                         imagesPath = filenames.map((filename) => path.join(tmpFile.tmp.path, filename));
                     })
                         .on("end", () => {
-                        AV.loadFile(imagesPath).then(resolve, reject);
+                        loader.loadFile(imagesPath).then(resolve, reject);
                     })
                         .on("error", reject);
                 });
@@ -272,7 +272,7 @@ export default class Video extends AV {
      */
     static fromFile(...path) {
         return __awaiter(this, void 0, void 0, function* () {
-            const buffer = yield AV.loadFile(path);
+            const buffer = yield loader.loadFile(path);
             return Video.new(buffer);
         });
     }
@@ -298,7 +298,7 @@ export default class Video extends AV {
      */
     static fromUrl(...url) {
         return __awaiter(this, void 0, void 0, function* () {
-            const buffer = yield AV.loadUrl(url);
+            const buffer = yield loader.loadUrl(url);
             return Video.new(buffer);
         });
     }

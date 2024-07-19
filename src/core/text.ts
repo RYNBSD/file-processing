@@ -24,7 +24,7 @@ import type {
 } from "../types/index.js";
 import zlib from "node:zlib";
 import crypto from "node:crypto";
-import { FilterFile } from "../helper/index.js";
+import { FilterFile, loader, parser } from "../helper/index.js";
 import Core from "./core.js";
 
 /**
@@ -312,7 +312,7 @@ export default class Text extends Core {
    * ```
    */
   async compressStream<T extends TextCompressionMethods>(method: T, options?: TextCompressionOptions<T>) {
-    const reads = await Core.toReadable(this.texts);
+    const reads = await parser.toReadable(this.texts);
     return Text.compress(
       reads,
       method,
@@ -339,7 +339,7 @@ export default class Text extends Core {
    * ```
    */
   async decompressStream<T extends TextDecompressionMethods>(method: T, options?: TextDecompressionOptions<T>) {
-    const reads = await Core.toReadable(this.texts);
+    const reads = await parser.toReadable(this.texts);
     return Text.decompress(
       reads,
       method,
@@ -637,7 +637,7 @@ export default class Text extends Core {
    * ```
    */
   static async fromFile(...path: string[]) {
-    const buffer = await Core.loadFile(path);
+    const buffer = await loader.loadFile(path);
     return Text.new(buffer);
   }
 
@@ -662,7 +662,7 @@ export default class Text extends Core {
    * ```
    */
   static async fromUrl<T extends string[] | URL[]>(...url: T) {
-    const buffer = await Core.loadUrl(url);
+    const buffer = await loader.loadUrl(url);
     return Text.new(buffer);
   }
 

@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 import * as csv from "csv";
 import * as csvSync from "csv/sync";
-import { FilterFile } from "../helper/index.js";
+import { FilterFile, loader, parser } from "../helper/index.js";
 import Core from "./core.js";
 export default class CSV extends Core {
     /**
@@ -274,7 +274,7 @@ export default class CSV extends Core {
      */
     parseStream(options) {
         return __awaiter(this, void 0, void 0, function* () {
-            const reads = yield Core.toReadable(this.csvs);
+            const reads = yield parser.toReadable(this.csvs);
             return reads.map((csv) => CSV.parseStream(csv, options));
         });
     }
@@ -298,7 +298,7 @@ export default class CSV extends Core {
      */
     transformStream(parsed, handler, options) {
         return __awaiter(this, void 0, void 0, function* () {
-            const reads = yield Core.toReadable(parsed);
+            const reads = yield parser.toReadable(parsed);
             return reads.map((csv) => CSV.transformStream(csv, handler, options));
         });
     }
@@ -318,7 +318,7 @@ export default class CSV extends Core {
      */
     stringifyStream(csvs, options) {
         return __awaiter(this, void 0, void 0, function* () {
-            const reads = yield Core.toReadable(csvs);
+            const reads = yield parser.toReadable(csvs);
             return reads.map((csv) => CSV.stringifyStream(csv, options));
         });
     }
@@ -443,7 +443,7 @@ export default class CSV extends Core {
      */
     static fromFile(...path) {
         return __awaiter(this, void 0, void 0, function* () {
-            const buffer = yield Core.loadFile(path);
+            const buffer = yield loader.loadFile(path);
             return CSV.new(buffer);
         });
     }
@@ -469,7 +469,7 @@ export default class CSV extends Core {
      */
     static fromUrl(...url) {
         return __awaiter(this, void 0, void 0, function* () {
-            const buffer = yield Core.loadUrl(url);
+            const buffer = yield loader.loadUrl(url);
             return CSV.new(buffer);
         });
     }

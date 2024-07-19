@@ -7,7 +7,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-import { FilterFile } from "../helper/index.js";
+import { FilterFile, loader, parser } from "../helper/index.js";
 import fs from "node:fs";
 import path from "node:path";
 import fastGlob from "fast-glob";
@@ -207,7 +207,7 @@ export default class Image extends Core {
     watermark(logo_1) {
         return __awaiter(this, arguments, void 0, function* (logo, options = {}) {
             const { resize, gravity = "center", alpha = 0.5, tile = false, blend = "over", premultiplied } = options;
-            const buffer = yield Core.toBuffer(logo);
+            const buffer = yield parser.toBuffer(logo);
             const input = yield Image.newSharp(buffer)
                 .resize(resize)
                 .ensureAlpha(alpha)
@@ -364,7 +364,7 @@ export default class Image extends Core {
      */
     static fromFile(...path) {
         return __awaiter(this, void 0, void 0, function* () {
-            const buffer = yield Core.loadFile(path);
+            const buffer = yield loader.loadFile(path);
             return Image.new(buffer);
         });
     }
@@ -390,7 +390,7 @@ export default class Image extends Core {
      */
     static fromUrl(...url) {
         return __awaiter(this, void 0, void 0, function* () {
-            const buffer = yield Core.loadUrl(url);
+            const buffer = yield loader.loadUrl(url);
             return Image.new(buffer);
         });
     }

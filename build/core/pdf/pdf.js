@@ -8,7 +8,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 import { PageSizes, PDFDocument } from "pdf-lib";
-import { FilterFile } from "../../helper/index.js";
+import { FilterFile, loader, parser } from "../../helper/index.js";
 import Core from "../core.js";
 export default class PDF extends Core {
     constructor(...pdfs) {
@@ -306,7 +306,7 @@ export default class PDF extends Core {
      */
     static fromFile(...path) {
         return __awaiter(this, void 0, void 0, function* () {
-            const buffer = yield Core.loadFile(path);
+            const buffer = yield loader.loadFile(path);
             return PDF.new(buffer);
         });
     }
@@ -332,7 +332,7 @@ export default class PDF extends Core {
      */
     static fromUrl(...url) {
         return __awaiter(this, void 0, void 0, function* () {
-            const buffer = yield Core.loadUrl(url);
+            const buffer = yield loader.loadUrl(url);
             return PDF.new(buffer);
         });
     }
@@ -413,7 +413,7 @@ export default class PDF extends Core {
             if (Array.isArray(pdfs))
                 return Promise.all(pdfs.map((pdf) => PDF.save(pdf, options)));
             const save = yield pdfs.save(options);
-            return Core.toBuffer(save);
+            return parser.toBuffer(save);
         });
     }
     static load(pdf, options) {

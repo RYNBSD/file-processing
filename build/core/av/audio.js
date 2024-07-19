@@ -7,8 +7,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-import { FilterFile } from "../../helper/index.js";
-import Core from "../core.js";
+import { FilterFile, loader } from "../../helper/index.js";
 import AV from "./av.js";
 export default class Audio extends AV {
     constructor(...audios) {
@@ -172,7 +171,7 @@ export default class Audio extends AV {
      */
     static fromFile(...path) {
         return __awaiter(this, void 0, void 0, function* () {
-            const buffer = yield Core.loadFile(path);
+            const buffer = yield loader.loadFile(path);
             return Audio.new(buffer);
         });
     }
@@ -198,7 +197,7 @@ export default class Audio extends AV {
      */
     static fromUrl(...url) {
         return __awaiter(this, void 0, void 0, function* () {
-            const buffer = yield Core.loadUrl(url);
+            const buffer = yield loader.loadUrl(url);
             return Audio.new(buffer);
         });
     }

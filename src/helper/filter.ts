@@ -2,7 +2,7 @@ import type { FileTypeResult, MimeType, FileExtension } from "file-type";
 import type { InputFiles } from "../types/index.js";
 import { Mutex } from "async-mutex";
 import isFile, { Node as isFileNode } from "@ryn-bsd/is-file";
-import Core from "../core/core.js";
+import { toBuffer } from "./parser.js";
 
 /**
  * Easy and fast way to filter bunche of files
@@ -54,13 +54,13 @@ export default class FilterFile {
    * @param me - mime extension
    */
   async custom(me: string) {
-    const buffer = await Core.toBuffer(this.input);
+    const buffer = await toBuffer(this.input);
     const result = await isFile.isCustom(buffer, me);
     return result.filter((file) => file.valid).map((file) => file.value) as Buffer[];
   }
 
   static async filter(...input: InputFiles[]) {
-    const buffer = await Core.toBuffer(input);
+    const buffer = await toBuffer(input);
 
     const mutexes = {
       applications: new Mutex(),
@@ -123,7 +123,7 @@ export default class FilterFile {
   static async type<T extends InputFiles[]>(files: T): Promise<(FileTypeResult | undefined)[]>;
   static async type<T extends InputFiles | InputFiles[]>(files: T) {
     if (Array.isArray(files)) return Promise.all(files.map((file) => FilterFile.type(file)));
-    const buffer = await Core.toBuffer(files);
+    const buffer = await toBuffer(files);
     return isFileNode.type(buffer);
   }
 

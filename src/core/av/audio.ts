@@ -1,6 +1,5 @@
 import type { AVSetCallback } from "../../types/index.js";
-import { FilterFile } from "../../helper/index.js";
-import Core from "../core.js";
+import { FilterFile, loader } from "../../helper/index.js";
 import AV from "./av.js";
 
 export default class Audio extends AV {
@@ -166,7 +165,7 @@ export default class Audio extends AV {
    * ```
    */
   static async fromFile(...path: string[]) {
-    const buffer = await Core.loadFile(path);
+    const buffer = await loader.loadFile(path);
     return Audio.new(buffer);
   }
 
@@ -191,7 +190,7 @@ export default class Audio extends AV {
    * ```
    */
   static async fromUrl<T extends string[] | URL[]>(...url: T) {
-    const buffer = await Core.loadUrl(url);
+    const buffer = await loader.loadUrl(url);
     return Audio.new(buffer);
   }
 

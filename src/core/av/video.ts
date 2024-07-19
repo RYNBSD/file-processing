@@ -1,5 +1,5 @@
 import type { AVSetCallback } from "../../types/index.js";
-import { FilterFile, TmpFile } from "../../helper/index.js";
+import { FilterFile, loader, TmpFile } from "../../helper/index.js";
 import path from "node:path";
 import type { FfprobeData } from "fluent-ffmpeg";
 import AV from "./av.js";
@@ -151,7 +151,7 @@ export default class Video extends AV {
         command
           .noAudio()
           .on("end", () => {
-            AV.loadFile(output).then(resolve, reject);
+            loader.loadFile(output).then(resolve, reject);
           })
           .on("error", reject)
           .output(output)
@@ -186,7 +186,7 @@ export default class Video extends AV {
           .noVideo()
           .toFormat(format)
           .on("end", () => {
-            AV.loadFile(output).then(resolve, reject);
+            loader.loadFile(output).then(resolve, reject);
           })
           .on("error", reject)
           .output(output)
@@ -219,7 +219,7 @@ export default class Video extends AV {
             imagesPath = filenames.map((filename) => path.join(tmpFile.tmp!.path, filename));
           })
           .on("end", () => {
-            AV.loadFile(imagesPath).then(resolve, reject);
+            loader.loadFile(imagesPath).then(resolve, reject);
           })
           .on("error", reject);
       });
@@ -264,7 +264,7 @@ export default class Video extends AV {
    * ```
    */
   static async fromFile(...path: string[]) {
-    const buffer = await AV.loadFile(path);
+    const buffer = await loader.loadFile(path);
     return Video.new(buffer);
   }
 
@@ -289,7 +289,7 @@ export default class Video extends AV {
    * ```
    */
   static async fromUrl<T extends string[] | URL[]>(...url: T) {
-    const buffer = await AV.loadUrl(url);
+    const buffer = await loader.loadUrl(url);
     return Video.new(buffer);
   }
 

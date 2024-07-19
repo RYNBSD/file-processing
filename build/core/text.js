@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 import zlib from "node:zlib";
 import crypto from "node:crypto";
-import { FilterFile } from "../helper/index.js";
+import { FilterFile, loader, parser } from "../helper/index.js";
 import Core from "./core.js";
 /**
  * At the end all files are just texts, so this class is applicable on all files
@@ -269,7 +269,7 @@ export default class Text extends Core {
      */
     compressStream(method, options) {
         return __awaiter(this, void 0, void 0, function* () {
-            const reads = yield Core.toReadable(this.texts);
+            const reads = yield parser.toReadable(this.texts);
             return Text.compress(reads, method, Text.gzipStream, Text.deflateStream, Text.deflateRawStream, Text.brotliCompressStream, options);
         });
     }
@@ -289,7 +289,7 @@ export default class Text extends Core {
      */
     decompressStream(method, options) {
         return __awaiter(this, void 0, void 0, function* () {
-            const reads = yield Core.toReadable(this.texts);
+            const reads = yield parser.toReadable(this.texts);
             return Text.decompress(reads, method, Text.gunzipStream, Text.inflateStream, Text.inflateRawStream, Text.brotliDecompressStream, Text.unzipStream, options);
         });
     }
@@ -525,7 +525,7 @@ export default class Text extends Core {
      */
     static fromFile(...path) {
         return __awaiter(this, void 0, void 0, function* () {
-            const buffer = yield Core.loadFile(path);
+            const buffer = yield loader.loadFile(path);
             return Text.new(buffer);
         });
     }
@@ -551,7 +551,7 @@ export default class Text extends Core {
      */
     static fromUrl(...url) {
         return __awaiter(this, void 0, void 0, function* () {
-            const buffer = yield Core.loadUrl(url);
+            const buffer = yield loader.loadUrl(url);
             return Text.new(buffer);
         });
     }

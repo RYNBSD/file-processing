@@ -7,7 +7,7 @@ import type {
   ImageWatermarkOptions,
   InputFiles,
 } from "../types/index.js";
-import { FilterFile } from "../helper/index.js";
+import { FilterFile, loader, parser } from "../helper/index.js";
 import fs from "node:fs";
 import path from "node:path";
 import fastGlob from "fast-glob";
@@ -212,7 +212,7 @@ export default class Image extends Core {
   async watermark(logo: InputFiles, options: ImageWatermarkOptions = {}) {
     const { resize, gravity = "center", alpha = 0.5, tile = false, blend = "over", premultiplied } = options;
 
-    const buffer = await Core.toBuffer(logo);
+    const buffer = await parser.toBuffer(logo);
     const input = await Image.newSharp(buffer)
       .resize(resize)
       .ensureAlpha(alpha)
@@ -419,7 +419,7 @@ export default class Image extends Core {
    * ```
    */
   static async fromFile(...path: string[]) {
-    const buffer = await Core.loadFile(path);
+    const buffer = await loader.loadFile(path);
     return Image.new(buffer);
   }
 
@@ -444,7 +444,7 @@ export default class Image extends Core {
    * ```
    */
   static async fromUrl<T extends string[] | URL[]>(...url: T) {
-    const buffer = await Core.loadUrl(url);
+    const buffer = await loader.loadUrl(url);
     return Image.new(buffer);
   }
 

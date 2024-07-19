@@ -11,7 +11,7 @@ import ffmpeg from "fluent-ffmpeg";
 import { path as ffmpegPath } from "@ffmpeg-installer/ffmpeg";
 import { path as ffprobePath } from "@ffprobe-installer/ffprobe";
 import path from "node:path";
-import { FilterFile, TmpFile } from "../../helper/index.js";
+import { FilterFile, loader, TmpFile } from "../../helper/index.js";
 import Core from "../core.js";
 export default class AV extends Core {
     constructor(...avs) {
@@ -91,7 +91,7 @@ export default class AV extends Core {
                     command
                         .toFormat(format)
                         .on("end", () => {
-                        Core.loadFile(output).then(resolve, reject);
+                        loader.loadFile(output).then(resolve, reject);
                     })
                         .on("error", reject)
                         .output(output)
@@ -147,7 +147,7 @@ export default class AV extends Core {
                 //         .setStartTime(start)
                 //         .setDuration(duration)
                 //         .on("end", () => {
-                //           Core.loadFile(output).then(resolve, reject);
+                //           loadFile(output).then(resolve, reject);
                 //         })
                 //         .on("error", reject)
                 //         .output(output)
@@ -166,7 +166,7 @@ export default class AV extends Core {
                             .setStartTime(i)
                             .setDuration(validDuration)
                             .on("end", () => {
-                            Core.loadFile(output).then(resolve, reject);
+                            loader.loadFile(output).then(resolve, reject);
                         })
                             .on("error", reject)
                             .output(output)
@@ -208,7 +208,7 @@ export default class AV extends Core {
                     console.log("Spawned FFmpeg with command: " + commandLine);
                 })
                     .on("end", () => {
-                    Core.loadFile(output).then(resolve, reject);
+                    loader.loadFile(output).then(resolve, reject);
                 })
                     .on("error", reject)
                     .mergeToFile(output, tmpFile.tmp.path);

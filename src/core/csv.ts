@@ -12,7 +12,7 @@ import type {
 } from "../types/index.js";
 import * as csv from "csv";
 import * as csvSync from "csv/sync";
-import { FilterFile } from "../helper/index.js";
+import { FilterFile, loader, parser } from "../helper/index.js";
 import Core from "./core.js";
 
 export default class CSV extends Core {
@@ -279,7 +279,7 @@ export default class CSV extends Core {
    * ```
    */
   async parseStream(options?: ParseOptions) {
-    const reads = await Core.toReadable(this.csvs);
+    const reads = await parser.toReadable(this.csvs);
     return reads.map((csv) => CSV.parseStream(csv, options));
   }
 
@@ -302,7 +302,7 @@ export default class CSV extends Core {
    * ```
    */
   async transformStream<T, U>(parsed: any[], handler: TransformHandler<T, U>, options?: TransformOptions) {
-    const reads = await Core.toReadable(parsed);
+    const reads = await parser.toReadable(parsed);
     return reads.map((csv) => CSV.transformStream(csv, handler, options));
   }
 
@@ -321,7 +321,7 @@ export default class CSV extends Core {
    * ```
    */
   async stringifyStream(csvs: StringifyInput, options?: StringifyOptions) {
-    const reads = await Core.toReadable(csvs);
+    const reads = await parser.toReadable(csvs);
     return reads.map((csv) => CSV.stringifyStream(csv, options));
   }
 
@@ -447,7 +447,7 @@ export default class CSV extends Core {
    * ```
    */
   static async fromFile(...path: string[]) {
-    const buffer = await Core.loadFile(path);
+    const buffer = await loader.loadFile(path);
     return CSV.new(buffer);
   }
 
@@ -472,7 +472,7 @@ export default class CSV extends Core {
    * ```
    */
   static async fromUrl<T extends string[] | URL[]>(...url: T) {
-    const buffer = await Core.loadUrl(url);
+    const buffer = await loader.loadUrl(url);
     return CSV.new(buffer);
   }
 

@@ -7,7 +7,7 @@ import type {
   PDFSetCallback,
 } from "../../types/index.js";
 import { PageSizes, PDFDocument } from "pdf-lib";
-import { FilterFile } from "../../helper/index.js";
+import { FilterFile, loader, parser } from "../../helper/index.js";
 import Core from "../core.js";
 
 export default class PDF extends Core {
@@ -304,7 +304,7 @@ export default class PDF extends Core {
    * ```
    */
   static async fromFile(...path: string[]) {
-    const buffer = await Core.loadFile(path);
+    const buffer = await loader.loadFile(path);
     return PDF.new(buffer);
   }
 
@@ -329,7 +329,7 @@ export default class PDF extends Core {
    * ```
    */
   static async fromUrl<T extends string[] | URL[]>(...url: T) {
-    const buffer = await Core.loadUrl(url);
+    const buffer = await loader.loadUrl(url);
     return PDF.new(buffer);
   }
 
@@ -445,7 +445,7 @@ export default class PDF extends Core {
     if (Array.isArray(pdfs)) return Promise.all(pdfs.map((pdf) => PDF.save(pdf, options)));
 
     const save = await pdfs.save(options);
-    return Core.toBuffer(save);
+    return parser.toBuffer(save);
   }
 
   static async load<T extends string | Uint8Array | ArrayBuffer>(pdf: T, options?: LoadOptions) {
