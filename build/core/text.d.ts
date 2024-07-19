@@ -1,7 +1,7 @@
 /// <reference types="node" resolution-mode="require"/>
 /// <reference types="node" resolution-mode="require"/>
 import type { Readable } from "node:stream";
-import type { BrotliCompressOptions, BrotliDecompressOptions, CipherOptions, DecipherOptions, DeflateOptions, DeflateRawOptions, GunzipOptions, GzipOptions, HashOptions, InflateOptions, InflateRawOptions, TextCompressFn, TextCompressionMethods, TextCompressionOptions, TextCustomCallback, TextDecompressFn, TextDecompressionMethods, TextDecompressionOptions, TextSetCallback, UnzipOptions } from "../types/index.js";
+import type { BrotliCompressOptions, BrotliDecompressOptions, CipherOptions, DecipherOptions, DeflateOptions, DeflateRawOptions, GunzipOptions, GzipOptions, HashOptions, HmacOptions, InflateOptions, InflateRawOptions, TextCompressFn, TextCompressionMethods, TextCompressionOptions, TextCustomCallback, TextDecompressFn, TextDecompressionMethods, TextDecompressionOptions, TextSetCallback, UnzipOptions } from "../types/index.js";
 import Core from "./core.js";
 /**
  * At the end all files are just texts, so this class is applicable on all files
@@ -247,6 +247,11 @@ export default class Text extends Core {
     decompressSync<T extends TextDecompressionMethods>(method: T, options?: TextDecompressionOptions<T>): Buffer[];
     isHashSupported(algorithm: string): boolean;
     hash(algorithm: string, options?: HashOptions): Promise<Buffer[]>;
+    hmac(algorithm: string, key?: undefined, options?: HmacOptions): Promise<{
+        key: Buffer;
+        hash: Buffer;
+    }[]>;
+    hmac(algorithm: string, key: Buffer, options?: HmacOptions): Promise<Buffer[]>;
     isCipherSupported(algorithm: string): boolean;
     cipher(algorithm: string, key: undefined, iv: undefined, options?: CipherOptions): Promise<{
         key: Buffer;

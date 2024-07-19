@@ -337,6 +337,23 @@ export default class Text extends Core {
             });
         });
     }
+    hmac(algorithm, key, options) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return this.custom((text) => {
+                switch (Buffer.isBuffer(key)) {
+                    case true:
+                        return crypto.createHmac(algorithm, key, options).update(text).digest();
+                    default: {
+                        const hmacKey = crypto.randomBytes(32);
+                        return {
+                            key: hmacKey,
+                            hash: crypto.createHmac(algorithm, hmacKey, options).update(text).digest(),
+                        };
+                    }
+                }
+            });
+        });
+    }
     isCipherSupported(algorithm) {
         return this.supportedCiphers.includes(algorithm);
     }

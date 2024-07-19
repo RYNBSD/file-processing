@@ -415,7 +415,7 @@ export default class Text extends Core {
     });
   }
 
-  async hmac(algorithm: string, key: undefined, options?: HmacOptions): Promise<{ key: Buffer; hash: Buffer }[]>;
+  async hmac(algorithm: string, key?: undefined, options?: HmacOptions): Promise<{ key: Buffer; hash: Buffer }[]>;
   async hmac(algorithm: string, key: Buffer, options?: HmacOptions): Promise<Buffer[]>;
   async hmac(algorithm: string, key?: Buffer, options?: HmacOptions) {
     return this.custom((text) => {
