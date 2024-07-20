@@ -263,7 +263,7 @@ const pdf = new PDF(Buffer.alloc(1));
 - add streaming. 🟠
 - Add dir loader. 🟠
 - Add glob loader. 🟠
-- Generate hash. 🟠
+- Generate hash. 🟢
 - Merge videos/audios in one video/audio. 🟠
 - Encryption/Decryption. 🟠
 - Generate Hmac. 🟠

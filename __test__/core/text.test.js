@@ -1,4 +1,3 @@
-import fs from "node:fs";
 import Text from "../../build/core/text.js";
 
 describe("Text", () => {
@@ -115,6 +114,18 @@ describe("Text", () => {
     await expect(async () => {
       textDecompress.decompressSync("");
     }).rejects.toThrow(TypeError);
+  });
+
+  it("hash", async () => {
+    const text = await Text.fromFile("asset/video.webm");
+    const algorithm = text.supportedHashes[0];
+
+    expect(text.isHashSupported("")).toBe(false);
+    expect(text.isHashSupported(algorithm)).toBe(true);
+
+    const hash = await text.hash(algorithm);
+    expect(hash).toHaveLength(1);
+    expect(hash[0]).toBeInstanceOf(Buffer);
   });
 
   it("custom", async () => {
