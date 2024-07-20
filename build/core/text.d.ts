@@ -251,7 +251,7 @@ export default class Text extends Core {
         key: Buffer;
         hash: Buffer;
     }[]>;
-    hmac(algorithm: string, key: Buffer, options?: HmacOptions): Promise<Buffer[]>;
+    hmac(algorithm: string, key?: Buffer, options?: HmacOptions): Promise<Buffer[]>;
     isCipherSupported(algorithm: string): boolean;
     cipher(algorithm: string, key: undefined, iv: undefined, options?: CipherOptions): Promise<{
         key: Buffer;

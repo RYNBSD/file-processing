@@ -126,6 +126,28 @@ describe("Text", () => {
     const hash = await text.hash(algorithm);
     expect(hash).toHaveLength(1);
     expect(hash[0]).toBeInstanceOf(Buffer);
+    expect(hash[0].length).toBeGreaterThan(0);
+  });
+
+  it("hmac", async () => {
+    const text = await Text.fromFile("asset/video.webm");
+    const algorithm = text.supportedHashes[0];
+
+    expect(text.isHashSupported("")).toBe(false);
+    expect(text.isHashSupported(algorithm)).toBe(true);
+
+    const hmacKey = await text.hmac(algorithm, Buffer.from("secret123"));
+    expect(hmacKey).toHaveLength(1);
+    expect(hmacKey[0]).toBeInstanceOf(Buffer);
+
+    const hmac = await text.hmac(algorithm);
+    expect(hmac).toHaveLength(1);
+    expect(hmac[0]).toHaveProperty("key");
+    expect(hmac[0].key).toBeInstanceOf(Buffer);
+    expect(hmac[0].key.length).toBeGreaterThan(0);
+    expect(hmac[0]).toHaveProperty("hash");
+    expect(hmac[0].hash).toBeInstanceOf(Buffer);
+    expect(hmac[0].hash.length).toBeGreaterThan(0);
   });
 
   it("custom", async () => {
