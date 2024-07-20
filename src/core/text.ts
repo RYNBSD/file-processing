@@ -437,51 +437,10 @@ export default class Text extends Core {
     return this.supportedCiphers.includes(algorithm);
   }
 
-  async cipher(
-    algorithm: string,
-    key: undefined,
-    iv: undefined,
-    options?: CipherOptions,
-  ): Promise<{ key: Buffer; iv: Buffer; encrypt: Buffer }[]>;
-  async cipher(
-    algorithm: string,
-    key: Buffer,
-    iv: undefined,
-    options?: CipherOptions,
-  ): Promise<{ iv: Buffer; encrypt: Buffer }[]>;
-  async cipher(
-    algorithm: string,
-    key: undefined,
-    iv: Buffer,
-    options?: CipherOptions,
-  ): Promise<{ key: Buffer; encrypt: Buffer }[]>;
-  async cipher(algorithm: string, key: Buffer, iv: Buffer, options?: CipherOptions): Promise<Buffer[]>;
-  async cipher(algorithm: string, key: Buffer, iv: false, options?: CipherOptions): Promise<Buffer[]>;
-  async cipher(algorithm: string, key?: Buffer, iv?: Buffer | false, options?: CipherOptions) {
+  async cipher(algorithm: string, key: Buffer, iv: Buffer | null = null, options: CipherOptions = {}) {
     return this.custom((text) => {
-      let cipherKey: Buffer;
-      let cipherIv: Buffer;
-
-      if (typeof key === "undefined" && typeof iv === "undefined") {
-        cipherKey = crypto.randomBytes(32);
-        cipherIv = crypto.randomBytes(16);
-        const cipher = crypto.createCipheriv(algorithm, cipherKey, cipherIv, options);
-        return { key: cipherKey, iv: cipherKey, encrypt: Buffer.concat([cipher.update(text), cipher.final()]) };
-      } else if (typeof key === "string" && typeof iv === "undefined") {
-        cipherIv = crypto.randomBytes(16);
-        const cipher = crypto.createCipheriv(algorithm, key, null, options);
-        return { iv: cipherIv, encrypt: Buffer.concat([cipher.update(text), cipher.final()]) };
-      } else if (typeof key === "undefined" && typeof iv === "string") {
-        cipherKey = crypto.randomBytes(32);
-        const cipher = crypto.createCipheriv(algorithm, cipherKey, iv, options);
-        return { key: cipherKey, encrypt: Buffer.concat([cipher.update(text), cipher.final()]) };
-      } else if (typeof key === "string" && typeof iv === "string") {
-        const cipher = crypto.createCipheriv(algorithm, key, iv, options);
-        return Buffer.concat([cipher.update(text), cipher.final()]);
-      } else if (typeof key === "string" && typeof iv === "boolean" && !iv) {
-        const cipher = crypto.createCipheriv(algorithm, key, null, options);
-        return Buffer.concat([cipher.update(text), cipher.final()]);
-      }
+      const cipher = crypto.createCipheriv(algorithm, key, iv, options);
+      return Buffer.concat([cipher.update(text), cipher.final()]);
     });
   }
 

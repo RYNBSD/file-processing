@@ -253,21 +253,7 @@ export default class Text extends Core {
     }[]>;
     hmac(algorithm: string, key?: Buffer, options?: HmacOptions): Promise<Buffer[]>;
     isCipherSupported(algorithm: string): boolean;
-    cipher(algorithm: string, key: undefined, iv: undefined, options?: CipherOptions): Promise<{
-        key: Buffer;
-        iv: Buffer;
-        encrypt: Buffer;
-    }[]>;
-    cipher(algorithm: string, key: Buffer, iv: undefined, options?: CipherOptions): Promise<{
-        iv: Buffer;
-        encrypt: Buffer;
-    }[]>;
-    cipher(algorithm: string, key: undefined, iv: Buffer, options?: CipherOptions): Promise<{
-        key: Buffer;
-        encrypt: Buffer;
-    }[]>;
-    cipher(algorithm: string, key: Buffer, iv: Buffer, options?: CipherOptions): Promise<Buffer[]>;
-    cipher(algorithm: string, key: Buffer, iv: false, options?: CipherOptions): Promise<Buffer[]>;
+    cipher(algorithm: string, key: Buffer, iv?: Buffer | null, options?: CipherOptions): Promise<Buffer[]>;
     isDecipherSupported(algorithm: string): boolean;
     decipher(algorithm: string, key: Buffer, iv?: Buffer | null, options?: DecipherOptions): Promise<Buffer[]>;
     /**

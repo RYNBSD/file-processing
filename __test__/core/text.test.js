@@ -1,6 +1,15 @@
+import crypto from "node:crypto";
 import Text from "../../build/core/text.js";
+import { loader } from "../../build/helper/index.js";
 
 describe("Text", () => {
+  let key, iv;
+
+  beforeAll(() => {
+    key = crypto.randomBytes(16);
+    iv = crypto.randomBytes(16);
+  });
+
   it("set/get/append/extend/clone", async () => {
     const text = new Text(Buffer.alloc(0));
     expect(text.getTexts()).toHaveLength(1);
@@ -136,7 +145,7 @@ describe("Text", () => {
     expect(text.isHashSupported("")).toBe(false);
     expect(text.isHashSupported(algorithm)).toBe(true);
 
-    const hmacKey = await text.hmac(algorithm, Buffer.from("secret123"));
+    const hmacKey = await text.hmac(algorithm, key);
     expect(hmacKey).toHaveLength(1);
     expect(hmacKey[0]).toBeInstanceOf(Buffer);
 
@@ -148,6 +157,31 @@ describe("Text", () => {
     expect(hmac[0]).toHaveProperty("hash");
     expect(hmac[0].hash).toBeInstanceOf(Buffer);
     expect(hmac[0].hash.length).toBeGreaterThan(0);
+  });
+
+  it("(de)cipher", async () => {
+    const file = await loader.loadFile("asset/csv.csv");
+    const text = Text.new([file]);
+    console.log(text.supportedCiphers);
+    const algorithm = text.supportedCiphers[0];
+
+    expect(text.isCipherSupported("")).toBe(false);
+    expect(text.isCipherSupported(algorithm)).toBe(true);
+
+    const cipher = await text.cipher(algorithm, key, iv);
+    expect(cipher).toHaveLength(1);
+    expect(cipher[0]).toBeInstanceOf(Buffer);
+    expect(cipher[0].length).toBeGreaterThan(0);
+
+    expect(text.isDecipherSupported("")).toBe(false);
+    expect(text.isDecipherSupported(algorithm)).toBe(true);
+
+    const decipher = await Text.new(cipher).decipher(algorithm, key, iv);
+
+    expect(decipher).toHaveLength(1);
+    expect(decipher[0].length).toBeGreaterThan(0);
+
+    expect(file.toString()).toEqual(decipher[0].toString());
   });
 
   it("custom", async () => {

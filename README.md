@@ -265,8 +265,8 @@ const pdf = new PDF(Buffer.alloc(1));
 - Add glob loader. 🟠
 - Generate hash. 🟢
 - Generate Hmac. 🟢
+- Encryption/Decryption. 🟢
 - Merge videos/audios in one video/audio. 🟠
-- Encryption/Decryption. 🟠
 - Merge audio and video in one video. 🔴
 - Pdf to image. 🔴
 - File scanner (antivirus). 🔴
