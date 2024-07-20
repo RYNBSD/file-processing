@@ -1,6 +1,7 @@
 import fs from "node:fs";
 import { faker } from "@faker-js/faker";
 import Image from "../../build/core/image.js";
+import { loader } from "../../build/helper/index.js"
 import { imageBuffer } from "../index.js";
 
 describe("Image", () => {
@@ -69,7 +70,7 @@ describe("Image", () => {
   });
 
   it("ocr", async () => {
-    const buffer = await Image.loadFile("asset/rynbsd.png");
+    const buffer = await loader.loadFile("asset/rynbsd.png");
     const ocr = await new Image(buffer).ocr("eng");
     expect(ocr).toHaveLength(1);
     expect(ocr[0].text.trim()).toEqual("RYN\nBSD");

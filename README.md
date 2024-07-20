@@ -56,6 +56,14 @@ What you think is it fast ? (of course, yes!)
 
 What you think is it safe ? (of course, yes!)
 
+# Environment
+
+make sure to specify if you are in production/development/test environment, this has an impact on performance.
+
+# Prerequisite
+
+- In case you want to add file scanning and anti-virus, make sure to install [clamav](https://www.clamav.net/downloads)
+
 # Usage
 
 ### Image
@@ -94,7 +102,6 @@ image.clone();
 // Free memory (remove all stored images buffer), you can reuse this instance again.
 image.clean();
 
-
 // this method filter non images and return the new length of images
 image.filter();
 // => Promise<number>
@@ -129,7 +136,7 @@ Image.fromFile("https://example.com/image1.png", "https://example.com/image2.png
 // Promise<Image>
 
 // Create a new safe instance
-Image.new([Buffer.alloc(1)])
+Image.new([Buffer.alloc(1)]);
 // => Promise<Image>
 
 // Create a new sharp instance
