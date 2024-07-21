@@ -414,7 +414,7 @@ export default class Text extends Core {
    * @example
    * ```js
    *  const text = await Text.fromFile("text.txt")
-   *  text.isHashSupported("sh256") // => true
+   *  text.isHashSupported("sha256") // => true
    *  text.isHashSupported("") // => false
    * ```
    */
@@ -447,7 +447,7 @@ export default class Text extends Core {
    * @example
    * ```js
    *  const text = await Text.fromFile("text.txt")
-   *  const hashes = await text.hmac("sha256", "secret")
+   *  const hashes = await text.hmac("sha256", Buffer.from("secret"))
    *  // => Buffer[]
    * ```
    */
@@ -469,10 +469,32 @@ export default class Text extends Core {
     });
   }
 
+  /**
+   *
+   * @param algorithm - cipher algorithm
+   *
+   * @example
+   * ```js
+   *  const text = await Text.fromFile("text.txt")
+   *  text.isCipherSupported("aes-256-cbc") // => true
+   *  text.isCipherSupported("") // => false
+   * ```
+   */
   isCipherSupported(algorithm: string) {
     return this.supportedCiphers.includes(algorithm);
   }
 
+  /**
+   *
+   * @param algorithm - cipher algorithm
+   *
+   * @example
+   * ```js
+   *  const text = await Text.fromFile("text.txt")
+   *  const ciphers = await text.cipher("aes-256-cbc", Buffer.alloc(0))
+   *  // => Buffer[]
+   * ```
+   */
   async cipher(algorithm: string, key: Buffer, iv: Buffer | null = null, options: CipherOptions = {}) {
     return this.custom((text) => {
       const cipher = crypto.createCipheriv(algorithm, key, iv, options);
@@ -480,10 +502,32 @@ export default class Text extends Core {
     });
   }
 
+  /**
+   *
+   * @param algorithm - decipher algorithm
+   *
+   * @example
+   * ```js
+   *  const text = await Text.fromFile("text.txt")
+   *  text.isDecipherSupported("aes-256-cbc") // => true
+   *  text.isDecipherSupported("") // => false
+   * ```
+   */
   isDecipherSupported(algorithm: string) {
     return this.isCipherSupported(algorithm);
   }
 
+  /**
+   *
+   * @param algorithm - decipher algorithm
+   *
+   * @example
+   * ```js
+   *  const text = await Text.fromFile("text.txt")
+   *  const deciphers = await text.decipher("aes-256-cbc", Buffer.alloc(0))
+   *  // => Buffer[]
+   * ```
+   */
   async decipher(algorithm: string, key: Buffer, iv: Buffer | null = null, options: DecipherOptions = {}) {
     return this.custom((text) => {
       const decipher = crypto.createDecipheriv(algorithm, key, iv, options);

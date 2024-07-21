@@ -336,7 +336,7 @@ export default class Text extends Core {
      * @example
      * ```js
      *  const text = await Text.fromFile("text.txt")
-     *  text.isHashSupported("sh256") // => true
+     *  text.isHashSupported("sha256") // => true
      *  text.isHashSupported("") // => false
      * ```
      */
@@ -378,9 +378,31 @@ export default class Text extends Core {
             });
         });
     }
+    /**
+     *
+     * @param algorithm - cipher algorithm
+     *
+     * @example
+     * ```js
+     *  const text = await Text.fromFile("text.txt")
+     *  text.isCipherSupported("aes-256-cbc") // => true
+     *  text.isCipherSupported("") // => false
+     * ```
+     */
     isCipherSupported(algorithm) {
         return this.supportedCiphers.includes(algorithm);
     }
+    /**
+     *
+     * @param algorithm - cipher algorithm
+     *
+     * @example
+     * ```js
+     *  const text = await Text.fromFile("text.txt")
+     *  const ciphers = await text.cipher("aes-256-cbc", Buffer.alloc(0))
+     *  // => Buffer[]
+     * ```
+     */
     cipher(algorithm_1, key_1) {
         return __awaiter(this, arguments, void 0, function* (algorithm, key, iv = null, options = {}) {
             return this.custom((text) => {
@@ -389,9 +411,31 @@ export default class Text extends Core {
             });
         });
     }
+    /**
+     *
+     * @param algorithm - decipher algorithm
+     *
+     * @example
+     * ```js
+     *  const text = await Text.fromFile("text.txt")
+     *  text.isDecipherSupported("aes-256-cbc") // => true
+     *  text.isDecipherSupported("") // => false
+     * ```
+     */
     isDecipherSupported(algorithm) {
         return this.isCipherSupported(algorithm);
     }
+    /**
+     *
+     * @param algorithm - decipher algorithm
+     *
+     * @example
+     * ```js
+     *  const text = await Text.fromFile("text.txt")
+     *  const deciphers = await text.decipher("aes-256-cbc", Buffer.alloc(0))
+     *  // => Buffer[]
+     * ```
+     */
     decipher(algorithm_1, key_1) {
         return __awaiter(this, arguments, void 0, function* (algorithm, key, iv = null, options = {}) {
             return this.custom((text) => {

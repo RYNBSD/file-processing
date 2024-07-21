@@ -254,7 +254,7 @@ export default class Text extends Core {
      * @example
      * ```js
      *  const text = await Text.fromFile("text.txt")
-     *  text.isHashSupported("sh256") // => true
+     *  text.isHashSupported("sha256") // => true
      *  text.isHashSupported("") // => false
      * ```
      */
@@ -279,7 +279,7 @@ export default class Text extends Core {
      * @example
      * ```js
      *  const text = await Text.fromFile("text.txt")
-     *  const hashes = await text.hmac("sha256", "secret")
+     *  const hashes = await text.hmac("sha256", Buffer.from("secret"))
      *  // => Buffer[]
      * ```
      */
@@ -288,9 +288,53 @@ export default class Text extends Core {
         hash: Buffer;
     }[]>;
     hmac(algorithm: string, key?: Buffer, options?: HmacOptions): Promise<Buffer[]>;
+    /**
+     *
+     * @param algorithm - cipher algorithm
+     *
+     * @example
+     * ```js
+     *  const text = await Text.fromFile("text.txt")
+     *  text.isCipherSupported("aes-256-cbc") // => true
+     *  text.isCipherSupported("") // => false
+     * ```
+     */
     isCipherSupported(algorithm: string): boolean;
+    /**
+     *
+     * @param algorithm - cipher algorithm
+     *
+     * @example
+     * ```js
+     *  const text = await Text.fromFile("text.txt")
+     *  const ciphers = await text.cipher("aes-256-cbc", Buffer.alloc(0))
+     *  // => Buffer[]
+     * ```
+     */
     cipher(algorithm: string, key: Buffer, iv?: Buffer | null, options?: CipherOptions): Promise<Buffer[]>;
+    /**
+     *
+     * @param algorithm - decipher algorithm
+     *
+     * @example
+     * ```js
+     *  const text = await Text.fromFile("text.txt")
+     *  text.isDecipherSupported("aes-256-cbc") // => true
+     *  text.isDecipherSupported("") // => false
+     * ```
+     */
     isDecipherSupported(algorithm: string): boolean;
+    /**
+     *
+     * @param algorithm - decipher algorithm
+     *
+     * @example
+     * ```js
+     *  const text = await Text.fromFile("text.txt")
+     *  const deciphers = await text.decipher("aes-256-cbc", Buffer.alloc(0))
+     *  // => Buffer[]
+     * ```
+     */
     decipher(algorithm: string, key: Buffer, iv?: Buffer | null, options?: DecipherOptions): Promise<Buffer[]>;
     /**
      * @returns - base on the callback return type

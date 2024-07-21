@@ -162,7 +162,6 @@ describe("Text", () => {
   it("(de)cipher", async () => {
     const file = await loader.loadFile("asset/csv.csv");
     const text = Text.new([file]);
-    console.log(text.supportedCiphers);
     const algorithm = text.supportedCiphers[0];
 
     expect(text.isCipherSupported("")).toBe(false);
