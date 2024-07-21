@@ -23,7 +23,9 @@ export default class Text extends Core {
     constructor(...texts: Buffer[]);
     /** get current length of texts */
     get length(): number;
+    /** get supported hashes from crypto module */
     get supportedHashes(): string[];
+    /** get supported ciphers from crypto module */
     get supportedCiphers(): string[];
     /**
      * get texts of this instance
@@ -245,7 +247,29 @@ export default class Text extends Core {
      * ```
      */
     decompressSync<T extends TextDecompressionMethods>(method: T, options?: TextDecompressionOptions<T>): Buffer[];
+    /**
+     *
+     * @param algorithm - hash algorithm
+     *
+     * @example
+     * ```js
+     *  const text = await Text.fromFile("text.txt")
+     *  text.isHashSupported("sh256") // => true
+     *  text.isHashSupported("") // => false
+     * ```
+     */
     isHashSupported(algorithm: string): boolean;
+    /**
+     *
+     * @param algorithm - hash algorithm
+     *
+     * @example
+     * ```js
+     *  const text = await Text.fromFile("text.txt")
+     *  const hashes = await text.hash("sh256")
+     *  // => string[]
+     * ```
+     */
     hash(algorithm: string, options?: HashOptions): Promise<Buffer[]>;
     hmac(algorithm: string, key?: undefined, options?: HmacOptions): Promise<{
         key: Buffer;

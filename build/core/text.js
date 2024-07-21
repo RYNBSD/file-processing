@@ -35,9 +35,11 @@ export default class Text extends Core {
     get length() {
         return this.texts.length;
     }
+    /** get supported hashes from crypto module */
     get supportedHashes() {
         return crypto.getHashes();
     }
+    /** get supported ciphers from crypto module */
     get supportedCiphers() {
         return crypto.getCiphers();
     }
@@ -327,9 +329,31 @@ export default class Text extends Core {
     decompressSync(method, options) {
         return Text.decompress(this.texts, method, Text.gunzipSync, Text.inflateSync, Text.inflateRawSync, Text.brotliDecompressSync, Text.unzipSync, options);
     }
+    /**
+     *
+     * @param algorithm - hash algorithm
+     *
+     * @example
+     * ```js
+     *  const text = await Text.fromFile("text.txt")
+     *  text.isHashSupported("sh256") // => true
+     *  text.isHashSupported("") // => false
+     * ```
+     */
     isHashSupported(algorithm) {
         return this.supportedHashes.includes(algorithm);
     }
+    /**
+     *
+     * @param algorithm - hash algorithm
+     *
+     * @example
+     * ```js
+     *  const text = await Text.fromFile("text.txt")
+     *  const hashes = await text.hash("sh256")
+     *  // => string[]
+     * ```
+     */
     hash(algorithm, options) {
         return __awaiter(this, void 0, void 0, function* () {
             return this.custom((text) => {
