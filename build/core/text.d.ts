@@ -266,11 +266,23 @@ export default class Text extends Core {
      * @example
      * ```js
      *  const text = await Text.fromFile("text.txt")
-     *  const hashes = await text.hash("sh256")
-     *  // => string[]
+     *  const hashes = await text.hash("sha256")
+     *  // => Buffer[]
      * ```
      */
     hash(algorithm: string, options?: HashOptions): Promise<Buffer[]>;
+    /**
+     *
+     * @param algorithm - hash algorithm
+     * @param key - secret key to hash
+     *
+     * @example
+     * ```js
+     *  const text = await Text.fromFile("text.txt")
+     *  const hashes = await text.hmac("sha256", "secret")
+     *  // => Buffer[]
+     * ```
+     */
     hmac(algorithm: string, key?: undefined, options?: HmacOptions): Promise<{
         key: Buffer;
         hash: Buffer;
