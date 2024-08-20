@@ -192,6 +192,10 @@ const pdf = new PDF(Buffer.alloc(1));
 
 ## 0.9.0 - Working
 
+- Remove puppeteer.
+- Remove loader from Core (class).
+- Remove parser from Core (class).
+
 ## 0.8.0 - Current
 
 - Add examples.
@@ -266,6 +270,7 @@ const pdf = new PDF(Buffer.alloc(1));
 - Generate hash. 🟢
 - Generate Hmac. 🟢
 - Encryption/Decryption. 🟢
+- Custom Error handler. 🟢
 - Merge videos/audios in one video/audio. 🟠
 - Merge audio and video in one video. 🔴
 - Pdf to image. 🔴

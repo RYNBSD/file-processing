@@ -3,6 +3,7 @@ import { writeFile } from "node:fs/promises";
 import { randomUUID } from "node:crypto";
 import path from "node:path";
 import { dir, type DirectoryResult } from "tmp-promise";
+import { ProcessorHelperError } from "../error/index.js";
 import FilterFile from "./filter.js";
 
 /**
@@ -20,7 +21,7 @@ export default class TmpFile {
 
   private async createFn(file: Buffer) {
     const ext = (await FilterFile.extension(file)) ?? "";
-    if (ext.length === 0) throw new Error(`${TmpFile.name}: Unknown file when create`);
+    if (ext.length === 0) throw ProcessorHelperError.tmp("Unknown file when create");
 
     const fileName = TmpFile.generateFileName(ext);
     const fullPath = path.join(this.tmp!.path, fileName);

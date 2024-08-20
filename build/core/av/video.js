@@ -9,6 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 import { FilterFile, loader, TmpFile } from "../../helper/index.js";
 import path from "node:path";
+import { ProcessorError } from "../../error/index.js";
 import AV from "./av.js";
 export default class Video extends AV {
     constructor(...videos) {
@@ -151,7 +152,7 @@ export default class Video extends AV {
                 var _a;
                 const format = (_a = (yield FilterFile.extension(this.avs[index]))) !== null && _a !== void 0 ? _a : "";
                 if (format.length === 0)
-                    throw new Error(`${Video.name}: Unknown video format`);
+                    throw ProcessorError.video("Unknown video format");
                 const output = path.join(tmpFile.tmp.path, TmpFile.generateFileName(format));
                 return new Promise((resolve, reject) => {
                     command
@@ -338,7 +339,7 @@ export default class Video extends AV {
         return __awaiter(this, void 0, void 0, function* () {
             const filtered = yield Video.filter(...videos);
             if (filtered.length === 0)
-                throw new Error(`${Video.name}: Non valid video`);
+                throw ProcessorError.video("Non valid video");
             return new Video(...filtered);
         });
     }

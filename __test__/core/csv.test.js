@@ -1,5 +1,6 @@
 import fs from "node:fs";
 import CSV from "../../build/core/csv.js";
+import { ProcessorError } from "../../build/error/index.js";
 
 describe("CSV", () => {
   it("set/get/append/extend/clone", async () => {
@@ -22,18 +23,13 @@ describe("CSV", () => {
 
     await expect(async () => {
       CSV.new(Buffer.alloc(0));
-    }).rejects.toThrow();
+    }).rejects.toThrow(ProcessorError);
   });
 
   it("metadata", async () => {
-    const buffer = await CSV.loadFile("asset/csv.csv");
-
-    const metadata = await new CSV(buffer).metadata();
+    const csv = await CSV.fromFile("asset/csv.csv");
+    const metadata = await csv.metadata();
     expect(metadata).toHaveLength(1);
-
-    await expect(async () => {
-      await new Image(Buffer.alloc(1)).metadata();
-    }).rejects.toThrow();
   });
 
   it("filter", async () => {
@@ -118,14 +114,13 @@ describe("CSV", () => {
   });
 
   it("(static) new", async () => {
-    const buffer = await CSV.loadFile("asset/csv.csv");
-    const csv = CSV.new([buffer]);
+    const csv = await CSV.fromFile("asset/csv.csv");
     expect(csv).toBeInstanceOf(CSV);
     expect(csv.length).toEqual(1);
 
     await expect(async () => {
       CSV.new([Buffer.alloc(0)]);
-    }).rejects.toThrow();
+    }).rejects.toThrow(ProcessorError);
   });
 
   it("(static) isCSV", () => {

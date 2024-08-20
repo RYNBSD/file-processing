@@ -7,12 +7,13 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+import path from "node:path";
 import ffmpeg from "fluent-ffmpeg";
 import { path as ffmpegPath } from "@ffmpeg-installer/ffmpeg";
 import { path as ffprobePath } from "@ffprobe-installer/ffprobe";
-import path from "node:path";
 import { FilterFile, loader, TmpFile } from "../../helper/index.js";
 import Core from "../core.js";
+import { ProcessorError } from "../../error/processor.js";
 export default class AV extends Core {
     constructor(...avs) {
         super();
@@ -127,12 +128,12 @@ export default class AV extends Core {
                 });
                 const avDuration = (_a = metadata.format.duration) !== null && _a !== void 0 ? _a : 0;
                 if (avDuration === 0)
-                    throw new Error(`${AV.name}: Empty av duration`);
+                    throw ProcessorError.av("Empty av duration");
                 if (start >= avDuration)
-                    throw new Error(`${AV.name}: start time is bigger then the av duration`);
+                    throw ProcessorError.av("start time is bigger then the av duration");
                 const format = (_b = (yield FilterFile.extension(this.avs[index]))) !== null && _b !== void 0 ? _b : "";
                 if (format.length === 0)
-                    throw new Error(`${AV.name}: Unknown av format`);
+                    throw ProcessorError.av("Unknown av format");
                 //? High performance and High memory consumption
                 // const splitMap: { start: number; duration: number }[] = [];
                 // for (let start = 0; start < avDuration; start += duration) {
@@ -189,8 +190,8 @@ export default class AV extends Core {
      * ```js
      * ```
      */
-    merge(format_1) {
-        return __awaiter(this, arguments, void 0, function* (format, fps = 30) {
+    merge(format) {
+        return __awaiter(this, void 0, void 0, function* () {
             const converted = yield this.convert(format);
             const tmpFile = yield new TmpFile(...converted).init();
             const output = path.join(tmpFile.tmp.path, TmpFile.generateFileName(format));
@@ -203,7 +204,6 @@ export default class AV extends Core {
                     command.input(av);
                 });
                 command
-                    .fps(fps)
                     .on("start", (commandLine) => {
                     console.log("Spawned FFmpeg with command: " + commandLine);
                 })
@@ -250,6 +250,21 @@ export default class AV extends Core {
             return result;
         });
     }
+    // static async m<T extends string | stream.Readable | Buffer>(video: T, audio: T) {
+    //   let videoInput: string | stream.Readable = "";
+    //   if (video instanceof stream.Readable && stream.Readable.isReadable(video)) videoInput = video;
+    //   else if (typeof video === "string") videoInput = video;
+    //   else {
+    //   }
+    //   return new Promise((resolve, reject) => {
+    //     AV.newFfmpeg(video)
+    //       .input(audio)
+    //       .on("end", () => {})
+    //       .on("error", reject)
+    //       .output()
+    //       .run();
+    //   });
+    // }
     /**
      * @returns new instance of ffmpeg
      *

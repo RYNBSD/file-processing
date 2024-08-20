@@ -9,6 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 import { PageSizes, PDFDocument } from "pdf-lib";
 import { FilterFile, loader, parser } from "../../helper/index.js";
+import { ProcessorError } from "../../error/index.js";
 import Core from "../core.js";
 export default class PDF extends Core {
     constructor(...pdfs) {
@@ -346,7 +347,7 @@ export default class PDF extends Core {
                 new FilterFile(images).custom("jpg"),
             ]);
             if (isJPG.length === 0 && isPNG.length === 0)
-                throw new Error(`${PDF.name}: Invalid images to convert to pdf`);
+                throw ProcessorError.pdf("Invalid images to convert to pdf");
             const { pageSize = PageSizes.A4, scaleImage, position } = options;
             const pdf = yield PDFDocument.create(options.create);
             const page = pdf.addPage(pageSize);
@@ -377,20 +378,22 @@ export default class PDF extends Core {
             return pdf;
         });
     }
-    static generate(htmls, options) {
-        return __awaiter(this, void 0, void 0, function* () {
-            if (Array.isArray(htmls))
-                return Promise.all(htmls.map((html) => PDF.generate(html, options)));
-            const browser = yield Core.initBrowser();
-            const page = yield browser.newPage();
-            const res = yield page.goto(htmls, { waitUntil: "networkidle2" });
-            if (res === null || !res.ok())
-                throw new Error(`${PDF.name}: Can't fetch (${htmls})`);
-            const buffer = yield page.pdf(options);
-            yield browser.close();
-            return buffer;
-        });
-    }
+    /**
+     * @deprecated
+     * Generate pdf from websites
+     */
+    // static async generate<T extends string>(htmls: T, options?: PDFOptions): Promise<Buffer>;
+    // static async generate<T extends string[]>(htmls: T, options?: PDFOptions): Promise<Buffer[]>;
+    // static async generate<T extends string | string[]>(htmls: T, options?: PDFOptions) {
+    //   if (Array.isArray(htmls)) return Promise.all(htmls.map((html) => PDF.generate(html, options)));
+    //   const browser = await Core.initBrowser();
+    //   const page = await browser.newPage();
+    //   const res = await page.goto(htmls, { waitUntil: "networkidle2" });
+    //   if (res === null || !res.ok()) throw new Error(`${PDF.name}: Can't fetch (${htmls})`);
+    //   const buffer = await page.pdf(options);
+    //   await browser.close();
+    //   return buffer;
+    // }
     /**
      *
      * @returns filter non pdf

@@ -2,6 +2,7 @@ import type { AVSetCallback } from "../../types/index.js";
 import { FilterFile, loader, TmpFile } from "../../helper/index.js";
 import path from "node:path";
 import type { FfprobeData } from "fluent-ffmpeg";
+import { ProcessorError } from "../../error/index.js";
 import AV from "./av.js";
 
 export default class Video extends AV {
@@ -143,7 +144,7 @@ export default class Video extends AV {
   async only() {
     return this.custom(async (command, tmpFile, index) => {
       const format = (await FilterFile.extension(this.avs[index]!)) ?? "";
-      if (format.length === 0) throw new Error(`${Video.name}: Unknown video format`);
+      if (format.length === 0) throw ProcessorError.video("Unknown video format");
 
       const output = path.join(tmpFile.tmp!.path, TmpFile.generateFileName(format));
 
@@ -341,7 +342,7 @@ export default class Video extends AV {
    */
   static async new(videos: Buffer[]) {
     const filtered = await Video.filter(...videos);
-    if (filtered.length === 0) throw new Error(`${Video.name}: Non valid video`);
+    if (filtered.length === 0) throw ProcessorError.video("Non valid video");
     return new Video(...filtered);
   }
 

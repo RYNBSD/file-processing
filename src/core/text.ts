@@ -25,6 +25,7 @@ import type {
 import zlib from "node:zlib";
 import crypto from "node:crypto";
 import { FilterFile, loader, parser } from "../helper/index.js";
+import { ProcessorError } from "../error/index.js";
 import Core from "./core.js";
 
 /**
@@ -592,7 +593,7 @@ export default class Text extends Core {
         case "brotli-compress":
           return brotliCompressFn(text, options);
         default:
-          throw new TypeError(`${Text.name}: Invalid compression method (${method})`);
+          throw ProcessorError.text(`Invalid compression method (${method})`);
       }
     });
   }
@@ -633,7 +634,7 @@ export default class Text extends Core {
         case "unzip":
           return unzipFn(text, options);
         default:
-          throw new TypeError(`${Text.name}: Invalid decompression method (${method})`);
+          throw ProcessorError.text(`Invalid decompression method (${method})`);
       }
     });
   }
@@ -727,7 +728,7 @@ export default class Text extends Core {
    */
   static new(texts: Buffer[]) {
     const filtered = texts.filter((text) => text.length > 0);
-    if (filtered.length === 0) throw new Error(`${Text.name}: Non valid text`);
+    if (filtered.length === 0) throw ProcessorError.text("Non valid text");
     return new Text(...filtered);
   }
 

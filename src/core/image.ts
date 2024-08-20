@@ -1,4 +1,3 @@
-import type { ScreenshotOptions } from "puppeteer";
 import type {
   ImageCustomCallback,
   ImageFormats,
@@ -14,6 +13,7 @@ import fastGlob from "fast-glob";
 import { createWorker } from "tesseract.js";
 import sharp from "sharp";
 import Core from "./core.js";
+import { ProcessorError } from "../error/processor.js";
 
 export default class Image extends Core {
   private images: Buffer[];
@@ -367,7 +367,7 @@ export default class Image extends Core {
   }
 
   /**
-   * @deprecated
+  //  * @deprecated
    * @returns - Take screenshot of websites
    *
    * @example
@@ -379,24 +379,24 @@ export default class Image extends Core {
    *  // Buffer[]
    * ```
    * */
-  static async screenshot<T extends string>(urls: T, options?: Omit<ScreenshotOptions, "encoding">): Promise<Buffer>;
-  static async screenshot<T extends string[]>(
-    urls: T,
-    options?: Omit<ScreenshotOptions, "encoding">,
-  ): Promise<Buffer[]>;
-  static async screenshot<T extends string | string[]>(urls: T, options?: ScreenshotOptions) {
-    if (Array.isArray(urls)) return Promise.all(urls.map(async (url) => Image.screenshot(url, options)));
+  // static async screenshot<T extends string>(urls: T, options?: Omit<ScreenshotOptions, "encoding">): Promise<Buffer>;
+  // static async screenshot<T extends string[]>(
+  //   urls: T,
+  //   options?: Omit<ScreenshotOptions, "encoding">,
+  // ): Promise<Buffer[]>;
+  // static async screenshot<T extends string | string[]>(urls: T, options?: ScreenshotOptions) {
+  //   if (Array.isArray(urls)) return Promise.all(urls.map(async (url) => Image.screenshot(url, options)));
 
-    const browser = await Core.initBrowser();
-    const page = await browser.newPage();
+  //   const browser = await Core.initBrowser();
+  //   const page = await browser.newPage();
 
-    const res = await page.goto(urls, { waitUntil: "networkidle2" });
-    if (res === null || !res.ok()) throw new Error(`${Image.name}: Can't fetch (${urls})`);
+  //   const res = await page.goto(urls, { waitUntil: "networkidle2" });
+  //   if (res === null || !res.ok()) throw ProcessorError.image("Can't fetch (${urls})");
 
-    const buffer = await page.screenshot(options);
-    await browser.close();
-    return buffer;
-  }
+  //   const buffer = await page.screenshot(options);
+  //   await browser.close();
+  //   return buffer;
+  // }
 
   /**
    * @throws
@@ -483,7 +483,7 @@ export default class Image extends Core {
    */
   static async new(images: Buffer[]) {
     const filtered = await Image.filter(...images);
-    if (filtered.length === 0) throw new Error(`${Image.name}: Non valid image`);
+    if (filtered.length === 0) throw ProcessorError.image("Non valid image");
     return new Image(...filtered);
   }
 

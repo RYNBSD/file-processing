@@ -1,7 +1,8 @@
 import fs from "node:fs";
-import { Video, Audio } from "../../build/core/av/index.js";
-import { TmpFile } from "../../build/helper/index.js";
 import path from "node:path";
+import { Video, Audio } from "../../build/core/av/index.js";
+import { loader, parser, TmpFile } from "../../build/helper/index.js";
+import { ProcessorError } from "../../build/error/index.js"
 
 describe("AV", () => {
   it("metadata", async () => {
@@ -21,7 +22,7 @@ describe("AV", () => {
         command
           .preset("divx")
           .on("end", () => {
-            Video.loadFile(output).then(resolve).catch(reject);
+            loader.loadFile(output).then(resolve).catch(reject);
           })
           .on("error", reject)
           .output(output, { end: true })
@@ -35,9 +36,7 @@ describe("AV", () => {
   });
 
   it("split", async () => {
-    const buffer = await Video.loadFile("asset/video.webm");
-    const video = await Video.new([buffer]);
-
+    const video = await Video.fromFile("asset/video.webm");
     const splits = await video.spilt(10);
     expect(splits).toHaveLength(1);
     expect(splits[0]).toHaveLength(2);
@@ -76,7 +75,7 @@ describe("Video", () => {
     const video = new Video(Buffer.alloc(0));
     expect(video.getVideos()).toHaveLength(1);
 
-    const buffer = await Video.loadFile("asset/video.webm");
+    const buffer = await loader.loadFile("asset/video.webm");
     await video.append(Buffer.alloc(0), buffer);
     expect(video.getVideos()).toHaveLength(2);
 
@@ -90,16 +89,14 @@ describe("Video", () => {
   });
 
   it("filter", async () => {
-    const buffer = await Video.loadFile("asset/video.webm");
+    const buffer = await loader.loadFile("asset/video.webm");
     const video = new Video(buffer, Buffer.alloc(0));
     const length = await video.filter();
     expect(length).toBe(1);
   });
 
   it("only", async () => {
-    const buffer = await Video.loadFile("asset/video.webm");
-    const video = await Video.new([buffer]);
-
+    const video = await Video.fromFile("asset/video.webm");
     const muted = await video.only();
     expect(muted).toHaveLength(1);
     expect(muted[0]).toBeInstanceOf(Buffer);
@@ -107,13 +104,12 @@ describe("Video", () => {
 
   it("audio", async () => {
     const video = await Video.fromFile("asset/video.webm", "asset/NodeJS-Part1.mp4");
-
     const audios = await video.audio("mp3");
     expect(audios).toHaveLength(2);
     expect(audios[0]).toBe(null);
     expect(audios[1]).toBeInstanceOf(Buffer);
 
-    await Video.toFile([{ path: "tmp/video-audio.mp3", input: audios[1] }]);
+    await parser.toFile([{ path: "tmp/video-audio.mp3", input: audios[1] }]);
   });
 
   it("screenshot", async () => {
@@ -140,14 +136,13 @@ describe("Video", () => {
   });
 
   it("(static) new", async () => {
-    const buffer = await Video.loadFile("asset/video.webm");
-    const video = await Video.new([buffer]);
+    const video = await Video.fromFile("asset/video.webm");
     expect(video).toBeInstanceOf(Video);
     expect(video.length).toEqual(1);
 
     await expect(async () => {
       await Video.new([Buffer.alloc(1)]);
-    }).rejects.toThrow(Error);
+    }).rejects.toThrow(ProcessorError);
   });
 
   it("(static) isVideo", () => {
@@ -166,7 +161,7 @@ describe("Audio", () => {
     const audio = new Audio(Buffer.alloc(0));
     expect(audio.getAudios()).toHaveLength(1);
 
-    const buffer = await Audio.loadFile("asset/audio.mp3");
+    const buffer = await loader.loadFile("asset/audio.mp3");
     await audio.append(Buffer.alloc(0), buffer);
     expect(audio.getAudios()).toHaveLength(2);
 
@@ -180,7 +175,7 @@ describe("Audio", () => {
   });
 
   it("filter", async () => {
-    const buffer = await Audio.loadFile("asset/audio.mp3");
+    const buffer = await loader.loadFile("asset/audio.mp3");
     const audio = new Audio(buffer, Buffer.alloc(0));
     const length = await audio.filter();
     expect(length).toBe(1);
@@ -199,14 +194,13 @@ describe("Audio", () => {
   });
 
   it("(static) new", async () => {
-    const buffer = await Audio.loadFile("asset/audio.mp3");
-    const audio = await Audio.new([buffer]);
+    const audio = await Audio.fromFile("asset/audio.mp3");
     expect(audio).toBeInstanceOf(Audio);
     expect(audio.length).toEqual(1);
 
     await expect(async () => {
       await Audio.new([Buffer.alloc(1)]);
-    }).rejects.toThrow(Error);
+    }).rejects.toThrow(ProcessorError);
   });
 
   it("(static) isAudio", () => {

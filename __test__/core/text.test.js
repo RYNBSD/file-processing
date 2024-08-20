@@ -1,6 +1,7 @@
 import crypto from "node:crypto";
 import Text from "../../build/core/text.js";
 import { loader } from "../../build/helper/index.js";
+import { ProcessorError } from "../../build/error/index.js";
 
 describe("Text", () => {
   let key, iv;
@@ -61,11 +62,11 @@ describe("Text", () => {
 
     await expect(async () => {
       await textCompress.compressAsync("");
-    }).rejects.toThrow(TypeError);
+    }).rejects.toThrow(ProcessorError);
 
     await expect(async () => {
       await textDecompress.decompressAsync("");
-    }).rejects.toThrow(TypeError);
+    }).rejects.toThrow(ProcessorError);
   });
 
   // it("(de)compress stream", async () => {
@@ -118,11 +119,11 @@ describe("Text", () => {
 
     await expect(async () => {
       textCompress.compressSync("");
-    }).rejects.toThrow(TypeError);
+    }).rejects.toThrow(ProcessorError);
 
     await expect(async () => {
       textDecompress.decompressSync("");
-    }).rejects.toThrow(TypeError);
+    }).rejects.toThrow(ProcessorError);
   });
 
   it("hash", async () => {
@@ -207,8 +208,7 @@ describe("Text", () => {
   });
 
   it("(static) new", async () => {
-    const buffer = await Text.loadFile("asset/rynbsd.png");
-    const text = Text.new([buffer]);
+    const text = await Text.fromFile("asset/rynbsd.png");
     expect(text).toBeInstanceOf(Text);
     expect(text.length).toEqual(1);
 

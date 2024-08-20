@@ -1,26 +1,4 @@
-import type { InputFiles } from "../types/index.js";
-import { Readable, type Writable } from "node:stream";
-import { isAnyArrayBuffer, isUint8Array } from "node:util/types";
-import fs from "node:fs";
-import path from "node:path";
-import {
-  any2buffer,
-  array2buffer,
-  buffer2readable,
-  isReadable,
-  isReadableStream,
-  isStream,
-  readable2buffer,
-  readablestream2buffer,
-  stream2buffer,
-  string2buffer,
-  uint8array2buffer,
-  url2buffer,
-} from "@ryn-bsd/from-buffer-to";
-import isBase64 from "is-base64";
-import fastGlob from "fast-glob";
-import puppeteer from "puppeteer";
-import { isUrl } from "../helper/index.js";
+import stream from "node:stream";
 
 export default abstract class Core {
   constructor() {}
@@ -49,12 +27,8 @@ export default abstract class Core {
    *  writable.pipe(output)
    * ```
    */
-  static stream(readable: Readable, writable: Writable) {
+  static stream(readable: stream.Readable, writable: stream.Writable) {
     return readable.pipe(writable);
-  }
-
-  static initBrowser(options?: puppeteer.PuppeteerLaunchOptions) {
-    return puppeteer.launch(options);
   }
 
   /**
@@ -71,12 +45,12 @@ export default abstract class Core {
    *  // => Buffer
    * ```
    */
-  static async loadFile<T extends string>(paths: T): Promise<Buffer>;
-  static async loadFile<T extends string[]>(paths: T): Promise<Buffer[]>;
-  static async loadFile<T extends string | string[]>(paths: T) {
-    if (Array.isArray(paths)) return Promise.all(paths.map((path) => Core.loadFile(path)));
-    return fs.promises.readFile(paths);
-  }
+  // static async loadFile<T extends string>(paths: T): Promise<Buffer>;
+  // static async loadFile<T extends string[]>(paths: T): Promise<Buffer[]>;
+  // static async loadFile<T extends string | string[]>(paths: T) {
+  //   if (Array.isArray(paths)) return Promise.all(paths.map((path) => Core.loadFile(path)));
+  //   return fs.promises.readFile(paths);
+  // }
 
   /**
    * @deprecated use loader.loadDir() from helper
@@ -92,13 +66,13 @@ export default abstract class Core {
    *  // => Buffer[]
    * ```
    */
-  static async loadDir<T extends string>(paths: T): Promise<Buffer[]>;
-  static async loadDir<T extends string[]>(paths: T): Promise<Buffer[][]>;
-  static async loadDir<T extends string | string[]>(paths: T) {
-    if (Array.isArray(paths)) return Promise.all(paths.map((path) => Core.loadDir(path)));
-    const files = await fs.promises.readdir(paths);
-    return Core.loadFile(files.map((file) => path.join(paths, file)));
-  }
+  // static async loadDir<T extends string>(paths: T): Promise<Buffer[]>;
+  // static async loadDir<T extends string[]>(paths: T): Promise<Buffer[][]>;
+  // static async loadDir<T extends string | string[]>(paths: T) {
+  //   if (Array.isArray(paths)) return Promise.all(paths.map((path) => Core.loadDir(path)));
+  //   const files = await fs.promises.readdir(paths);
+  //   return Core.loadFile(files.map((file) => path.join(paths, file)));
+  // }
 
   /**
    * @deprecated  use loader.loadGlob() from helper
@@ -112,26 +86,26 @@ export default abstract class Core {
    *  // => (Buffer | Buffer[])[]
    * ```
    */
-  static async loadGlob<T extends fastGlob.Pattern | fastGlob.Pattern[]>(
-    globs: T,
-    options?: fastGlob.Options,
-  ): Promise<(Buffer | Buffer[])[]> {
-    const entries = await fastGlob(globs, options);
-    const cwd = options?.cwd ?? process.cwd();
+  // static async loadGlob<T extends fastGlob.Pattern | fastGlob.Pattern[]>(
+  //   globs: T,
+  //   options?: fastGlob.Options,
+  // ): Promise<(Buffer | Buffer[])[]> {
+  //   const entries = await fastGlob(globs, options);
+  //   const cwd = options?.cwd ?? process.cwd();
 
-    const results = await Promise.all(
-      entries.map(async (entry) => {
-        const fullPath = path.join(cwd, entry);
-        const stat = await fs.promises.stat(fullPath);
+  //   const results = await Promise.all(
+  //     entries.map(async (entry) => {
+  //       const fullPath = path.join(cwd, entry);
+  //       const stat = await fs.promises.stat(fullPath);
 
-        if (stat.isFile()) return Core.loadFile(fullPath);
-        else if (stat.isDirectory()) return Core.loadDir(fullPath);
-        return null;
-      }),
-    );
+  //       if (stat.isFile()) return Core.loadFile(fullPath);
+  //       else if (stat.isDirectory()) return Core.loadDir(fullPath);
+  //       return null;
+  //     }),
+  //   );
 
-    return results.filter((result) => result !== null) as (Buffer | Buffer[])[];
-  }
+  //   return results.filter((result) => result !== null) as (Buffer | Buffer[])[];
+  // }
 
   /**
    * @deprecated  use loader.loadUrl() from helper
@@ -147,12 +121,12 @@ export default abstract class Core {
    *  // => Buffer
    * ```
    */
-  static async loadUrl<T extends string | URL>(urls: T): Promise<Buffer>;
-  static async loadUrl<T extends string[] | URL[]>(urls: T): Promise<Buffer[]>;
-  static async loadUrl<T extends string | URL | string[] | URL[]>(urls: T) {
-    if (Array.isArray(urls)) return Promise.all(urls.map((url) => Core.loadUrl(url)));
-    return url2buffer(urls);
-  }
+  // static async loadUrl<T extends string | URL>(urls: T): Promise<Buffer>;
+  // static async loadUrl<T extends string[] | URL[]>(urls: T): Promise<Buffer[]>;
+  // static async loadUrl<T extends string | URL | string[] | URL[]>(urls: T) {
+  //   if (Array.isArray(urls)) return Promise.all(urls.map((url) => Core.loadUrl(url)));
+  //   return url2buffer(urls);
+  // }
 
   /**
    * @deprecated use parser.toBuffer() from helper
@@ -165,27 +139,27 @@ export default abstract class Core {
    *  Core.toBuffer("/file.text")
    *  Core.toBuffer("https://example.com/file.text")
    * ```
-   */
-  static async toBuffer<T extends InputFiles>(input: T): Promise<Buffer>;
-  static async toBuffer<T extends InputFiles[]>(input: T): Promise<Buffer[]>;
-  static async toBuffer<T extends InputFiles | InputFiles[]>(input: T) {
-    if (Array.isArray(input)) return Promise.all(input.map((i) => Core.toBuffer(i)));
+  //  */
+  // static async toBuffer<T extends InputFiles>(input: T): Promise<Buffer>;
+  // static async toBuffer<T extends InputFiles[]>(input: T): Promise<Buffer[]>;
+  // static async toBuffer<T extends InputFiles | InputFiles[]>(input: T) {
+  //   if (Array.isArray(input)) return Promise.all(input.map((i) => Core.toBuffer(i)));
 
-    if (Buffer.isBuffer(input)) return input;
-    else if (isUrl(input)) return Core.loadUrl(input);
-    else if (isUint8Array(input)) return uint8array2buffer(input);
-    else if (isAnyArrayBuffer(input)) return array2buffer(input);
-    else if (isStream(input)) return stream2buffer(input);
-    else if (isReadableStream(input)) return readablestream2buffer(input);
-    else if (isReadable(input) && Readable.isReadable(input)) return readable2buffer(input);
-    else if (typeof input === "string") {
-      const fileStat = await fs.promises.stat(input);
-      if (fileStat.isFile()) return Core.loadFile(input);
-      else if (isBase64(input, { allowEmpty: false })) return Buffer.from(input, "base64");
-      return string2buffer(input, false);
-    }
-    return any2buffer(input);
-  }
+  //   if (Buffer.isBuffer(input)) return input;
+  //   else if (isUrl(input)) return Core.loadUrl(input);
+  //   else if (isUint8Array(input)) return uint8array2buffer(input);
+  //   else if (isAnyArrayBuffer(input)) return array2buffer(input);
+  //   else if (isStream(input)) return stream2buffer(input);
+  //   else if (isReadableStream(input)) return readablestream2buffer(input);
+  //   else if (isReadable(input) && Readable.isReadable(input)) return readable2buffer(input);
+  //   else if (typeof input === "string") {
+  //     const fileStat = await fs.promises.stat(input);
+  //     if (fileStat.isFile()) return Core.loadFile(input);
+  //     else if (isBase64(input, { allowEmpty: false })) return Buffer.from(input, "base64");
+  //     return string2buffer(input, false);
+  //   }
+  //   return any2buffer(input);
+  // }
 
   /**
    * @deprecated use parser.toReadable() from helper
@@ -199,14 +173,14 @@ export default abstract class Core {
    *  Core.toReadable("https://example.com/file.text")
    * ```
    */
-  static async toReadable<T extends InputFiles>(input: T): Promise<Readable>;
-  static async toReadable<T extends InputFiles[]>(input: T): Promise<Readable[]>;
-  static async toReadable<T extends InputFiles | InputFiles[]>(input: T) {
-    if (Array.isArray(input)) return Promise.all(input.map((i) => Core.toReadable(i)));
-    if (isReadable(input) && Readable.isReadable(input)) return input;
-    const buffer = await Core.toBuffer(input);
-    return buffer2readable(buffer);
-  }
+  // static async toReadable<T extends InputFiles>(input: T): Promise<Readable>;
+  // static async toReadable<T extends InputFiles[]>(input: T): Promise<Readable[]>;
+  // static async toReadable<T extends InputFiles | InputFiles[]>(input: T) {
+  //   if (Array.isArray(input)) return Promise.all(input.map((i) => Core.toReadable(i)));
+  //   if (isReadable(input) && Readable.isReadable(input)) return input;
+  //   const buffer = await Core.toBuffer(input);
+  //   return buffer2readable(buffer);
+  // }
 
   /**
    * @deprecated use parser.toBase64() from helper
@@ -220,14 +194,14 @@ export default abstract class Core {
    *  Core.toBase64("https://example.com/file.text")
    * ```
    */
-  static async toBase64<T extends InputFiles>(input: T, encoding?: "base64" | "base64url"): Promise<string>;
-  static async toBase64<T extends InputFiles[]>(input: T, encoding?: "base64" | "base64url"): Promise<string[]>;
-  static async toBase64<T extends InputFiles | InputFiles[]>(input: T, encoding: "base64" | "base64url" = "base64") {
-    if (Array.isArray(input)) return Promise.all(input.map((i) => Core.toBase64(i)));
-    if (typeof input === "string" && isBase64(input)) return input;
-    const buffer = await Core.toBuffer(input);
-    return buffer.toString(encoding);
-  }
+  // static async toBase64<T extends InputFiles>(input: T, encoding?: "base64" | "base64url"): Promise<string>;
+  // static async toBase64<T extends InputFiles[]>(input: T, encoding?: "base64" | "base64url"): Promise<string[]>;
+  // static async toBase64<T extends InputFiles | InputFiles[]>(input: T, encoding: "base64" | "base64url" = "base64") {
+  //   if (Array.isArray(input)) return Promise.all(input.map((i) => Core.toBase64(i)));
+  //   if (typeof input === "string" && isBase64(input)) return input;
+  //   const buffer = await Core.toBuffer(input);
+  //   return buffer.toString(encoding);
+  // }
 
   /**
    * @deprecated use parser.toFile() from helper
@@ -246,12 +220,12 @@ export default abstract class Core {
    *  )
    * ```
    */
-  static async toFile(file: { path: string; input: InputFiles }[]) {
-    await Promise.all(
-      file.map(async (f) => {
-        const buffer = await Core.toBuffer(f.input);
-        return fs.promises.writeFile(f.path, buffer);
-      }),
-    );
-  }
+  // static async toFile(file: { path: string; input: InputFiles }[]) {
+  //   await Promise.all(
+  //     file.map(async (f) => {
+  //       const buffer = await Core.toBuffer(f.input);
+  //       return fs.promises.writeFile(f.path, buffer);
+  //     }),
+  //   );
+  // }
 }

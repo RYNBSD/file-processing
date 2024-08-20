@@ -1,13 +1,14 @@
 import { PDFDocument, PageSizes } from "pdf-lib";
 import { imageBuffer } from "../index.js";
 import PDF from "../../build/core/pdf/pdf.js";
+import { loader, parser } from "../../build/helper/index.js";
 
 describe("PDF", () => {
   it("set/get/append/extend/clone", async () => {
     const pdf = new PDF(Buffer.alloc(0));
     expect(pdf.getPdfs()).toHaveLength(1);
 
-    const buffer = await PDF.loadFile("asset/pdf.pdf");
+    const buffer = await loader.loadFile("asset/pdf.pdf");
     await pdf.append(Buffer.alloc(0), buffer);
     expect(pdf.getPdfs()).toHaveLength(2);
 
@@ -45,10 +46,10 @@ describe("PDF", () => {
   });
 
   it("merge", async () => {
-    const buffers = await PDF.loadFile(["asset/pdf.pdf", "asset/pdf.pdf", "asset/pdf.pdf"]);
-    const document = await new PDF(...buffers).merge();
+    const pdf = await PDF.fromFile("asset/pdf.pdf", "asset/pdf.pdf", "asset/pdf.pdf");
+    const document = await pdf.merge();
     expect(document).toBeInstanceOf(Buffer);
-    await PDF.toFile([{ path: "tmp/merge.pdf", input: await document}]);
+    await parser.toFile([{ path: "tmp/merge.pdf", input: await document }]);
   });
 
   it("custom", async () => {
@@ -93,9 +94,9 @@ describe("PDF", () => {
   });
 
   it("(static) fromImage", async () => {
-    const image1 = await imageBuffer();
-    const image2 = await imageBuffer();
-    const image3 = await imageBuffer();
+    const image1 = await loader.loadFile("asset/rynbsd.png");
+    const image2 = await loader.loadFile("asset/rynbsd.png");
+    const image3 = await loader.loadFile("asset/rynbsd.png");
 
     const pdfs = await PDF.fromImage([image1, image2, image3], {
       pageSize: PageSizes.A4,
@@ -106,7 +107,7 @@ describe("PDF", () => {
 
     await Promise.all(
       pdfs.map(async (pdf, index) => {
-        PDF.toFile([
+        parser.toFile([
           {
             path: `tmp/${index}.pdf`,
             input: await pdf.save(),
@@ -116,15 +117,15 @@ describe("PDF", () => {
     );
   });
 
-  it("(static) save/toBuffer/load", async () => {
+  it("(static) load pdf and save it as buffer", async () => {
     const pdf = await PDF.fromFile("asset/pdf.pdf", "asset/pdf.pdf", "asset/pdf.pdf");
-    const documents = await Promise.all(pdf.getPdfs().map((b) => PDF.load(b)));
+    const documents = await pdf.getDocuments();
 
     const save = await PDF.save(documents);
     expect(save).toHaveLength(3);
     expect(save[0]).toBeInstanceOf(Uint8Array);
 
-    const buffer = await PDF.toBuffer(save);
+    const buffer = await parser.toBuffer(save);
     expect(buffer).toHaveLength(3);
     expect(buffer[0]).toBeInstanceOf(Buffer);
   });
@@ -142,8 +143,7 @@ describe("PDF", () => {
   });
 
   it("(static) new", async () => {
-    const buffer = await PDF.loadFile("asset/pdf.pdf");
-    const pdf = await PDF.new([buffer]);
+    const pdf = await PDF.fromFile("asset/pdf.pdf");
     expect(pdf).toBeInstanceOf(PDF);
     expect(pdf.length).toEqual(1);
 

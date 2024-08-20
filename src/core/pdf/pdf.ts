@@ -1,4 +1,3 @@
-import type { PDFOptions } from "puppeteer";
 import type { CreateOptions, LoadOptions, PDFImage, SaveOptions } from "pdf-lib";
 import type {
   PdfCustomDocumentCallback,
@@ -8,6 +7,7 @@ import type {
 } from "../../types/index.js";
 import { PageSizes, PDFDocument } from "pdf-lib";
 import { FilterFile, loader, parser } from "../../helper/index.js";
+import { ProcessorError } from "../../error/index.js";
 import Core from "../core.js";
 
 export default class PDF extends Core {
@@ -356,7 +356,7 @@ export default class PDF extends Core {
       new FilterFile(images).custom("png"),
       new FilterFile(images).custom("jpg"),
     ]);
-    if (isJPG.length === 0 && isPNG.length === 0) throw new Error(`${PDF.name}: Invalid images to convert to pdf`);
+    if (isJPG.length === 0 && isPNG.length === 0) throw ProcessorError.pdf("Invalid images to convert to pdf");
 
     const { pageSize = PageSizes.A4, scaleImage, position } = options;
 
@@ -394,21 +394,21 @@ export default class PDF extends Core {
    * @deprecated
    * Generate pdf from websites
    */
-  static async generate<T extends string>(htmls: T, options?: PDFOptions): Promise<Buffer>;
-  static async generate<T extends string[]>(htmls: T, options?: PDFOptions): Promise<Buffer[]>;
-  static async generate<T extends string | string[]>(htmls: T, options?: PDFOptions) {
-    if (Array.isArray(htmls)) return Promise.all(htmls.map((html) => PDF.generate(html, options)));
+  // static async generate<T extends string>(htmls: T, options?: PDFOptions): Promise<Buffer>;
+  // static async generate<T extends string[]>(htmls: T, options?: PDFOptions): Promise<Buffer[]>;
+  // static async generate<T extends string | string[]>(htmls: T, options?: PDFOptions) {
+  //   if (Array.isArray(htmls)) return Promise.all(htmls.map((html) => PDF.generate(html, options)));
 
-    const browser = await Core.initBrowser();
-    const page = await browser.newPage();
+  //   const browser = await Core.initBrowser();
+  //   const page = await browser.newPage();
 
-    const res = await page.goto(htmls, { waitUntil: "networkidle2" });
-    if (res === null || !res.ok()) throw new Error(`${PDF.name}: Can't fetch (${htmls})`);
+  //   const res = await page.goto(htmls, { waitUntil: "networkidle2" });
+  //   if (res === null || !res.ok()) throw new Error(`${PDF.name}: Can't fetch (${htmls})`);
 
-    const buffer = await page.pdf(options);
-    await browser.close();
-    return buffer;
-  }
+  //   const buffer = await page.pdf(options);
+  //   await browser.close();
+  //   return buffer;
+  // }
 
   /**
    *

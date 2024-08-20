@@ -1,11 +1,12 @@
 import type { AVCustomCallback } from "../../types/index.js";
-import type { Readable } from "node:stream";
+import stream from "node:stream";
+import path from "node:path";
 import ffmpeg, { type FfprobeData } from "fluent-ffmpeg";
 import { path as ffmpegPath } from "@ffmpeg-installer/ffmpeg";
 import { path as ffprobePath } from "@ffprobe-installer/ffprobe";
-import path from "node:path";
 import { FilterFile, loader, TmpFile } from "../../helper/index.js";
 import Core from "../core.js";
+import { ProcessorError } from "../../error/processor.js";
 
 export default abstract class AV extends Core {
   protected avs: Buffer[];
@@ -120,12 +121,12 @@ export default abstract class AV extends Core {
       });
 
       const avDuration = metadata.format.duration ?? 0;
-      if (avDuration === 0) throw new Error(`${AV.name}: Empty av duration`);
+      if (avDuration === 0) throw ProcessorError.av("Empty av duration");
 
-      if (start >= avDuration) throw new Error(`${AV.name}: start time is bigger then the av duration`);
+      if (start >= avDuration) throw ProcessorError.av("start time is bigger then the av duration");
 
       const format = (await FilterFile.extension(this.avs[index]!)) ?? "";
-      if (format.length === 0) throw new Error(`${AV.name}: Unknown av format`);
+      if (format.length === 0) throw ProcessorError.av("Unknown av format");
 
       //? High performance and High memory consumption
       // const splitMap: { start: number; duration: number }[] = [];
@@ -188,7 +189,7 @@ export default abstract class AV extends Core {
    * ```js
    * ```
    */
-  async merge(format: string, fps: number = 30) {
+  async merge(format: string) {
     const converted = await this.convert(format);
     const tmpFile = await new TmpFile(...converted).init();
     const output = path.join(tmpFile.tmp!.path, TmpFile.generateFileName(format));
@@ -203,7 +204,6 @@ export default abstract class AV extends Core {
       });
 
       command
-        .fps(fps)
         .on("start", (commandLine) => {
           console.log("Spawned FFmpeg with command: " + commandLine);
         })
@@ -252,6 +252,24 @@ export default abstract class AV extends Core {
     return result;
   }
 
+  // static async m<T extends string | stream.Readable | Buffer>(video: T, audio: T) {
+  //   let videoInput: string | stream.Readable = "";
+
+  //   if (video instanceof stream.Readable && stream.Readable.isReadable(video)) videoInput = video;
+  //   else if (typeof video === "string") videoInput = video;
+  //   else {
+  //   }
+
+  //   return new Promise((resolve, reject) => {
+  //     AV.newFfmpeg(video)
+  //       .input(audio)
+  //       .on("end", () => {})
+  //       .on("error", reject)
+  //       .output()
+  //       .run();
+  //   });
+  // }
+
   /**
    * @returns new instance of ffmpeg
    *
@@ -261,7 +279,7 @@ export default abstract class AV extends Core {
    *  // => FfmpegCommand
    * ```
    */
-  static newFfmpeg<T extends Readable | string>(av: T, options?: ffmpeg.FfmpegCommandOptions) {
+  static newFfmpeg<T extends stream.Readable | string>(av: T, options?: ffmpeg.FfmpegCommandOptions) {
     return ffmpeg(options).clone().setFfmpegPath(ffmpegPath).setFfprobePath(ffprobePath).input(av);
   }
 }

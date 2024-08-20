@@ -14,6 +14,7 @@ import fastGlob from "fast-glob";
 import { createWorker } from "tesseract.js";
 import sharp from "sharp";
 import Core from "./core.js";
+import { ProcessorError } from "../error/processor.js";
 export default class Image extends Core {
     /**
      * Create unsafe instance
@@ -328,20 +329,34 @@ export default class Image extends Core {
             return rtn.map((r) => Image.justBuffer(r));
         return rtn.data;
     }
-    static screenshot(urls, options) {
-        return __awaiter(this, void 0, void 0, function* () {
-            if (Array.isArray(urls))
-                return Promise.all(urls.map((url) => __awaiter(this, void 0, void 0, function* () { return Image.screenshot(url, options); })));
-            const browser = yield Core.initBrowser();
-            const page = yield browser.newPage();
-            const res = yield page.goto(urls, { waitUntil: "networkidle2" });
-            if (res === null || !res.ok())
-                throw new Error(`${Image.name}: Can't fetch (${urls})`);
-            const buffer = yield page.screenshot(options);
-            yield browser.close();
-            return buffer;
-        });
-    }
+    /**
+    //  * @deprecated
+     * @returns - Take screenshot of websites
+     *
+     * @example
+     * ```js
+     *  const image = awaitImage.screenshot("https://example.com")
+     *  // Buffer
+     *
+     *  const images = awaitImage.screenshot(["https://example.com", "https://example.net"])
+     *  // Buffer[]
+     * ```
+     * */
+    // static async screenshot<T extends string>(urls: T, options?: Omit<ScreenshotOptions, "encoding">): Promise<Buffer>;
+    // static async screenshot<T extends string[]>(
+    //   urls: T,
+    //   options?: Omit<ScreenshotOptions, "encoding">,
+    // ): Promise<Buffer[]>;
+    // static async screenshot<T extends string | string[]>(urls: T, options?: ScreenshotOptions) {
+    //   if (Array.isArray(urls)) return Promise.all(urls.map(async (url) => Image.screenshot(url, options)));
+    //   const browser = await Core.initBrowser();
+    //   const page = await browser.newPage();
+    //   const res = await page.goto(urls, { waitUntil: "networkidle2" });
+    //   if (res === null || !res.ok()) throw ProcessorError.image("Can't fetch (${urls})");
+    //   const buffer = await page.screenshot(options);
+    //   await browser.close();
+    //   return buffer;
+    // }
     /**
      * @throws
      *
@@ -430,7 +445,7 @@ export default class Image extends Core {
         return __awaiter(this, void 0, void 0, function* () {
             const filtered = yield Image.filter(...images);
             if (filtered.length === 0)
-                throw new Error(`${Image.name}: Non valid image`);
+                throw ProcessorError.image("Non valid image");
             return new Image(...filtered);
         });
     }

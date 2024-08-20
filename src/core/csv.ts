@@ -14,6 +14,7 @@ import * as csv from "csv";
 import * as csvSync from "csv/sync";
 import { FilterFile, loader, parser } from "../helper/index.js";
 import Core from "./core.js";
+import { ProcessorError } from "../error/index.js";
 
 export default class CSV extends Core {
   private csvs: Buffer[];
@@ -498,7 +499,7 @@ export default class CSV extends Core {
    */
   static new(csvs: Buffer[]) {
     const filtered = csvs.filter((csv) => csv.length > 0);
-    if (filtered.length === 0) throw new Error(`${CSV.name}: Non valid csv`);
+    if (filtered.length === 0) throw ProcessorError.csv("Non valid csv");
     return new CSV(...filtered);
   }
 

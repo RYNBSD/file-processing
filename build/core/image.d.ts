@@ -1,5 +1,4 @@
 /// <reference types="node" resolution-mode="require"/>
-import type { ScreenshotOptions } from "puppeteer";
 import type { ImageCustomCallback, ImageFormats, ImageOptions, ImageSetCallback, ImageWatermarkOptions, InputFiles } from "../types/index.js";
 import sharp from "sharp";
 import Core from "./core.js";
@@ -254,7 +253,7 @@ export default class Image extends Core {
         info: sharp.OutputInfo;
     }[]): Buffer[];
     /**
-     * @deprecated
+    //  * @deprecated
      * @returns - Take screenshot of websites
      *
      * @example
@@ -266,8 +265,6 @@ export default class Image extends Core {
      *  // Buffer[]
      * ```
      * */
-    static screenshot<T extends string>(urls: T, options?: Omit<ScreenshotOptions, "encoding">): Promise<Buffer>;
-    static screenshot<T extends string[]>(urls: T, options?: Omit<ScreenshotOptions, "encoding">): Promise<Buffer[]>;
     /**
      * @throws
      *

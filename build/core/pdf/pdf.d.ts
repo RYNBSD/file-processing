@@ -1,5 +1,4 @@
 /// <reference types="node" resolution-mode="require"/>
-import type { PDFOptions } from "puppeteer";
 import type { CreateOptions, LoadOptions, SaveOptions } from "pdf-lib";
 import type { PdfCustomDocumentCallback, PDFFromImageOptions, PDFMergeOptions, PDFSetCallback } from "../../types/index.js";
 import { PDFDocument } from "pdf-lib";
@@ -276,8 +275,6 @@ export default class PDF extends Core {
      * @deprecated
      * Generate pdf from websites
      */
-    static generate<T extends string>(htmls: T, options?: PDFOptions): Promise<Buffer>;
-    static generate<T extends string[]>(htmls: T, options?: PDFOptions): Promise<Buffer[]>;
     /**
      *
      * @returns filter non pdf

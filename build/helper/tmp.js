@@ -11,6 +11,7 @@ import { writeFile } from "node:fs/promises";
 import { randomUUID } from "node:crypto";
 import path from "node:path";
 import { dir } from "tmp-promise";
+import { ProcessorHelperError } from "../error/index.js";
 import FilterFile from "./filter.js";
 /**
  * Create a tmp dir store your files manipulate them and then clean.
@@ -25,7 +26,7 @@ export default class TmpFile {
             var _a;
             const ext = (_a = (yield FilterFile.extension(file))) !== null && _a !== void 0 ? _a : "";
             if (ext.length === 0)
-                throw new Error(`${TmpFile.name}: Unknown file when create`);
+                throw ProcessorHelperError.tmp("Unknown file when create");
             const fileName = TmpFile.generateFileName(ext);
             const fullPath = path.join(this.tmp.path, fileName);
             yield writeFile(fullPath, file);

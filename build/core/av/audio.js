@@ -8,6 +8,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 import { FilterFile, loader } from "../../helper/index.js";
+import { ProcessorError } from "../../error/index.js";
 import AV from "./av.js";
 export default class Audio extends AV {
     constructor(...audios) {
@@ -225,7 +226,7 @@ export default class Audio extends AV {
         return __awaiter(this, void 0, void 0, function* () {
             const filtered = yield Audio.filter(...audios);
             if (filtered.length === 0)
-                throw new Error(`${Audio.name}: Non valid audio`);
+                throw ProcessorError.audio("Non valid audio");
             return new Audio(...filtered);
         });
     }

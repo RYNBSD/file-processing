@@ -1,7 +1,7 @@
 /// <reference types="node" resolution-mode="require"/>
 /// <reference types="node" resolution-mode="require"/>
 import type { AVCustomCallback } from "../../types/index.js";
-import type { Readable } from "node:stream";
+import stream from "node:stream";
 import ffmpeg from "fluent-ffmpeg";
 import Core from "../core.js";
 export default abstract class AV extends Core {
@@ -82,7 +82,7 @@ export default abstract class AV extends Core {
      * ```js
      * ```
      */
-    merge(format: string, fps?: number): Promise<Buffer>;
+    merge(format: string): Promise<Buffer>;
     /**
      * @returns base on the callback return type
      *
@@ -118,6 +118,6 @@ export default abstract class AV extends Core {
      *  // => FfmpegCommand
      * ```
      */
-    static newFfmpeg<T extends Readable | string>(av: T, options?: ffmpeg.FfmpegCommandOptions): ffmpeg.FfmpegCommand;
+    static newFfmpeg<T extends stream.Readable | string>(av: T, options?: ffmpeg.FfmpegCommandOptions): ffmpeg.FfmpegCommand;
 }
 //# sourceMappingURL=av.d.ts.map

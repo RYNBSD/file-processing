@@ -1,5 +1,6 @@
 import type { AVSetCallback } from "../../types/index.js";
 import { FilterFile, loader } from "../../helper/index.js";
+import { ProcessorError } from "../../error/index.js";
 import AV from "./av.js";
 
 export default class Audio extends AV {
@@ -216,7 +217,7 @@ export default class Audio extends AV {
    */
   static async new(audios: Buffer[]) {
     const filtered = await Audio.filter(...audios);
-    if (filtered.length === 0) throw new Error(`${Audio.name}: Non valid audio`);
+    if (filtered.length === 0) throw ProcessorError.audio("Non valid audio");
     return new Audio(...filtered);
   }
 
