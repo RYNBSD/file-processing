@@ -7,8 +7,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-import { FilterFile, loader, TmpFile } from "../../helper/index.js";
 import path from "node:path";
+import { FilterFile, loader, TmpFile } from "../../helper/index.js";
 import { ProcessorError } from "../../error/index.js";
 import AV from "./av.js";
 export default class Video extends AV {
@@ -229,6 +229,29 @@ export default class Video extends AV {
                         loader.loadFile(imagesPath).then(resolve, reject);
                     })
                         .on("error", reject);
+                });
+            }));
+        });
+    }
+    drawText(...options) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return this.custom((command, tmpFile, index) => __awaiter(this, void 0, void 0, function* () {
+                const format = yield FilterFile.extension(tmpFile.paths[index]);
+                if (typeof format === "undefined")
+                    throw ProcessorError.video("ERROR: undefined video (Video.drawText)");
+                const output = path.join(tmpFile.tmp.path, TmpFile.generateFileName(format));
+                return new Promise((resolve, reject) => {
+                    command
+                        .videoFilter(options.map((option) => ({
+                        filter: "drawtext",
+                        options: option,
+                    })))
+                        .output(output)
+                        .on("end", () => {
+                        loader.loadFile(output).then(resolve, reject);
+                    })
+                        .on("error", reject)
+                        .run();
                 });
             }));
         });

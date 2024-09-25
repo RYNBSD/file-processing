@@ -35,18 +35,18 @@ export async function toBuffer<T extends InputFiles | InputFiles[]>(input: T) {
   if (Array.isArray(input)) return Promise.all(input.map((i) => toBuffer(i)));
 
   if (Buffer.isBuffer(input)) return input;
-  else if (isUrl(input)) return loadUrl(input);
   else if (isUint8Array(input)) return uint8array2buffer(input);
   else if (isAnyArrayBuffer(input)) return array2buffer(input);
   else if (isStream(input)) return stream2buffer(input);
   else if (isReadableStream(input)) return readablestream2buffer(input);
   else if (isReadable(input) && Readable.isReadable(input)) return readable2buffer(input);
   else if (typeof input === "string") {
+    if (isBase64(input, { allowMime: true, mimeRequired: true })) return Buffer.from(input, "base64url");
+    if (isBase64(input, { allowMime: false })) return Buffer.from(input, "base64");
     const fileStat = await fs.promises.stat(input);
     if (fileStat.isFile()) return loadFile(input);
-    else if (isBase64(input, { allowEmpty: false })) return Buffer.from(input, "base64");
     return string2buffer(input, false);
-  }
+  } else if (isUrl(input)) return loadUrl(input);
   return any2buffer(input);
 }
 

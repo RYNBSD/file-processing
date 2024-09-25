@@ -186,7 +186,7 @@ export default class Text extends Core {
     /**
      * @returns - key is the character code and value is the count
      */
-    charactersMap(text) {
+    _charactersMap(text) {
         const map = new Map();
         const string = text.toString();
         for (const str of string) {
@@ -213,7 +213,7 @@ export default class Text extends Core {
             return this.custom((text) => {
                 return {
                     size: text.length,
-                    charactersMap: this.charactersMap(text),
+                    charactersMap: this._charactersMap(text),
                 };
             });
         });

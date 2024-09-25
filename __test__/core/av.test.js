@@ -2,7 +2,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { Video, Audio } from "../../build/core/av/index.js";
 import { loader, parser, TmpFile } from "../../build/helper/index.js";
-import { ProcessorError } from "../../build/error/index.js"
+import { ProcessorError } from "../../build/error/index.js";
 
 describe("AV", () => {
   it("metadata", async () => {
@@ -121,6 +121,25 @@ describe("Video", () => {
     expect(screenshots[0][0]).toBeInstanceOf(Buffer);
     expect(screenshots[0][1]).toBeInstanceOf(Buffer);
     expect(screenshots[0][2]).toBeInstanceOf(Buffer);
+  });
+
+  it("drawText", async () => {
+    const video = await Video.fromFile("asset/video.webm");
+    const drawText = await video.drawText({
+      text: "Test",
+      fontcolor: "white",
+      x: 0,
+      y: 0,
+      box: 1,
+      boxcolor: "black",
+      boxborderw: 5,
+      fontsize: 25,
+    });
+
+    expect(drawText).toHaveLength(1);
+    expect(drawText[0]).toBeInstanceOf(Buffer);
+
+    await parser.toFile([{ path: "tmp/video-draw-text.mp4", input: drawText[0] }]);
   });
 
   it("(static) fromFile", async () => {

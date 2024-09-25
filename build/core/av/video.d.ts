@@ -1,6 +1,6 @@
 /// <reference types="node" resolution-mode="require"/>
-import type { AVSetCallback } from "../../types/index.js";
 import type { FfprobeData } from "fluent-ffmpeg";
+import type { AVSetCallback, VideoDrawTextOptions } from "../../types/index.js";
 import AV from "./av.js";
 export default class Video extends AV {
     constructor(...videos: Buffer[]);
@@ -135,6 +135,7 @@ export default class Video extends AV {
      * ```
      */
     screenshot(timemarks: number[] | string[]): Promise<Buffer[][]>;
+    drawText(...options: VideoDrawTextOptions[]): Promise<Buffer[]>;
     /**
      *
      * @returns - filter non video

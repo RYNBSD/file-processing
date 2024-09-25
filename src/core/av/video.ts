@@ -1,7 +1,7 @@
-import type { AVSetCallback } from "../../types/index.js";
-import { FilterFile, loader, TmpFile } from "../../helper/index.js";
-import path from "node:path";
 import type { FfprobeData } from "fluent-ffmpeg";
+import type { AVSetCallback, VideoDrawTextOptions } from "../../types/index.js";
+import path from "node:path";
+import { FilterFile, loader, TmpFile } from "../../helper/index.js";
 import { ProcessorError } from "../../error/index.js";
 import AV from "./av.js";
 
@@ -223,6 +223,30 @@ export default class Video extends AV {
             loader.loadFile(imagesPath).then(resolve, reject);
           })
           .on("error", reject);
+      });
+    });
+  }
+
+  async drawText(...options: VideoDrawTextOptions[]) {
+    return this.custom(async (command, tmpFile, index) => {
+      const format = await FilterFile.extension(tmpFile.paths[index]!);
+      if (typeof format === "undefined") throw ProcessorError.video("ERROR: undefined video (Video.drawText)");
+
+      const output = path.join(tmpFile.tmp!.path, TmpFile.generateFileName(format));
+      return new Promise<Buffer>((resolve, reject) => {
+        command
+          .videoFilter(
+            options.map((option) => ({
+              filter: "drawtext",
+              options: option,
+            })),
+          )
+          .output(output)
+          .on("end", () => {
+            loader.loadFile(output).then(resolve, reject);
+          })
+          .on("error", reject)
+          .run();
       });
     });
   }

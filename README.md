@@ -271,6 +271,7 @@ const pdf = new PDF(Buffer.alloc(1));
 - Generate Hmac. 🟢
 - Encryption/Decryption. 🟢
 - Custom Error handler. 🟢
+- Video draw text. 🟢
 - Merge videos/audios in one video/audio. 🟠
 - Merge audio and video in one video. 🔴
 - Pdf to image. 🔴

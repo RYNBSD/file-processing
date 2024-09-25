@@ -209,7 +209,7 @@ export default class Text extends Core {
   /**
    * @returns - key is the character code and value is the count
    */
-  private charactersMap(text: Buffer) {
+  private _charactersMap(text: Buffer) {
     const map = new Map<number, number>();
     const string = text.toString();
 
@@ -238,7 +238,7 @@ export default class Text extends Core {
     return this.custom((text) => {
       return {
         size: text.length,
-        charactersMap: this.charactersMap(text),
+        charactersMap: this._charactersMap(text),
       };
     });
   }

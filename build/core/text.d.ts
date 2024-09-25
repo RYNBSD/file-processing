@@ -139,7 +139,7 @@ export default class Text extends Core {
     /**
      * @returns - key is the character code and value is the count
      */
-    private charactersMap;
+    private _charactersMap;
     /**
      * @returns - texts metadata
      *
