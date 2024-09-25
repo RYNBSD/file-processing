@@ -125,16 +125,18 @@ describe("Video", () => {
 
   it("drawText", async () => {
     const video = await Video.fromFile("asset/video.webm");
-    const drawText = await video.drawText({
-      text: "Test",
-      fontcolor: "white",
-      x: 0,
-      y: 0,
-      box: 1,
-      boxcolor: "black",
-      boxborderw: 5,
-      fontsize: 25,
-    });
+    const drawText = await video.drawText([
+      {
+        text: "Test",
+        fontcolor: "white",
+        x: 0,
+        y: 0,
+        box: 1,
+        boxcolor: "black",
+        boxborderw: 5,
+        fontsize: 25,
+      },
+    ]);
 
     expect(drawText).toHaveLength(1);
     expect(drawText[0]).toBeInstanceOf(Buffer);

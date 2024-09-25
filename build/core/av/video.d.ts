@@ -135,7 +135,30 @@ export default class Video extends AV {
      * ```
      */
     screenshot(timemarks: number[] | string[]): Promise<Buffer[][]>;
-    drawText(...options: VideoDrawTextOptions[]): Promise<Buffer[]>;
+    /**
+     * Add text to video
+     * @param options where/who to draw text
+     * @returns video with text
+     *
+     * @example
+     * ```js
+     *  const video = await Video.fromFile("asset/video.webm");
+     *  const drawText = await video.drawText([
+     *    {
+     *      text: "Test",
+     *      fontcolor: "white",
+     *      x: 0,
+     *      y: 0,
+     *      box: 1,
+     *      boxcolor: "black",
+     *      boxborderw: 5,
+     *      fontsize: 25,
+     *    }
+     *  ]);
+     *  // => Buffer[]
+     * ```
+     */
+    drawText(options: VideoDrawTextOptions[]): Promise<Buffer[]>;
     /**
      *
      * @returns - filter non video

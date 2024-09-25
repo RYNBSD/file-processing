@@ -227,7 +227,30 @@ export default class Video extends AV {
     });
   }
 
-  async drawText(...options: VideoDrawTextOptions[]) {
+  /**
+   * Add text to video
+   * @param options where/who to draw text
+   * @returns video with text
+   *
+   * @example
+   * ```js
+   *  const video = await Video.fromFile("asset/video.webm");
+   *  const drawText = await video.drawText([
+   *    {
+   *      text: "Test",
+   *      fontcolor: "white",
+   *      x: 0,
+   *      y: 0,
+   *      box: 1,
+   *      boxcolor: "black",
+   *      boxborderw: 5,
+   *      fontsize: 25,
+   *    }
+   *  ]);
+   *  // => Buffer[]
+   * ```
+   */
+  async drawText(options: VideoDrawTextOptions[]) {
     return this.custom(async (command, tmpFile, index) => {
       const format = await FilterFile.extension(tmpFile.paths[index]!);
       if (typeof format === "undefined") throw ProcessorError.video("ERROR: undefined video (Video.drawText)");

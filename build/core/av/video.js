@@ -233,7 +233,30 @@ export default class Video extends AV {
             }));
         });
     }
-    drawText(...options) {
+    /**
+     * Add text to video
+     * @param options where/who to draw text
+     * @returns video with text
+     *
+     * @example
+     * ```js
+     *  const video = await Video.fromFile("asset/video.webm");
+     *  const drawText = await video.drawText([
+     *    {
+     *      text: "Test",
+     *      fontcolor: "white",
+     *      x: 0,
+     *      y: 0,
+     *      box: 1,
+     *      boxcolor: "black",
+     *      boxborderw: 5,
+     *      fontsize: 25,
+     *    }
+     *  ]);
+     *  // => Buffer[]
+     * ```
+     */
+    drawText(options) {
         return __awaiter(this, void 0, void 0, function* () {
             return this.custom((command, tmpFile, index) => __awaiter(this, void 0, void 0, function* () {
                 const format = yield FilterFile.extension(tmpFile.paths[index]);

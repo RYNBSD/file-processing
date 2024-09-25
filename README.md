@@ -195,6 +195,13 @@ const pdf = new PDF(Buffer.alloc(1));
 - Remove puppeteer.
 - Remove loader from Core (class).
 - Remove parser from Core (class).
+- Generate hash.
+- Generate Hmac.
+- Encryption/Decryption.
+- Custom Error handler.
+- Video draw text.
+- Optimize performance.
+- Fix parser.toBuffer bug.
 
 ## 0.8.0 - Current
 
@@ -267,11 +274,6 @@ const pdf = new PDF(Buffer.alloc(1));
 - add streaming. 🟠
 - Add dir loader. 🟠
 - Add glob loader. 🟠
-- Generate hash. 🟢
-- Generate Hmac. 🟢
-- Encryption/Decryption. 🟢
-- Custom Error handler. 🟢
-- Video draw text. 🟢
 - Merge videos/audios in one video/audio. 🟠
 - Merge audio and video in one video. 🔴
 - Pdf to image. 🔴

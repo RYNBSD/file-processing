@@ -1,6 +1,6 @@
 {
   "name": "@ryn-bsd/file-processing",
-  "version": "0.8.1",
+  "version": "0.9.0",
   "description": "file processing made easy",
   "main": "./build/index.js",
   "scripts": {
