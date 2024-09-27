@@ -274,6 +274,10 @@ const pdf = new PDF(Buffer.alloc(1));
 - add streaming. 🟠
 - Add dir loader. 🟠
 - Add glob loader. 🟠
+- Remove noise from audio. 🟠
+- Clarify speak. 🟠
+- Volume increase. 🟠
+- Add enhance audio method in AV class. 🟠
 - Merge videos/audios in one video/audio. 🟠
 - Merge audio and video in one video. 🔴
 - Pdf to image. 🔴

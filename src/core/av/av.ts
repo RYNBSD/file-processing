@@ -189,7 +189,7 @@ export default abstract class AV extends Core {
    * ```js
    * ```
    */
-  async merge(format: string) {
+  async unstable_merge(format: string) {
     const converted = await this.convert(format);
     const tmpFile = await new TmpFile(...converted).init();
     const output = path.join(tmpFile.tmp!.path, TmpFile.generateFileName(format));
